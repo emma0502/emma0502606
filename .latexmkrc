@@ -18,6 +18,10 @@ for (1..5) {
 # This ensures all compilations produce PDF directly and can include PDF/PNG/JPG images
 $pdf_mode = 1;  # 1=pdflatex, 2=ps2pdf, 3=dvipdf, 4=lualatex, 5=xelatex
 
+# BibTeX search paths (so plain "latexmk -pdf" works without manual env vars)
+$ENV{'BSTINPUTS'} = "$latexmkroot/\@resources/texlive/texmf-local/bibtex/bst/:" . ($ENV{'BSTINPUTS'} || '');
+$ENV{'BIBINPUTS'} = "$latexmkroot/\@resources/texlive/texmf-local/bibtex/bib/:.:" . ($ENV{'BIBINPUTS'} || '');
+
 
 # Load the circular crossrefs handler
 do "$latexmkroot/\@resources/latexmk/latexmkrc/latexmkrc_for-projects-with-circular-crossrefs";
