@@ -128,7 +128,6 @@
   *{file}   {umsa.fd}     {2013/01/14 v3.01}
   *{file}   {umsb.fd}     {2013/01/14 v3.01}
   *{file}   {t1cmss.fd}   {2023/04/13 v2.5m}
-  *{file}   {t1cmtt.fd}   {2023/04/13 v2.5m}
   *{-------}{Document-specific files:}{----}
   *{file}   {supp-pdf.mkii}{0000/00/00 v0.0}
   *{package}{epstopdf-base}{2020-01-24 v2.11}
@@ -168,63 +167,16 @@
   *{file}   {Subfiles/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
   *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/splurge_estimation}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/Target_AggMPCX_LiquWealth/Figures/AggMPC_LotteryWin_comparison.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/Target_AggMPCX_LiquWealth/Figures/LiquWealth_Distribution_comparison.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/MPC_WQ}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {"@local/../Code/HA-Models/Target_AggMPCX_LiquWealth/Figures/MPC_WealthQuartiles_Table.tex"}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/estimBetas}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {"@local/../Code/HA-Models/FromPandemicCode/Tables/CRRA2/estimBetas.ltx"}{0000/00/00 v0.0}
   *{file}   {Subfiles/Comparing-policies}{0000/00/00 v0.0}
   *{file}   {Subfiles/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
   *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/Policyrelrecession}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/recession_Check_relrecession.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/recession_UI_relrecession.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/recession_taxcut_relrecession.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/Cumulative_multiplier_Check.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/Cumulative_multiplier_UI.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/Cumulative_multiplier_TaxCut.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/Multiplier}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Tables/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {"@local/../Code/HA-Models/FromPandemicCode/Tables/CRRA2/Multiplier.tex"}{0000/00/00 v0.0}
   *{file}   {Subfiles/HANK}{0000/00/00 v0.0}
   *{file}   {Subfiles/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
   *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/HANK_IRFs}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/HANK_transfer_IRF.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/HANK_UI_IRF.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/HANK_tax_IRF.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/HANK_transfer_multiplier.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/HANK_UI_multiplier.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/Figures/HANK_tax_multiplier.pdf}{0000/00/00 v0.0}
   *{file}   {Subfiles/Conclusion}{0000/00/00 v0.0}
   *{file}   {Subfiles/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
@@ -235,22 +187,5 @@
   *{file}   {Subfiles/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
   *{file}   {Subfiles/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
   *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/Appendix-Robustness}{0000/00/00 v0.0}
-  *{file}   {Subfiles/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/LorenzPts_robustness_R}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {@local/../@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Figures/../Code/HA-Models/FromPandemicCode/LorenzPoints_robustness_R.pdf}{0000/00/00 v0.0}
-  *{file}   {Subfiles/../Code/HA-Models/FromPandemicCode/LorenzPts_robustness_CRRA}{0000/00/00 v0.0}
-  *{file}   {@local/./._relpath-to-latexroot.ltx}{0000/00/00 v0.0}
-  *{file}   {@resources/project-metadata.ltx}{0000/00/00 v0.0}
-  *{file}   {./@resources/tex-paths.ltx}{0000/00/00 v0.0}
-  *{file}   {./@local/_inputpaths.ltx}{0000/00/00 v0.0}
-  *{file}   {./Code/HA-Models/FromPandemicCode/LorenzPoints_robustness_CRRA.pdf}{0000/00/00 v0.0}
   *{file}   {emma0502606.bbl}{0000/00/00 v0.0}
 }

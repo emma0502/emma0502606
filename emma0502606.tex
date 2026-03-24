@@ -66,22 +66,6 @@
 % This ensures proper bibliography handling in modular documents
 
 \clearpage
-% Citations from appendices that are not explicitly cited in main text
-% These ensure the references appear in the bibliography
-\nocite{Bardoczy2022}
-\nocite{Blanchard2010}
-\nocite{Christiano2016}
-\nocite{DenHaan2000}
-\nocite{Gornemann2021}
-\nocite{Ravn2017}
-\nocite{Ravn2021}
-\nocite{Rotemberg1982}
-\nocite{Silva2009}
-\nocite{arsJumpsHumps}
-\nocite{carroll2020modeling}
-\nocite{den2010computational}
-\nocite{fagereng-mpc-2021}
-\nocite{rothstein2017scraping}
 \smartbib
 
 \clearpage
@@ -95,41 +79,5 @@
 % A: HANK appendix (always include full content) - moved from B to A
 \subfile{Subfiles/Appendix-HANK}
 
-% B: No Splurge appendix - now online only with stub page
-% Add pagebreak so Appendix B can be easily removed by dropping last page(s)
-\clearpage
-\FloatBarrier
-\phantomsection
-\section{\href{https://econ-ark.github.io/HAFiscal/\#app:Model-without-splurge}{Results in a Model Without the Splurge}}
-\label{app:Model-without-splurge}
-
-\noindent\textit{Full appendix PDF available at:}
-\href{https://github.com/econ-ark/HAFiscal/blob/master/Subfiles/Appendix-NoSplurge.pdf}{\texttt{GitHub: Subfiles/Appendix-NoSplurge.pdf}}
-
-\medskip
-\noindent\textit{Click any section title below to view it online in HTML:}
-
-\medskip
-
-\subsection{\href{https://econ-ark.github.io/HAFiscal/\#app:Model-without-splurge-intro}{Introduction}}
-\label{app:Model-without-splurge-intro}
-
-\subsection{\href{https://econ-ark.github.io/HAFiscal/\#app:nosplurge-matching-impcs}{Matching the iMPCs without the splurge}}
-\label{app:nosplurge-matching-impcs}
-
-\subsection{\href{https://econ-ark.github.io/HAFiscal/\#app:nosplurge-estimating-betas}{Estimating discount factor distributions without the splurge}}
-\label{app:nosplurge-estimating-betas}
-
-\subsection{\href{https://econ-ark.github.io/HAFiscal/\#app:nosplurge-multipliers}{Multipliers in the absence of the splurge}}
-\label{app:nosplurge-multipliers}
-
-\medskip
-
-% C: Robustness appendix (using hidden appendix approach)
-% This appendix is processed for labels but doesn't appear in the PDF
-\begin{hiddencontent}[OnlineAppendix]
-  % Include the actual appendix content but it will be hidden
-  \subfile{Subfiles/Appendix-Robustness}
-\end{hiddencontent}
 
 \end{document}
