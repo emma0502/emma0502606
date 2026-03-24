@@ -1,0 +1,311 @@
+\input{./._relpath-to-latexroot.ltx}
+\documentclass[\latexroot/\projectname]{subfiles}
+\input{\latexroot/@resources/subfile-setup.ltx}
+
+\begin{document}
+
+\section{Empirical Analysis of Debt Composition}
+\whenintegrated{\label{sec:empirical}}
+
+\subsection{Financial Openness and Foreign Private Debt}
+
+\subsubsection{Measures of Financial Openness}
+
+We consider three de jure measures of financial openness---\textit{kaopen}, \textit{cap100}, and \textit{boi\_open}---alongside a de facto measure. The \textit{kaopen} index (Chinn--Ito) is based on IMF-reported capital account restrictions and captures the legal openness of a country's financial system, with higher values indicating fewer restrictions. \textit{cap100}, derived from Quinn's coding of capital account regulations, provides a more granular measure of legal openness on a 0--100 scale, where higher values correspond to greater liberalization. \textit{boi\_open} is a bond-market-specific measure of openness and is therefore more directly related to foreign participation in government debt markets.
+
+Our de facto measure captures realized financial integration through actual cross-border asset and liability positions. Using the External Wealth of Nations (EWN) dataset, we define
+\[
+\text{De Facto Openness}_{it}
+=
+\frac{\text{Total Assets}_{it}+\text{Total Liabilities}_{it}}{\text{GDP}_{it}}.
+\]
+Total assets and liabilities include cross-border positions such as FDI, portfolio equity, and debt, and are measured in current U.S.\ dollars. Unlike the de jure indices, which reflect policy intent and tend to vary slowly over time, the de facto measure exhibits substantial within-country variation.
+
+\subsubsection{Descriptive Evidence on De Jure Openness}
+
+Table~\ref{tab:dejure_desc} shows that a large share of countries exhibit no time variation in the de jure openness measures. In particular, 21 out of 27 countries show no variation in \textit{boi\_open}, while 15 countries display no variation in either \textit{kaopen} or \textit{cap100}. As a result, fixed-effects estimates using these variables are identified from a relatively small subset of countries.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{\latexroot/Figures/dist.png}
+    \caption{Distribution of de jure openness indices}
+    \label{fig:dejure_hist}
+\end{figure}
+
+\begin{table}[htbp]\centering
+\caption{Descriptive statistics for de jure openness measures}
+\label{tab:dejure_desc}
+\begin{tabular}{lcccccc}
+\toprule
+Variable & Countries & Mean & Std.\ Dev.\ & Between Std.\ & Within Std.\ & No variation countries \\
+\midrule
+\textit{boi\_open} & 27 & 0.9141 & 0.2427 & 0.1840 & 0.1604 & 21 \\
+\textit{kaopen}    & 31 & 1.9632 & 0.7625 & 0.5836 & 0.5076 & 15 \\
+\textit{cap100}    & 32 & 94.5433 & 13.2150 & 11.4014 & 8.4157 & 15 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{De Jure Openness and the Foreign Share of Government Debt}
+
+Table~\ref{tab:df_financial_integration} reports the relationship between the foreign share of government debt (\textit{df}) and the three de jure openness measures. In pooled OLS specifications, bond openness (\textit{boi\_open}) is negatively and significantly associated with \textit{df}. Once country and year fixed effects are introduced, however, the coefficient on \textit{boi\_open} turns positive. This sign reversal suggests that the negative pooled relationship is driven by cross-country differences, whereas within-country increases in bond openness are associated with higher foreign participation in government debt markets.
+
+By contrast, \textit{kaopen} and \textit{cap100} are only weakly related to \textit{df} in pooled OLS, and their fixed-effects coefficients are not statistically significant (not reported). This is consistent with the descriptive evidence above: broad de jure openness measures display limited within-country variation and therefore provide little identifying power in panel regressions.
+
+\begin{table}[htbp]
+\centering
+\caption{Foreign Debt Share and Financial Integration Measures}
+\label{tab:df_financial_integration}
+\begin{tabular}{lccccccc}
+\toprule
+& \multicolumn{6}{c}{OLS} & \multicolumn{1}{c}{Fixed Effects} \\
+\cmidrule(lr){2-7} \cmidrule(lr){8-8}
+& (1) & (2) & (3) & (4) & (5) & (6) & (7) \\
+& $df$ & $df$ & $df$ & $df$ & $df$ & $df$ & $df$ \\
+\midrule
+$boi\_open$ 
+    & $-$10.7839*** & $-$6.3342*** &            &            &            &            & 4.8903*** \\
+    & (2.3472)    & (2.0997)   &            &            &            &            & (1.7277) \\
+\\
+$kaopen$
+    &            &            & $-$0.8521    & $-$0.5442    &            &            &          \\
+    &            &            & (0.9130)   & (0.7968)   &            &            &          \\
+\\
+$cap100$
+    &            &            &            &            & $-$0.1206**  & $-$0.0910**  &          \\
+    &            &            &            &            & (0.0498)   & (0.0436)   &          \\
+\midrule
+Total debt ($d$)
+    & No & Yes & No & Yes & No & Yes & Yes \\
+Year FE
+    & No & No & No & No & No & No & Yes \\
+Country FE
+    & No & No & No & No & No & No & Yes \\
+Observations
+    & 539 & 539 & 539 & 539 & 479 & 479 & 539 \\
+$R^2$
+    & 0.0378 & 0.2537 & 0.0016 & 0.2417 & 0.0121 & 0.2470 & 0.3939 \\
+\bottomrule
+\multicolumn{8}{p{0.92\linewidth}}{\footnotesize Notes: Standard errors in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.10$. Dependent variable is the foreign share of government debt, $df$. $boi\_open$ is the bond inflow openness measure constructed as $1-boi$. The fixed-effects column reports the specification for $boi\_open$ only.}
+\end{tabular}
+\end{table}
+
+\subsubsection{Heterogeneity by Debt Levels}
+
+Table~\ref{tab:interaction} examines whether the effect of bond openness differs across debt regimes. For low-debt countries, the effect of \textit{boi\_open} on \textit{df} is small and statistically insignificant. For high-debt countries, by contrast, the interaction term is positive and highly significant. The implied marginal effect is approximately
+\[
+-1.43 + 12.00 \approx 10.6,
+\]
+indicating that bond openness matters much more when governments face greater financing needs.
+
+However, once standard errors are clustered at the country level, the coefficient becomes statistically insignificant, reflecting the limited within-country variation in de jure measures.
+
+\begin{table}[htbp]
+\centering
+\caption{Bond Openness, Debt Levels, and Foreign Debt}
+\label{tab:interaction}
+\begin{tabular}{lc}
+\toprule
+ & (1) \\
+ & $df$ \\
+\midrule
+$boi\_open$ 
+    & $-$1.4266 \\
+    & (1.9019) \\
+\\
+High debt ($high\_d$)
+    & $-$15.3740*** \\
+    & (2.1717) \\
+\\
+$boi\_open \times high\_d$
+    & 12.0008*** \\
+    & (2.4371) \\
+\\
+Total debt ($d$)
+    & Yes \\
+Year FE
+    & Yes \\
+Country FE
+    & Yes \\
+\midrule
+Observations
+    & 539 \\
+$R^2$ (within)
+    & 0.4528 \\
+\bottomrule
+\multicolumn{2}{p{0.85\linewidth}}{\footnotesize Notes: Standard errors in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.10$. Dependent variable is the foreign share of government debt, $df$. $boi\_open$ is the bond inflow openness measure constructed as $1-boi$. High debt ($high\_d$) is an indicator for country-years with total debt above the chosen threshold.}
+\end{tabular}
+\end{table}
+
+\subsubsection{De Facto Openness and the Foreign Share of Government Debt}
+
+Table~\ref{tab:df_defacto} reports the relationship between de facto financial openness and the foreign share of government debt. Column (1) shows a negative and significant correlation in pooled OLS. Once total debt (\textit{d}) is added in column (2), this correlation becomes statistically insignificant. This pattern is driven by countries such as Luxembourg, Cyprus, and Malta, which combine extremely high financial openness with only moderate foreign debt shares.
+
+The sign reverses once country fixed effects are introduced. In column (3), which includes country fixed effects but not year fixed effects, the coefficient on \textit{de\_facto} becomes positive and significant. This indicates that the negative pooled relationship is driven by persistent cross-country differences rather than within-country dynamics. In column (4), the coefficient remains positive and significant after additionally controlling for total debt and year fixed effects, suggesting that within countries, greater realized financial openness is associated with higher foreign debt shares over time.
+
+Finally, column (5) interacts de facto openness with a high-debt indicator. The interaction term is not statistically significant, implying that the effect of de facto openness does not differ materially across high- and low-debt regimes. Overall, the results point to a stable positive within-country relationship between realized financial openness and foreign borrowing.
+
+\begin{table}[htbp]\centering
+\caption{De Facto Financial Openness and Foreign Debt}
+\label{tab:df_defacto}
+\begin{tabular}{lccccc}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) \\
+ & $df$ & $df$ & $df$ & $df$ & $df$ \\
+\midrule
+de\_facto 
+& $-$0.0329*** & $-$0.0081 & 0.0478*** & 0.0232** & 0.0229** \\
+& (0.0094) & (0.0080) & (0.0118) & (0.0093) & (0.0094) \\
+
+high\_d
+&  &  &  &  & $-$5.9187 \\
+&  &  &  &  & (5.0857) \\
+
+high\_d $\times$ de\_facto
+&  &  &  &  & 0.0720 \\
+&  &  &  &  & (0.1417) \\
+
+\midrule
+Total debt ($d$) & No & Yes & No & Yes & Yes \\
+Year FE          & No & No  & No & Yes & Yes \\
+Country FE       & No & No  & Yes & Yes & Yes \\
+Clustered SE     & No & No  & Yes & Yes & Yes \\
+
+\midrule
+Observations & 747 & 747 & 747 & 747 & 747 \\
+$R^2$        & 0.0162 & 0.3002 & 0.0188 & 0.4320 & 0.4492 \\
+\bottomrule
+\multicolumn{6}{p{0.92\linewidth}}{\footnotesize Notes: Standard errors in parentheses. Columns (3)--(5) report standard errors clustered at the country level. For the fixed-effects columns, the reported $R^2$ is the within-$R^2$. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\end{tabular}
+\end{table}
+
+\subsection{Domestic Investor Base}
+
+\subsubsection{Domestic Nonbanks}
+
+Table~\ref{tab:nonbank} reports the relationship between nonbank financial sector size (\textit{nonbank\_size}) and the domestic debt share (\textit{dh}). We define \textit{nonbank\_size} as the sum of insurance assets (\textit{di11}) and pension fund assets (\textit{di13}), both measured relative to GDP, from the Global Financial Development (GFDD) dataset. In pooled OLS, \textit{nonbank\_size} is positively and significantly associated with \textit{dh}, and this result remains after controlling for total debt in column (2).
+
+Columns (3)--(5) introduce country and year fixed effects. The coefficient becomes smaller and statistically insignificant in column (3), suggesting that part of the pooled relationship reflects cross-country differences. Once total debt is added in column (4), however, the coefficient becomes positive and significant again. The interaction term in column (5) is not statistically significant, indicating no strong evidence that the effect of nonbank size differs across debt regimes.
+
+\begin{table}[htbp]\centering
+\caption{Nonbank Size and Domestic Debt Share ($dh$)}
+\label{tab:nonbank}
+\begin{tabular}{lccccc}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) \\
+ & $dh$ & $dh$ & $dh$ & $dh$ & $dh$ \\
+\midrule
+nonbank\_size 
+& 0.1014*** & 0.0843*** & 0.0344 & 0.0485** & 0.0439** \\
+& (0.0101) & (0.0077) & (0.0238) & (0.0184) & (0.0194) \\
+
+high\_d
+&  &  &  &  & 3.6829 \\
+&  &  &  &  & (3.4779) \\
+
+high\_d $\times$ nonbank\_size
+&  &  &  &  & 0.0055 \\
+&  &  &  &  & (0.0231) \\
+
+\midrule
+Total debt ($d$) & No & Yes & No & Yes & Yes \\
+Year FE          & No & No  & Yes & Yes & Yes \\
+Country FE       & No & No  & Yes & Yes & Yes \\
+Clustered SE     & No & No  & Yes & Yes & Yes \\
+
+\midrule
+Observations & 547 & 547 & 547 & 547 & 547 \\
+$R^2$        & 0.1551 & 0.5187 & 0.2268 & 0.3497 & 0.3712 \\
+\bottomrule
+\multicolumn{6}{p{0.92\linewidth}}{\footnotesize Notes: Standard errors in parentheses. Columns (3)--(5) report standard errors clustered at the country level. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\end{tabular}
+\end{table}
+
+\subsubsection{Domestic Private Banks}
+
+We use \textit{di02} from the GFDD dataset as a proxy for \textit{bank\_size}. This variable measures bank deposit funding relative to GDP and captures the size of the banking system's deposit base, which in turn reflects banks' balance-sheet capacity to absorb government debt.
+
+Table~\ref{tab:bank} shows that \textit{bank\_size} is positively associated with the domestic private bank debt share (\textit{dpb}) in pooled OLS. The coefficient becomes smaller once total debt is controlled for, suggesting that part of the baseline relationship reflects the correlation between banking sector size and overall debt levels. In the fixed-effects specifications, the coefficient is weaker and only marginally significant in column (4).
+
+Column (5) shows a positive and significant interaction between \textit{bank\_size} and the high-debt indicator. This suggests that bank size matters primarily in high-debt country-years, where a larger banking sector is associated with a higher share of debt held by domestic private banks.
+
+\begin{table}[htbp]\centering
+\caption{Bank Size and Domestic Private Bank Debt Share ($dpb$)}
+\label{tab:bank}
+\begin{tabular}{lccccc}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) \\
+ & $dpb$ & $dpb$ & $dpb$ & $dpb$ & $dpb$ \\
+\midrule
+bank\_size 
+& 0.0594*** & 0.0131* & 0.0462 & 0.0508* & 0.0307 \\
+& (0.0098) & (0.0070) & (0.0304) & (0.0261) & (0.0185) \\
+
+high\_d
+&  &  &  &  & $-$14.0926** \\
+&  &  &  &  & (6.5796) \\
+
+high\_d $\times$ bank\_size
+&  &  &  &  & 0.1335** \\
+&  &  &  &  & (0.0583) \\
+
+\midrule
+Total debt ($d$) & No & Yes & No & Yes & Yes \\
+Year FE          & No & No  & Yes & Yes & Yes \\
+Country FE       & No & No  & Yes & Yes & Yes \\
+Clustered SE     & No & No  & Yes & Yes & Yes \\
+
+\midrule
+Observations & 732 & 732 & 732 & 732 & 732 \\
+$R^2$        & 0.0481 & 0.5421 & 0.1968 & 0.3688 & 0.4350 \\
+\bottomrule
+\multicolumn{6}{p{0.92\linewidth}}{\footnotesize Notes: Standard errors in parentheses. Columns (3)--(5) report standard errors clustered at the country level. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\end{tabular}
+\end{table}
+
+\subsubsection{Central Banks}
+
+Table~\ref{tab:cb} reports the relationship between central bank size and the central bank share of government debt holdings (\textit{dcb}). The coefficient on \textit{cb\_size} is large, positive, and highly significant in every specification. Central bank balance sheets largely consist of government securities, so the relationship is partly mechanical.
+
+Even so, the coefficients remain strong after controlling for total debt and introducing country and year fixed effects. The interaction term in column (5) is positive and statistically significant, indicating that the marginal effect of central bank size on debt holdings is substantially larger in high-debt country-years. These results are best interpreted descriptively rather than causally, given the close accounting link between central bank balance sheets and sovereign debt holdings.
+
+\begin{table}[htbp]\centering
+\caption{Central Bank Size and Central Bank Debt Holdings ($dcb$)}
+\label{tab:cb}
+\begin{tabular}{lccccc}
+\toprule
+ & (1) & (2) & (3) & (4) & (5) \\
+ & $dcb$ & $dcb$ & $dcb$ & $dcb$ & $dcb$ \\
+\midrule
+cb\_size 
+& 1.0405*** & 1.0140*** & 0.7396*** & 0.7377*** & 0.3724** \\
+& (0.0156) & (0.0177) & (0.2006) & (0.2039) & (0.1425) \\
+
+high\_d
+&  &  &  &  & $-$0.9266*** \\
+&  &  &  &  & (0.2697) \\
+
+high\_d $\times$ cb\_size
+&  &  &  &  & 0.7294*** \\
+&  &  &  &  & (0.1423) \\
+
+\midrule
+Total debt ($d$) & No & Yes & No & Yes & Yes \\
+Year FE          & No & No  & Yes & Yes & Yes \\
+Country FE       & No & No  & Yes & Yes & Yes \\
+Clustered SE     & No & No  & Yes & Yes & Yes \\
+
+\midrule
+Observations & 298 & 298 & 298 & 298 & 298 \\
+$R^2$        & 0.9373 & 0.9392 & 0.6695 & 0.6698 & 0.7830 \\
+\bottomrule
+\multicolumn{6}{p{0.92\linewidth}}{\footnotesize Notes: Standard errors in parentheses. Columns (3)--(5) report standard errors clustered at the country level. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\end{tabular}
+\end{table}
+
+Because the central bank category is closely tied to the central bank's own balance sheet composition, an alternative approach is to treat central bank holdings as a residual category: the share of government debt not held by domestic non-bank investors, private banks, or foreign investors.
+
+% Smart bibliography: Only include bibliography if standalone AND has citations
+\smartbib
+
+\end{document}
