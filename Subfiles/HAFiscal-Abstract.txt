@@ -1,0 +1,3 @@
+  This paper develops a model in which the composition of public debt across domestic banks, domestic non-banks, and foreign investors is determined by endogenous borrowing limits. The government faces default constraints on non-bank creditors and convex costs of financial repression on bank-held debt. These constraints generate threshold effects: when total debt exceeds a critical level, the government exhausts non-bank borrowing capacity and allocates marginal debt to banks.
+
+We structurally estimate the model using maximum likelihood on panel data of debt composition. The results identify distinct borrowing limits across creditor types and provide a tractable framework to interpret cross-country and time variation in who holds government debt.
