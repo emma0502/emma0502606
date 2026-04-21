@@ -1,21 +1,55 @@
-# Data
+# `Data/` — data sources for "Who Holds Government Debt?"
 
-No data were harmed in the making of this paper.
+This directory will hold the data used by the paper's empirical analysis.
+The empirical regressions in `Subfiles/Empirical.tex` use the following
+five sources, each to be downloaded or loaded from the canonical vintage
+listed below.
 
-We deliberately used standard data and standard results from the analysis of data from other papers, so that no suspicion could accrue that we tortured the data to make it confess to anything.
+## Source inventory
 
-There are a few calculations, documented in the Code/ directory, which reproduce calculations made in other work (most notably, calculations about the distribution of liquid assets from the 2004 Survey of Consumer Finances; indeed, the precise reason we did not use a newer survey was so that our results would be directly comparable to those obtained in a long literature that has chosen the 2004 SCF as a benchmark).  The 2004 SCF has remained a standard simply because results obtained from later surveys on the relevant questions have been quite similar.
+| ID       | Source | Role in paper | Obtain from |
+|----------|--------|---------------|-------------|
+| EWN      | Lane & Milesi-Ferretti, External Wealth of Nations | Non-bank external debt holdings by country–year | https://www.brookings.edu/articles/the-external-wealth-of-nations-database/ |
+| GFDD     | World Bank Global Financial Development Database (indicators `di02`, `di11`, `di13`) | Domestic banking-sector characteristics (size, concentration) | https://www.worldbank.org/en/publication/gfdr/data/global-financial-development-database |
+| Chinn–Ito | Chinn, M. D. and Ito, H., Chinn–Ito index of capital-account openness (KAOPEN) | Capital-account openness control | https://web.pdx.edu/~ito/Chinn-Ito_website.htm |
+| Quinn cap100 | Quinn, D. P., index of financial openness (cap100) | Alternative capital-account openness | Available on author's data page |
+| BOI      | Arslanalp & Tsuda, IMF Sovereign Debt Investor Base database | Total government-debt holdings by creditor type (banks, non-banks, central bank, foreign) | https://www.imf.org/external/pubs/ft/wp/2012/data/wp12284.zip (IMF WP 12/284) |
 
-## SCF Data Documentation
+## Construction
 
-For detailed documentation on the SCF 2004 data used in this replication package, including data provenance, inflation adjustments, and verification procedures, see:
+The paper uses a **country–year debt-composition panel** built by merging
+the above sources on ISO3 country code and year. The panel columns
+used in the regressions are:
 
-**[SCF Data Appendix](reproduce/reproduce_data_moments/SCF-data-appendix.md)**
+- `boi_open`, `cb_size`, `bank_size`, `nonbank_size`, `cap100`, `kaopen`,
+  `dcb`, `dpb`, `dhdfselective`, `dhdfcomprehensive`, `dist`.
 
-This document provides comprehensive information for the QE Data Editor on:
+These are referenced by name from `Subfiles/Empirical.tex` and from
+`Subfiles/Model.tex`.
 
-- Data files used (Summary Extract Data only - `rscfp2004.dta`)
-- Data provenance and sources
-- Inflation adjustment procedures (2013 dollars vs 2022 dollars)
-- Verification and comparison workflows
-- Commands to reproduce data processing
+## Status (baseline tier)
+
+This directory currently contains only this README. The data and the
+Python pipeline that builds the panel from the raw sources and produces
+the regression tables and figures are a **known follow-up**, tracked in
+the root `README.md` under "Known follow-ups for baseline-tier REMARK
+compliance."
+
+Target layout once the pipeline is committed:
+
+```
+Data/
+├── README.md                      (this file)
+├── raw/                           (committed or downloaded raw sources)
+│   ├── ewn_1970_2023.csv
+│   ├── gfdd_indicators.csv
+│   ├── chinn_ito_kaopen.csv
+│   ├── quinn_cap100.csv
+│   └── boi_investor_base.csv
+└── debt_composition_panel.csv     (built panel used by regressions)
+```
+
+The build script will be `Code/empirical_debt_composition/build_panel.py`
+and will run as part of `./reproduce.sh --all` without network access
+(raw sources committed) or, at the user's option, re-downloadable from
+the URLs above.
