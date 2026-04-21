@@ -1,37 +1,24 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: >-
-  Welfare and Spending Effects of Consumption Stimulus
-  Policies
+title: "Who Holds Government Debt?"
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  If you use this software, please cite it using the metadata from this file.
 type: software
-version: 1.0.7
 authors:
-  - given-names: Christopher D.
-    family-names: Carroll
-    orcid: 'https://orcid.org/0000-0003-3732-9312'
-  - given-names: Edmund
-    family-names: Crawley
-  - given-names: William
-    family-names: Du
-  - given-names: Ivan
-    family-names: Frankovic
-  - given-names: Hakon
-    family-names: Tretvoll
-repository-code: 'https://github.com/econ-ark/HAFiscal'
-doi: 10.5281/zenodo.17861977
+  - given-names: Yiran Emma
+    family-names: Ma
+    affiliation: Johns Hopkins University
+repository-code: "https://github.com/emma0502/emma0502606"
+abstract: >-
+  Replication package for the paper "Who Holds Government Debt?". The paper
+  develops a model in which the composition of public debt across domestic
+  banks, domestic non-banks, and foreign investors is determined by endogenous
+  borrowing limits, and structurally estimates the model on panel data of
+  debt composition.
 keywords:
-  - stimulus checks
-  - unemployment insurance extensions
-  - payroll tax cuts
-  - HANK
-  - heterogeneous agent models
-  - marginal propensity to consume
-  - spending multipliers
-  - fiscal policy
+  - sovereign debt
+  - debt composition
+  - financial repression
+  - borrowing limits
   - REMARK
   - Reproduction
+license: Apache-2.0
