@@ -17,7 +17,7 @@ DRY_RUN=false
 STOP_ON_ERROR="${STOP_ON_ERROR:-false}"
 SCOPE="main"
 DRAFT_MODE_ENABLED="false"
-REPO_TYPE="STANDARD"  # Will be set to "QE" if HAFiscal.tex exists
+REPO_TYPE="STANDARD"
 
 show_help() {
     cat << 'EOF'
@@ -31,10 +31,8 @@ OPTIONS:
     --quick, -q             Quick compilation (single pass)
     --verbose, -v           Verbose output
     --clean, -c             Clean build artifacts before compilation
-    --draft                 Compile HAFiscal*.tex in draft mode
-                              - Latest/Public: Shows equation/figure/section labels
-                              - QE: Shows line numbers (output: HAFiscal-draft.pdf)
-                            Only applicable to HAFiscal.tex and HAFiscal.tex
+    --draft                 Compile the main paper in draft mode
+                              (shows equation/figure/section labels)
                             Can also be controlled via DRAFT_MODE environment variable
     --single DOCUMENT       Compile only specified document
     --list                  List available documents
@@ -49,18 +47,15 @@ OPTIONS:
                             subfiles: root + Subfiles/
 
 TARGETS:
-    main                    HAFiscal.tex (main paper)
-    slides                  HAFiscal-Slides.tex
-    appendix-hank          Subfiles/Appendix-HANK.tex
-    appendix-nosplurge     Subfiles/Appendix-NoSplurge.tex
+    main                    emma0502606.tex (main paper)
     all                    All documents (default)
 
 EXAMPLES:
     ./reproduce_documents.sh                    # Compile all documents
-    ./reproduce_documents.sh main slides       # Compile specific documents
-    ./reproduce_documents.sh --single HAFiscal.tex
+    ./reproduce_documents.sh main              # Compile main paper
+    ./reproduce_documents.sh --single emma0502606.tex
     ./reproduce_documents.sh --quick           # Fast compilation
-    ./reproduce_documents.sh --draft           # Compile HAFiscal*.tex in draft mode
+    ./reproduce_documents.sh --draft           # Compile main paper in draft mode
     DRAFT_MODE=1 ./reproduce_documents.sh      # Draft mode via environment variable
 EOF
 }
@@ -142,9 +137,7 @@ cleanup_auxiliary_files() {
 # Function to resolve document target to file path
 resolve_document() {
     case "$1" in
-        "main") echo "HAFiscal.tex" ;;
-        "slides") echo "HAFiscal-Slides.tex" ;;
-        "appendix-hank") echo "Subfiles/Appendix-HANK.tex" ;;
+        "main") echo "emma0502606.tex" ;;
         "appendix-nosplurge") echo "Subfiles/Appendix-NoSplurge.tex" ;;
         *) echo "$1" ;;  # Return as-is for direct file paths
     esac
@@ -152,9 +145,7 @@ resolve_document() {
 
 list_documents() {
     echo "Available document targets:"
-    echo "  main -> HAFiscal.tex"
-    echo "  slides -> HAFiscal-Slides.tex"
-    echo "  appendix-hank -> Subfiles/Appendix-HANK.tex"
+    echo "  main -> emma0502606.tex"
     echo "  appendix-nosplurge -> Subfiles/Appendix-NoSplurge.tex"
 }
 
@@ -388,8 +379,8 @@ validate_environment() {
             log_error "Tried PATH: $PATH"
             return 1
         fi
-        if [[ ! -f "HAFiscal.tex" ]]; then
-            log_error "HAFiscal.tex not found - run from project root directory"
+        if [[ ! -f "emma0502606.tex" ]]; then
+            log_error "emma0502606.tex not found - run from project root directory"
             return 1
         fi
         log_success "Environment validation completed (minimal checks)"
@@ -436,8 +427,8 @@ validate_environment() {
         return 1
     fi
     
-    if [[ ! -f "HAFiscal.tex" ]]; then
-        log_error "HAFiscal.tex not found - run from project root directory"
+    if [[ ! -f "emma0502606.tex" ]]; then
+        log_error "emma0502606.tex not found - run from project root directory"
         return 1
     fi
     
@@ -845,20 +836,12 @@ main() {
     
     setup_build_environment
     
-    # Detect repository type for draft mode handling
-    if [[ -f "HAFiscal.tex" ]]; then
-        REPO_TYPE="QE"
-        if [[ "$VERBOSE" == "true" ]]; then
-            log_info "Repository type: QE"
-        fi
-    else
-        REPO_TYPE="STANDARD"
-        if [[ "$VERBOSE" == "true" ]]; then
-            log_info "Repository type: Latest/Public"
-        fi
+    REPO_TYPE="STANDARD"
+    if [[ "$VERBOSE" == "true" ]]; then
+        log_info "Repository type: Latest/Public"
     fi
-    
-    log_info "Starting HAFiscal document reproduction (mode: $REPRODUCTION_MODE)"
+
+    log_info "Starting document reproduction (mode: $REPRODUCTION_MODE)"
     
     # Handle single document compilation
     if [[ -n "$single_document" ]]; then
