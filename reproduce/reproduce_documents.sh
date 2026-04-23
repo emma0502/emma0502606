@@ -65,9 +65,6 @@ log_success() { echo "✅ $*"; }
 log_error() { echo "❌ ERROR: $*" >&2; }
 log_warning() { echo "⚠️  WARNING: $*"; }
 
-# Track if we fetched bibliography from with-precomputed-artifacts (for cleanup later)
-FETCHED_BIBLIOGRAPHY=false
-
 # Function to clean up auxiliary files after document compilation
 cleanup_auxiliary_files() {
     local doc_path="$1"
@@ -293,54 +290,6 @@ parse_latex_error() {
     printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     printf "📝 Full log available at: %s\n" "$log_file"
     printf "\n"
-}
-
-# Function to fetch HAFiscal.bib from with-precomputed-artifacts branch via HTTP
-fetch_bibliography_if_needed() {
-    # Check if HAFiscal.bib already exists - if so, don't fetch or track it
-    # This ensures we only clean up files we fetched, not pre-existing ones
-    if [[ -f "HAFiscal.bib" ]]; then
-        return 0
-    fi
-
-    log_info "HAFiscal.bib not found in working directory"
-
-    # Download from GitHub raw URL (avoids git fetch which bloats .git/objects/)
-    GITHUB_REPO="${GITHUB_REPO:-llorracc/HAFiscal-QE}"
-    PRECOMPUTED_BRANCH="${PRECOMPUTED_BRANCH:-with-precomputed-artifacts}"
-    RAW_URL="https://raw.githubusercontent.com/${GITHUB_REPO}/${PRECOMPUTED_BRANCH}/HAFiscal.bib"
-
-    echo ""
-    echo "========================================"
-    echo "📦 Downloading Bibliography File"
-    echo "========================================"
-    echo ""
-    echo "HAFiscal.bib is required for citations but not present in main branch."
-    echo "Downloading from GitHub (${PRECOMPUTED_BRANCH} branch)..."
-    echo ""
-
-    echo "→ Downloading HAFiscal.bib..."
-    if curl -L --fail --silent --show-error -o HAFiscal.bib "$RAW_URL" 2>&1; then
-        if [[ -f "HAFiscal.bib" && -s "HAFiscal.bib" ]]; then
-            FILE_SIZE=$(du -h "HAFiscal.bib" 2>/dev/null | cut -f1)
-            echo "  ✓ HAFiscal.bib ($FILE_SIZE)"
-            echo ""
-            echo "✅ Successfully downloaded bibliography"
-            echo "   (This will be automatically cleaned up after document compilation)"
-            echo ""
-            FETCHED_BIBLIOGRAPHY=true
-        else
-            log_error "HAFiscal.bib download failed or file is empty"
-            rm -f HAFiscal.bib 2>/dev/null || true
-        fi
-    else
-        log_warning "Could not download HAFiscal.bib from GitHub"
-        log_warning "URL: $RAW_URL"
-        log_warning "Bibliography citations may not work correctly"
-        rm -f HAFiscal.bib 2>/dev/null || true
-    fi
-
-    return 0
 }
 
 validate_environment() {
@@ -826,9 +775,6 @@ main() {
         cd ..
     fi
 
-    # Fetch bibliography from with-precomputed-artifacts if needed
-    fetch_bibliography_if_needed
-
     # Validate and setup
     if ! validate_environment; then
         exit 1
@@ -1092,18 +1038,6 @@ main() {
         echo "of all computational results shown in the documents."
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    fi
-
-    # Clean up fetched bibliography file - ONLY if we fetched it (didn't exist at start)
-    # FETCHED_BIBLIOGRAPHY is only true if the file was absent and we fetched it
-    if [[ "$FETCHED_BIBLIOGRAPHY" == "true" ]]; then
-        echo ""
-        echo "→ Cleaning up fetched HAFiscal.bib..."
-        if [[ -f "HAFiscal.bib" ]]; then
-            rm -f HAFiscal.bib
-            echo "  ✓ Removed HAFiscal.bib"
-        fi
-        echo "✅ Cleanup complete - working tree is clean"
     fi
 
     if [[ $success_count -eq $total_count ]]; then
