@@ -79,7 +79,7 @@ emma0502606/
 ├── Data/                        # data documentation (data itself is a follow-up)
 ├── Equations/                   # shared equation snippets
 ├── Subfiles.ltx                 # subfile driver
-├── HAFiscal.bib                 # bibliography (filename kept for now; see follow-ups)
+├── references.bib               # bibliography
 ├── @local/, @resources/         # econark LaTeX template scaffolding
 ├── pyproject.toml               # Python dependency manifest
 ├── environment.yml              # conda environment (mirrors pyproject.toml)
@@ -121,11 +121,7 @@ accept / edit / reject triage.
    call the pipeline before compiling the paper.
 2. **Commit the data inputs** (or a download script) for the five
    sources listed in `Data/README.md`, with exact vintages / dates.
-3. **Rename `HAFiscal.bib` to a neutral filename** (e.g. `references.bib`)
-   and update any bibliography-style references. Low priority; the bib
-   file is entirely this paper's references, the filename is the only
-   HAFiscal remnant.
-4. **Audit the `Dockerfile`** for remaining HAFiscal-specific paths
+3. **Audit the `Dockerfile`** for remaining HAFiscal-specific paths
    (e.g. `/workspaces/HAFiscal-Public`) once the reproduction pipeline
    above is in place.
 

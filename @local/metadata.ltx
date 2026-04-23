@@ -95,11 +95,11 @@
 %% ==============================================================================
  
 %% Pre-load abstract content to avoid \spacefactor errors from \input inside nested environments
-%% The abstract file is generated from HAFiscal-titlepage.tex (Single Source of Truth)
+%% The abstract file is generated from Subfiles/Titlepage.tex (Single Source of Truth)
 %% Use \CatchFileDef to read file contents IMMEDIATELY into macro (not delayed via \input)
 %% Note: catchfile package must be loaded in preamble (done in HAFiscal-QE-template.tex)
-\IfFileExists{HAFiscal-Abstract.txt}{%
-  \CatchFileDef{\AbstractText}{HAFiscal-Abstract.txt}{}%
+\IfFileExists{Abstract.txt}{%
+  \CatchFileDef{\AbstractText}{Abstract.txt}{}%
 }{%
   \newcommand{\AbstractText}{Abstract not available.}%
 }

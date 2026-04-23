@@ -89,10 +89,10 @@
   }%
 }{%
   % Not using subfiles - likely a QE standalone figure/table
-  % Try parent directory for bibliography (explicitly check for HAFiscal.bib)
-  \IfFileExists{../HAFiscal.bib}{%
-    \renewcommand{\bibfilesfound}{../HAFiscal}%
-    \typeout{Standalone figure/table: Using ../HAFiscal.bib for bibliography}%
+  % Try parent directory for bibliography (explicitly check for references.bib)
+  \IfFileExists{../references.bib}{%
+    \renewcommand{\bibfilesfound}{../references}%
+    \typeout{Standalone figure/table: Using ../references.bib for bibliography}%
   }{%
     % Fallback: try using \texname in parent directory
     \IfFileExists{../\texname.bib}{%
