@@ -2,6 +2,8 @@
 # Metadata for indexing this REMARK in https://github.com/econ-ark
 github_repo_url: https://github.com/emma0502/emma0502606
 remark-name: who-holds-government-debt
+tier: 2
+version: 0.1.0
 tags:
   - REMARK
   - Reproduction

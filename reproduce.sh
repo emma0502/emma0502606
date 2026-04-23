@@ -8,16 +8,29 @@
 # in binder/environment.yml / pyproject.toml.
 #
 # Usage:
-#   ./reproduce.sh            # full reproduction (currently: docs only)
-#   ./reproduce.sh --docs     # compile the paper PDF only
-#   ./reproduce.sh --all      # alias for full reproduction
+#   ./reproduce.sh              # full reproduction: empirics + paper PDF
+#   ./reproduce.sh --all        # alias for full reproduction
+#   ./reproduce.sh --empirical  # Stata empirical pipeline only
+#   ./reproduce.sh --docs       # compile the paper PDF only
 #   ./reproduce.sh --help
 #
-# Status: the empirical regression pipeline that produces the tables and
-# figures in Subfiles/Empirical.tex is being migrated into this repo under
-# Code/empirical_debt_composition/ and is not yet driven from this script.
-# Until then --all only compiles the paper from its committed tables and
-# committed figure PDFs. See "Known follow-ups" in README.md.
+# Scope of --all
+# --------------
+# "Full" here means: (a) the empirical pipeline under
+# Code/empirical_debt_composition/ and (b) the paper compile.
+#
+# Part (a) requires Stata 17+ (proprietary). If Stata is not on PATH the
+# empirical step is SKIPPED with a clear message, and the committed
+# results/*.txt logs under Code/empirical_debt_composition/results/ are
+# used as the authoritative record of the regressions. The paper compile
+# does not consume those logs programmatically (numbers are transcribed
+# into Subfiles/Empirical.tex), so --all still produces emma0502606.pdf
+# identical to the committed copy when Stata is absent.
+#
+# This Stata dependency is the reason emma0502606 cannot be reproduced
+# end-to-end inside the conda env declared in binder/environment.yml.
+# Porting the regressions to Python (linearmodels) or R (fixest) is
+# tracked as a follow-up in README.md under "Known limitations".
 
 set -eo pipefail
 
@@ -29,17 +42,21 @@ show_help() {
 ./reproduce.sh — reproduction driver for "Who Holds Government Debt?"
 
 Usage:
-    ./reproduce.sh [--all]        Run the full reproduction.
-                                  (Currently: compile the paper only.
-                                  Empirical regression pipeline is a
-                                  known follow-up; see README.md.)
+    ./reproduce.sh [--all]        Full reproduction: empirics + paper.
+    ./reproduce.sh --empirical    Run only the Stata empirical pipeline
+                                  (Code/empirical_debt_composition/run_all.do).
+                                  Skipped with a clear message if Stata
+                                  is not on PATH.
     ./reproduce.sh --docs         Compile the paper PDF only.
     ./reproduce.sh --help         Show this help.
 
 Outputs:
-    emma0502606.pdf               Main paper.
+    emma0502606.pdf                                  Main paper.
+    Code/empirical_debt_composition/results/         Regression logs.
 
 Environment:
+    Stata:    17+ on PATH as stata-mp | stata-se | stata (for --empirical).
+              If absent, the committed results/*.txt logs are used.
     Python:   declared in pyproject.toml (installed via `uv sync`)
               or binder/environment.yml (for Binder / conda).
     LaTeX:    TeX Live 2023+ with packages listed in
@@ -49,7 +66,44 @@ EOF
 
 log_info()    { echo "[reproduce] $*"; }
 log_success() { echo "[reproduce] OK  $*"; }
+log_warn()    { echo "[reproduce] WARN $*"; }
 log_error()   { echo "[reproduce] ERR $*" >&2; }
+
+find_stata() {
+    # Print the first available Stata binary on PATH, else empty.
+    for b in stata-mp stata-se stata; do
+        if command -v "$b" >/dev/null 2>&1; then
+            echo "$b"
+            return 0
+        fi
+    done
+    return 1
+}
+
+run_empirical() {
+    local stata_bin
+    local driver="Code/empirical_debt_composition/run_all.do"
+
+    if [[ ! -f "$driver" ]]; then
+        log_error "Missing driver: $driver"
+        return 1
+    fi
+
+    if stata_bin="$(find_stata)"; then
+        log_info "Running Stata empirical pipeline: $stata_bin -b do $driver"
+        # -b = batch mode; Stata writes <script>.log next to the driver.
+        "$stata_bin" -b do "$driver"
+        log_success "Empirical pipeline finished."
+        log_info "See Code/empirical_debt_composition/results/ for logs."
+    else
+        log_warn "Stata not on PATH (looked for stata-mp / stata-se / stata)."
+        log_warn "Skipping empirical pipeline."
+        log_info "Using committed logs in Code/empirical_debt_composition/results/"
+        log_info "  * threshold_centered_results.txt"
+        log_info "  * quadratic_nonbank_results2.txt"
+        log_info "These are the authoritative regression output for this paper."
+    fi
+}
 
 run_docs() {
     log_info "Compiling paper via reproduce/reproduce_documents.sh ..."
@@ -66,12 +120,8 @@ run_docs() {
 }
 
 run_all() {
-    # Future: run_empirical (Code/empirical_debt_composition/) then run_docs.
-    # For now the only step is run_docs, because the empirical pipeline is
-    # not yet committed. This is tracked as a known follow-up in README.md.
-    log_info "Running full reproduction."
-    log_info "NOTE: empirical regression pipeline is a known follow-up."
-    log_info "      This run compiles the paper from its committed tables."
+    log_info "Running full reproduction (empirics + paper)."
+    run_empirical
     run_docs
     log_success "Full reproduction finished."
 }
@@ -79,14 +129,16 @@ run_all() {
 MODE="all"
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -h|--help)  show_help; exit 0 ;;
-        --docs)     MODE="docs"; shift ;;
-        --all)      MODE="all";  shift ;;
-        *)          log_error "Unknown option: $1"; show_help; exit 2 ;;
+        -h|--help)    show_help; exit 0 ;;
+        --docs)       MODE="docs";      shift ;;
+        --empirical)  MODE="empirical"; shift ;;
+        --all)        MODE="all";       shift ;;
+        *)            log_error "Unknown option: $1"; show_help; exit 2 ;;
     esac
 done
 
 case "$MODE" in
-    docs) run_docs ;;
-    all)  run_all ;;
+    docs)       run_docs ;;
+    empirical)  run_empirical ;;
+    all)        run_all ;;
 esac

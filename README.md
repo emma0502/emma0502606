@@ -31,10 +31,11 @@ framework for interpreting variation in who holds government debt.
 | Paper artifact | File in repo | How it is produced today |
 |---|---|---|
 | Main paper PDF | `emma0502606.pdf` | `./reproduce.sh --docs` (compiles `emma0502606.tex` via LaTeX) |
-| Figure: $D_h$ vs $D_f$ (selective default) | `Figures/Fig_dhdfselective.pdf` | Committed PDF (regeneration is a known follow-up) |
-| Figure: $D_h$ vs $D_f$ (comprehensive default) | `Figures/Fig_dhdfcomprehensive.pdf` | Committed PDF (regeneration is a known follow-up) |
-| Figure: Empirical distribution | `Figures/dist.png` | Committed PNG (regeneration is a known follow-up) |
-| Regression tables (6) | Inlined in `Subfiles/Empirical.tex` | Currently hard-coded LaTeX (regeneration is a known follow-up) |
+| Regression logs (threshold, centered) | `Code/empirical_debt_composition/results/threshold_centered_results.txt` | `./reproduce.sh --empirical` (re-runs `threshold_estimation_centered.do` in Stata); committed copy is used when Stata is absent |
+| Regression logs (convexity + pecking order) | `Code/empirical_debt_composition/results/quadratic_nonbank_results2.txt` | `./reproduce.sh --empirical` (re-runs `quadratic_nonbank_fullsample.do` in Stata); committed copy is used when Stata is absent |
+| Panel dataset | `Data/gfdd_with_de_facto1.dta` | Committed (SHA-256 in `Data/README.md`); scripted rebuild from raw sources is a follow-up |
+| Figures | `Figures/*.pdf`, `Figures/*.png` | Committed; regeneration from Stata `graph export` is a follow-up |
+| Regression tables (6) | Inlined in `Subfiles/Empirical.tex` | Numbers transcribed from the two results logs above; auto-emit via `esttab` is a follow-up |
 
 ## Quick start
 
@@ -53,10 +54,31 @@ listed in `reproduce/required_latex_packages.txt`.
 ./reproduce.sh --all        # equivalent to ./reproduce.sh
 ```
 
-Currently this only compiles the paper (the empirical regression
-pipeline is a known follow-up; see below). The script is designed
-so that once `Code/empirical_debt_composition/` lands, `--all` will
-regenerate figures and tables from raw data and then compile.
+This runs the Stata empirical pipeline under
+`Code/empirical_debt_composition/` and then compiles the paper. If Stata
+is not installed, the empirical step is **skipped with a clear message**
+and the committed `results/*.txt` logs are used as the authoritative
+record of the regressions. The paper compile succeeds either way because
+the regression numbers are currently transcribed into
+`Subfiles/Empirical.tex` (auto-emit via `esttab` is a named follow-up).
+
+### Empirical pipeline only
+
+```bash
+./reproduce.sh --empirical
+```
+
+Invokes `stata -b do Code/empirical_debt_composition/run_all.do`. See
+[`Code/empirical_debt_composition/README.md`](Code/empirical_debt_composition/README.md)
+for per-stage details.
+
+### Software requirements
+
+| Component | Version | Used for | Required for `--all`? |
+|---|---|---|---|
+| LaTeX | TeX Live 2023+ | Paper compile | Yes |
+| Stata | 17+ (MP / SE / IC) | `--empirical` stage | No — falls back to committed logs |
+| Python | 3.10+ | `uv sync` / helper scripts in `reproduce/` | Yes |
 
 ### Environment setup
 
@@ -76,7 +98,8 @@ emma0502606/
 ├── emma0502606.pdf              # compiled paper (committed)
 ├── Subfiles/                    # paper subfiles (Intro, Model, Empirical, Conclusion)
 ├── Figures/                     # figures used by the paper
-├── Data/                        # data documentation (data itself is a follow-up)
+├── Data/                        # panel dataset (gfdd_with_de_facto1.dta) + provenance
+├── Code/empirical_debt_composition/  # Stata empirical pipeline (run_all.do + do/ + results/)
 ├── Equations/                   # shared equation snippets
 ├── Subfiles.ltx                 # subfile driver
 ├── references.bib               # bibliography
@@ -100,30 +123,51 @@ figure, HAFiscal's detailed READMEs — now lives under
 [`legacy-hafiscal/`](legacy-hafiscal/README.md) and is **not used by
 this paper**. `./reproduce.sh` does not enter that directory.
 
-## Known follow-ups for baseline-tier REMARK compliance
+## Known limitations and follow-ups
 
 These items were surfaced by a Claude Opus 4.7 review of this repo
-against the [REMARK STANDARD](https://github.com/econ-ark/REMARK/blob/main/STANDARD.md)
-and are tracked here so the gap is visible to any reviewer. See the
-pull request associated with this commit for the full review and the
-accept / edit / reject triage.
+against the [REMARK STANDARD](https://github.com/econ-ark/REMARK/blob/main/STANDARD.md).
+They are tracked here so any gap remaining after this commit is visible
+to a reviewer.
 
-1. **Add the empirical regression pipeline.**
-   The regressions that produce the six tables currently inlined in
-   `Subfiles/Empirical.tex` and the three figures in `Figures/` are
-   not yet runnable from this repo. Target: `Code/empirical_debt_composition/`
-   with (a) `build_panel.py` that ingests EWN, GFDD, Chinn–Ito, Quinn
-   cap100, and IMF BOI into `Data/debt_composition_panel.csv`,
-   (b) `run_regressions.py` that writes the six table `.tex` files,
-   and (c) `make_figures.py` that writes the three figure files.
-   Once present, have `Subfiles/Empirical.tex` `\input{...}` each
-   table instead of carrying the body inline, and have `./reproduce.sh --all`
-   call the pipeline before compiling the paper.
-2. **Commit the data inputs** (or a download script) for the five
-   sources listed in `Data/README.md`, with exact vintages / dates.
-3. **Audit the `Dockerfile`** for remaining HAFiscal-specific paths
-   (e.g. `/workspaces/HAFiscal-Public`) once the reproduction pipeline
-   above is in place.
+### Limitations (intentional, documented)
+
+1. **Binder / conda cannot execute the empirical stage today.** The
+   regressions currently live in Stata
+   (`Code/empirical_debt_composition/do/`). Stata is proprietary and
+   not conda-installable, so the environment declared in
+   `binder/environment.yml` does **not** reproduce Section 3
+   end-to-end in-browser. As mitigation, the two authoritative
+   regression logs (`threshold_centered_results.txt`,
+   `quadratic_nonbank_results2.txt`) are committed under
+   `Code/empirical_debt_composition/results/`, and `./reproduce.sh --all`
+   runs cleanly in Binder by falling back to those committed logs.
+
+   **Work in progress:** the author is currently porting the five Stata
+   `.do` files to Python (using [`pandas`](https://pandas.pydata.org/)
+   and [`linearmodels`](https://bashtage.github.io/linearmodels/) —
+   specifically `PanelOLS` for the fixed-effects first stage and
+   clustered-SE OLS for the second stage). Once the port lands, the
+   `Code/empirical_debt_composition/do/` Stata sources will remain in
+   the repo as a canonical reference and the Python pipeline will become
+   the default entry point for `./reproduce.sh --empirical`, making the
+   whole paper reproducible inside `binder/environment.yml` without a
+   Stata license.
+
+### Follow-ups
+
+1. **Auto-emit regression tables** from the (forthcoming) Python
+   pipeline so that `Subfiles/Empirical.tex` `\input{...}`s them
+   instead of carrying transcribed numbers inline.
+2. **Auto-emit figures** from the pipeline instead of relying on the
+   currently committed PDFs/PNGs under `Figures/`.
+3. **Scripted data build.** Replace the offline Excel/Stata merge that
+   produced `Data/gfdd_with_de_facto1.dta` with a `build_panel.py`
+   that starts from the raw GFDD, EWN, Chinn–Ito, Quinn, and IMF BOI
+   sources. See `Data/README.md` for the source inventory and current
+   provenance.
+4. **Audit the `Dockerfile`** for remaining HAFiscal-specific paths
+   (e.g. `/workspaces/HAFiscal-Public`).
 
 ## License
 

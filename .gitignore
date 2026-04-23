@@ -539,6 +539,8 @@ Equations/*.tex
 
 # Stata data files (too large for GitHub)
 *.dta
+# ... but commit the panel that the empirical pipeline actually consumes:
+!Data/gfdd_with_de_facto1.dta
 
 # Large SCF data file - download via download_scf_data.sh
 Code/Empirical/p04i6.dta
