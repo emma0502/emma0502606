@@ -12,6 +12,7 @@
 #   ./reproduce.sh --all        # alias for full reproduction
 #   ./reproduce.sh --empirical  # Stata empirical pipeline only
 #   ./reproduce.sh --docs       # compile the paper PDF only
+#   ./reproduce.sh --notebook   # execute the Python companion notebook
 #   ./reproduce.sh --help
 #
 # Scope of --all
@@ -48,11 +49,19 @@ Usage:
                                   Skipped with a clear message if Stata
                                   is not on PATH.
     ./reproduce.sh --docs         Compile the paper PDF only.
+    ./reproduce.sh --notebook     Execute the Python companion notebook
+                                  (Code/empirical_debt_composition/python/companion.ipynb)
+                                  in place via `jupyter nbconvert --execute`.
+                                  Loads Data/gfdd_with_de_facto1.dta and
+                                  replicates the non-bank first-stage row
+                                  of Table 1 against Stata's committed
+                                  log, without requiring a Stata licence.
     ./reproduce.sh --help         Show this help.
 
 Outputs:
-    emma0502606.pdf                                  Main paper.
-    Code/empirical_debt_composition/results/         Regression logs.
+    emma0502606.pdf                                            Main paper.
+    Code/empirical_debt_composition/results/                   Regression logs.
+    Code/empirical_debt_composition/python/companion.ipynb     Executed notebook (in place).
 
 Environment:
     Stata:    17+ on PATH as stata-mp | stata-se | stata (for --empirical).
@@ -61,6 +70,7 @@ Environment:
               or binder/environment.yml (for Binder / conda).
     LaTeX:    TeX Live 2023+ with packages listed in
               reproduce/required_latex_packages.txt.
+    Jupyter:  required for --notebook; comes with the conda env.
 EOF
 }
 
@@ -119,6 +129,23 @@ run_docs() {
     fi
 }
 
+run_notebook() {
+    local nb="Code/empirical_debt_composition/python/companion.ipynb"
+    if [[ ! -f "$nb" ]]; then
+        log_error "Missing notebook: $nb"
+        return 1
+    fi
+    if ! command -v jupyter >/dev/null 2>&1; then
+        log_error "jupyter not on PATH. Install it with 'uv sync' or"
+        log_error "  'conda env create -f environment.yml'."
+        return 1
+    fi
+    log_info "Executing companion notebook: $nb"
+    jupyter nbconvert --to notebook --execute --inplace \
+        --ExecutePreprocessor.timeout=120 "$nb"
+    log_success "Notebook executed in place: $nb"
+}
+
 run_all() {
     log_info "Running full reproduction (empirics + paper)."
     run_empirical
@@ -132,6 +159,7 @@ while [[ $# -gt 0 ]]; do
         -h|--help)    show_help; exit 0 ;;
         --docs)       MODE="docs";      shift ;;
         --empirical)  MODE="empirical"; shift ;;
+        --notebook)   MODE="notebook";  shift ;;
         --all)        MODE="all";       shift ;;
         *)            log_error "Unknown option: $1"; show_help; exit 2 ;;
     esac
@@ -140,5 +168,6 @@ done
 case "$MODE" in
     docs)       run_docs ;;
     empirical)  run_empirical ;;
+    notebook)   run_notebook ;;
     all)        run_all ;;
 esac

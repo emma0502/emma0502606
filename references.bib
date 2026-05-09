@@ -107,3 +107,63 @@
   year    = {2020},
   doi     = {10.1086/704575}
 }
+
+% --- Data sources used by the empirical pipeline ----------------------
+% These are cited by Data/README.md (provenance table) and underpin the
+% panel `Data/gfdd_with_de_facto1.dta` consumed by
+% Code/empirical_debt_composition/.
+
+@Misc{WorldBankGFDD2022,
+  author       = {{World Bank}},
+  title        = {Global Financial Development Database ({GFDD})},
+  year         = {2022},
+  howpublished = {\url{https://www.worldbank.org/en/publication/gfdr/data/global-financial-development-database}},
+  note         = {2022 release. Indicators \texttt{di02}, \texttt{di11}, \texttt{di13} contribute the bank-deposit, insurance, and pension-fund size variables used in the first-stage regressions.}
+}
+
+@Article{LaneMilesiFerretti2018,
+  author  = {Lane, Philip R. and Milesi-Ferretti, Gian Maria},
+  title   = {The External Wealth of Nations Revisited: International Financial Integration in the Aftermath of the Global Financial Crisis},
+  journal = {IMF Economic Review},
+  volume  = {66},
+  number  = {1},
+  pages   = {189--222},
+  year    = {2018},
+  doi     = {10.1057/s41308-017-0048-y},
+  note    = {The 2024 year-end update of the EWN dataset (\emph{EWN-dataset-year-end-2024}) is the vintage used here for non-bank external debt holdings and for the de-facto financial-openness variable.}
+}
+
+@Article{ChinnIto2006,
+  author  = {Chinn, Menzie D. and Ito, Hiro},
+  title   = {What Matters for Financial Development? Capital Controls, Institutions, and Interactions},
+  journal = {Journal of Development Economics},
+  volume  = {81},
+  number  = {1},
+  pages   = {163--192},
+  year    = {2006},
+  doi     = {10.1016/j.jdeveco.2005.05.010},
+  note    = {The KAOPEN index of capital-account openness; 2023 release used.}
+}
+
+@Article{Quinn1997,
+  author  = {Quinn, Dennis P.},
+  title   = {The Correlates of Change in International Financial Regulation},
+  journal = {American Political Science Review},
+  volume  = {91},
+  number  = {3},
+  pages   = {531--551},
+  year    = {1997},
+  doi     = {10.2307/2952073},
+  note    = {Source of the \texttt{cap100} capital-account-openness measure; 2021 update used.}
+}
+
+@TechReport{ArslanalpTsuda2012,
+  author      = {Arslanalp, Serkan and Tsuda, Takahiro},
+  title       = {Tracking Global Demand for Advanced Economy Sovereign Debt},
+  institution = {International Monetary Fund},
+  type        = {IMF Working Paper},
+  number      = {WP/12/284},
+  year        = {2012},
+  doi         = {10.5089/9781616356545.001},
+  note        = {Predecessor of \citet{ArslanalpTsuda2014}; defines the Bond Investor Base (BOI) sovereign-debt-by-creditor-sector dataset whose 2024 refresh supplies \texttt{dh}, \texttt{dcb}, \texttt{dpb}, \texttt{df}.}
+}

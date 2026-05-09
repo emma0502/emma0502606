@@ -36,6 +36,7 @@ framework for interpreting variation in who holds government debt.
 | Panel dataset | `Data/gfdd_with_de_facto1.dta` | Committed (SHA-256 in `Data/README.md`); scripted rebuild from raw sources is a follow-up |
 | Figures | `Figures/*.pdf`, `Figures/*.png` | Committed; regeneration from Stata `graph export` is a follow-up |
 | Regression tables (6) | Inlined in `Subfiles/Empirical.tex` | Numbers transcribed from the two results logs above; auto-emit via `esttab` is a follow-up |
+| Companion notebook | `Code/empirical_debt_composition/python/companion.ipynb` | `./reproduce.sh --notebook` (executes the notebook in place via `jupyter nbconvert`); replicates the non-bank first-stage row of Table 1 against Stata's committed log inside the conda environment without a Stata licence |
 
 ## Quick start
 
@@ -72,6 +73,24 @@ Invokes `stata -b do Code/empirical_debt_composition/run_all.do`. See
 [`Code/empirical_debt_composition/README.md`](Code/empirical_debt_composition/README.md)
 for per-stage details.
 
+### Companion notebook (no Stata required)
+
+```bash
+./reproduce.sh --notebook
+```
+
+Executes
+[`Code/empirical_debt_composition/python/companion.ipynb`](Code/empirical_debt_composition/python/companion.ipynb)
+in place via `jupyter nbconvert --execute`. The notebook loads the
+panel via the in-progress Python port under
+`Code/empirical_debt_composition/python/`, plots pooled creditor shares
+against total debt, and replicates the non-bank row of the first-stage
+threshold regression — matching the Stata coefficients in
+`results/threshold_centered_results.txt` to four decimal places on the
+estimates (standard errors agree within ~3%, reflecting a small-sample
+correction difference between this estimator and `xtreg, fe`'s
+default). Each cell runs in well under a minute on a recent laptop.
+
 ### Software requirements
 
 | Component | Version | Used for | Required for `--all`? |
@@ -79,6 +98,23 @@ for per-stage details.
 | LaTeX | TeX Live 2023+ | Paper compile | Yes |
 | Stata | 17+ (MP / SE / IC) | `--empirical` stage | No — falls back to committed logs |
 | Python | 3.10+ | `uv sync` / helper scripts in `reproduce/` | Yes |
+
+### Reproduction times
+
+Wall-clock times measured on a WSL2 Ubuntu 24.04 box on a 12-core
+x86\_64 host with 7.7 GB RAM (`uname -a`: `Linux 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC … x86_64 GNU/Linux`),
+TeX Live 2023, Python 3.10, no Stata installed. All numbers cover the
+`./reproduce.sh` step only, not container build.
+
+| Command | Wall time | What it actually does on this machine |
+|---|---|---|
+| `./reproduce.sh --docs` | ~6 s (warm `.bbl`) | Two `pdflatex` passes + one `bibtex` pass on `emma0502606.tex` via `latexmk`. |
+| `./reproduce.sh --all` | ~50 s | Detects Stata is absent, prints the documented fall-back message, then runs the full `--docs` path from a cleaned auxiliary state. |
+| `./reproduce.sh --empirical` (no Stata) | < 1 s | Prints the fall-back message and exits cleanly. |
+| `./reproduce.sh --empirical` (Stata 17+ on PATH) | not yet timed | Runs the five `do/` stages in `Code/empirical_debt_composition/`. The author's interactive timing on Stata/MP 17 is on the order of one minute; will be re-measured and posted once the in-progress Python port lands. |
+
+`./reproduce.sh --all` is well under STANDARD.md's 5-minute threshold for
+the optional `reproduce_min.sh`, so this REMARK does not ship one.
 
 ### Environment setup
 

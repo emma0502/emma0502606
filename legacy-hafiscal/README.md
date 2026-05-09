@@ -19,6 +19,7 @@ and various `@local`/`@resources` conventions remains inspectable.
 
 | Path | Original role |
 |------|---------------|
+| `Subfiles/Empirical-financial-openness.tex` | **Not HAFiscal-origin.** Superseded earlier-draft empirical strategy for *this* paper (single-stage openness regressions: de-jure / de-facto financial-openness measures vs. foreign debt share, plus separate sector-size regressions). Replaced by the two-stage threshold estimator now in `../Subfiles/Empirical.tex`. Retained because individual tables here may be revived as appendix material. Do not `\subfile` from `../Subfiles.ltx`: it declares the same `\label{sec:empirical}` as the live file. |
 | `Code/HA-Models/` | Full HAFiscal structural estimation pipeline (`do_all.py` and all downstream modules). |
 | `Code/Empirical/` | HAFiscal empirical calibration code using SCF 2004. |
 | `Code/README.md` | HAFiscal's description of the original `Code/` tree (runtime estimates, pipeline steps). |
