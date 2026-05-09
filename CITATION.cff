@@ -1,19 +1,25 @@
 cff-version: 1.2.0
-title: "Who Holds Government Debt?"
+title: "Who Holds Government Debt? — Replication package"
 message: >-
-  If you use this software, please cite it using the metadata from this file.
+  If you use this software, please cite both the paper (preferred-citation
+  below) and this replication package using the metadata in this file.
 type: software
+version: "0.1.0"
+date-released: "2026-05-08"
 authors:
   - given-names: Yiran Emma
     family-names: Ma
     affiliation: Johns Hopkins University
 repository-code: "https://github.com/emma0502/emma0502606"
 abstract: >-
-  Replication package for the paper "Who Holds Government Debt?". The paper
-  develops a model in which the composition of public debt across domestic
-  banks, domestic non-banks, and foreign investors is determined by endogenous
-  borrowing limits, and structurally estimates the model on panel data of
-  debt composition.
+  Replication package for the paper "Who Holds Government Debt?". The
+  paper develops a cost-minimising model of sovereign debt allocation
+  in which a given stock of public debt is split across three creditor
+  sectors -- domestic non-banks (with country-specific structural
+  capacity), foreigners (with a uniform no-default ceiling), and the
+  domestic banking system (with a convex welfare cost) -- and
+  empirically estimates a high-debt banking-takeover threshold using
+  the Arslanalp-Tsuda sovereign-debt-by-holder panel.
 keywords:
   - sovereign debt
   - debt composition
@@ -22,3 +28,17 @@ keywords:
   - REMARK
   - Reproduction
 license: Apache-2.0
+preferred-citation:
+  type: article
+  title: "Who Holds Government Debt?"
+  authors:
+    - given-names: Yiran Emma
+      family-names: Ma
+      affiliation: Johns Hopkins University
+  year: 2026
+  status: "in-preparation"
+  abstract: >-
+    Develops a cost-minimising model of sovereign debt allocation across
+    domestic non-banks, foreigners, and the domestic banking system, and
+    estimates a banking-takeover threshold around D = 100% of GDP using
+    a cross-country panel of debt by holder.
