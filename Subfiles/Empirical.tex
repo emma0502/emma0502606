@@ -8,7 +8,7 @@
 \whenintegrated{\label{sec:empirical}}
 
 We bring the cost-minimizing allocation model of Section~\ref{sec:model}
-to a panel of 32 advanced economies over 1989--2022. The empirical
+to a panel of 32 advanced economies over 1989--2021. The empirical
 strategy is a two-stage estimator: a first stage recovers each
 country's structural sector size $\hat\delta_{ij}$, and a second stage
 uses these as interaction variables to estimate the slope and
@@ -16,47 +16,57 @@ threshold behaviour of debt allocation.
 
 %-------------------------------------------------------------
 \subsection{Data and sector-size variables}
+\label{sec:data}
 %-------------------------------------------------------------
 
-\paragraph{Sources.}
+\paragraph{Panel.}
+The unit of observation is a country--year. The sample covers $32$
+advanced economies over $1989$--$2021$, for a balanced maximum of
+$32\times 33 = 1{,}056$ country--year observations. Coverage is
+unbalanced: it thickens after $\sim\!2000$ and is full from $2007$
+onward. Cyprus is dropped from non-bank specifications because the
+underlying non-bank size variable is missing for all years; the
+headline sample of $N=780$ observations refers to the central-bank and
+private-bank Stage~2 regressions.
+
+\paragraph{Variables.}
+We use two data sources.
 \begin{itemize}
-  \item \textbf{Debt holdings:} \citet{ArslanalpTsuda2014}, sovereign
-        debt by creditor sector.
-  \item \textbf{Sector-size proxies:} World Bank,
-        \emph{Global Financial Development Database} (GFDD).
-  \item \textbf{Panel:} 32 advanced economies, 1989--2022, for a
-        total of $N=780$ country--year observations. Coverage
-        thickens after 2000; the full 32-country panel is available
-        from 2007 onward.
+  \item \textbf{Debt holdings.} \citet{ArslanalpTsuda2014}, sovereign
+        debt by creditor sector. We observe holdings by three domestic
+        sectors---non-banks ($d_h$), central bank ($d_{cb}$), and
+        private banks ($d_{pb}$). Foreign holdings $d_f$ are treated
+        as the accounting residual:
+        \begin{equation}\label{eq:foreign-residual}
+          d_{f,it}=D_{it}-d_{h,it}-d_{cb,it}-d_{pb,it}.
+        \end{equation}
+  \item \textbf{Sector-size proxies.} World Bank,
+        \emph{Global Financial Development Database} (GFDD). We
+        construct a country--year proxy $s_{j,it}$ for the structural
+        size $S_j$ of each domestic sector $j\in\{h,cb,pb\}$:
+        \begin{align*}
+          s_{h,it}  &= \tfrac{\text{Pension fund assets}_{it}+\text{Insurance assets}_{it}}{\text{GDP}_{it}}
+                       && \to\; S_h\;(\text{non-bank capacity}) \\
+          s_{pb,it} &= \tfrac{\text{Bank deposit funding}_{it}}{\text{GDP}_{it}}
+                       && \to\; S_{pb}\;(\text{private-bank size}) \\
+          s_{cb,it} &= \tfrac{\text{Central bank assets}_{it}}{\text{GDP}_{it}}
+                       && \to\; S_{cb}\;(\text{central-bank size}).
+        \end{align*}
 \end{itemize}
-
-\paragraph{Country--year proxies for structural sector size $S_j$.}
-\begin{align*}
-s_{h,it}  &= \tfrac{\text{Pension fund assets}_{it}+\text{Insurance assets}_{it}}{\text{GDP}_{it}}
-            && \to\; S_h \text{ (non-bank capacity)} \\
-s_{pb,it} &= \tfrac{\text{Bank deposit funding}_{it}}{\text{GDP}_{it}}
-            && \to\; S_{pb} \text{ (private-bank size)} \\
-s_{cb,it} &= \tfrac{\text{Central bank assets}_{it}}{\text{GDP}_{it}}
-            && \to\; S_{cb} \text{ (central-bank size)}
-\end{align*}
-
-\paragraph{Foreign sector.}
-No country-specific size proxy is available---foreign creditors are
-global balance sheets, not a local sector we can size in GFDD. We
-therefore run \emph{no first-stage regression for foreigners}. Foreign
-debt is treated as the accounting residual
-\begin{equation}\label{eq:foreign-residual}
-  d_{f,it}=D_{it}-d_{h,it}-d_{cb,it}-d_{pb,it}.
-\end{equation}
+No country-specific size proxy is available for foreign investors,
+since foreign creditors are global balance sheets rather than a local
+sector we can size in GFDD. We therefore run \emph{no first-stage
+regression for foreigners} and rely on \eqref{eq:foreign-residual} to
+recover $d_{f,it}$.
 
 %-------------------------------------------------------------
 \subsection{Empirical strategy: two-stage estimator}
 %-------------------------------------------------------------
 
 \paragraph{Threshold.}
-$\bar D = 100\%$ of GDP, chosen from the data: banking's marginal
-absorption accelerates sharply once $D_{it}$ crosses this level
-(discussed in the Motivation).
+$\bar D = 102.7\%$ of GDP, estimated from the data in \S6.3:
+banking's marginal absorption accelerates sharply once $D_{it}$
+crosses this level (Section~\ref{sec:motivation}).
 
 \paragraph{Stage 1---structural sector size $\hat\delta_{ij}$.}
 For each country $i$ and sector $j\in\{h,cb,pb\}$, regress sector
@@ -103,6 +113,61 @@ $\nu_j=\eta_j\rho_j$.
         size-scaling.
 \end{itemize}
 
+\paragraph{Inference.}
+Standard errors throughout the empirical section are two-way
+cluster-robust at the country and year level, following
+\citet{CameronGelbachMiller2011}. This is more conservative than
+one-way country clustering and allows for arbitrary within-country
+serial correlation \emph{and} arbitrary within-year cross-country
+correlation in the residuals.
+
+%-------------------------------------------------------------
+\subsection{Estimating the high-debt threshold}
+\label{sec:hansen-threshold}
+%-------------------------------------------------------------
+
+We estimate the threshold $\bar D$ from the data using a Hansen-style
+threshold regression of total banking-sector holdings,
+$\mathit{db}_{it}\equiv d_{cb,it}+d_{pb,it}$, on the level of total
+debt $D_{it}$:
+\[
+  \mathit{db}_{it}
+   = \alpha_1\, D_{it}\,\mathbf{1}\{D_{it}<\bar D\}
+   + \alpha_2\, D_{it}\,\mathbf{1}\{D_{it}\ge\bar D\}
+   + \xi_{it},
+\]
+with $\bar D$ chosen by least squares on a grid of candidate values.
+Column~(1) of Table~\ref{tab:threshold} includes country fixed
+effects, identifying $\bar D$ from within-country variation in debt
+levels; column~(2) is the pooled cross-section.
+
+\begin{table}[htbp]\centering
+\caption{Banking-sector threshold regression}
+\label{tab:threshold}
+\begin{tabular}{lcc}
+\toprule
+                              & (1)            & (2)            \\
+                              & Country FE     & Pooled         \\
+\midrule
+Debt threshold $\hat{\bar D}$ & $102.7\%$      & $106.2\%$      \\
+\midrule
+\textit{Debt below threshold} & & \\
+\quad $D$                     & $0.274^{***}$  & $0.254^{***}$  \\
+                              & $(18.41)$      & $(22.49)$      \\
+\quad cons                    & $-1.037$       & $0.902$        \\
+                              & $(-0.85)$      & $(1.40)$       \\[2pt]
+\textit{Debt above threshold} & & \\
+\quad $D$                     & $0.964^{***}$  & $1.048^{***}$  \\
+                              & $(30.39)$      & $(37.23)$      \\
+\quad cons                    & $-76.90^{***}$ & $-89.10^{***}$ \\
+                              & $(-19.14)$     & $(-23.15)$     \\
+\midrule
+Obs.                          & $780$          & $780$          \\
+\bottomrule
+\multicolumn{3}{p{0.7\linewidth}}{\footnotesize $z$ statistics in parentheses. $^{*}p<.05$, $^{**}p<.01$, $^{***}p<.001$. Dependent variable: $\mathit{db}_{it}=d_{cb,it}+d_{pb,it}$. Threshold variable and region regressor: $D_{it}$. Country fixed-effect estimates suppressed in column~(1).}
+\end{tabular}
+\end{table}
+
 %-------------------------------------------------------------
 \subsection{First-stage results: structural sector sizes}
 %-------------------------------------------------------------
@@ -119,31 +184,35 @@ Table~\ref{tab:stage1} reports estimates of \eqref{eq:stage1}.
  & $s_{iht}$ & $s_{icbt}$ & $s_{ipbt}$ \\
 \midrule
 $\alpha_{1j}$: $D_{it}$
-  & $-0.203$ & $0.016$ & $-0.321$ \\
-  & $(0.234)$ & $(0.044)$ & $(0.265)$ \\
+  & $-0.198$ & $0.023$ & $-0.309$ \\
+  & $(0.217)$ & $(0.040)$ & $(0.258)$ \\
 $\alpha_{2j}$: highD $\!\cdot\!(D_{it}-\bar D)$
-  & $-0.184$ & $0.520^{***}$ & $0.856^{**}$ \\
-  & $(0.203)$ & $(0.167)$ & $(0.372)$ \\
+  & $-0.219$ & $0.542^{***}$ & $0.882^{**}$ \\
+  & $(0.183)$ & $(0.158)$ & $(0.402)$ \\
 \midrule
-$N$           & 547 & 718 & 732 \\
-Groups        & 31 & 32 & 32 \\
-$R^2$ (within)& 0.436 & 0.603 & 0.199 \\
+Obs.            & 547 & 718 & 732 \\
+Groups          & 31 & 32 & 32 \\
+$R^2$ (within)  & 0.436 & 0.611 & 0.200 \\
 Year / Country FE & Yes & Yes & Yes \\
 \bottomrule
-\multicolumn{4}{p{0.8\linewidth}}{\footnotesize Notes: Standard errors in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\multicolumn{4}{p{0.85\linewidth}}{\footnotesize Two-way cluster-robust standard errors (country and year) in parentheses. $^{*}p<.10$, $^{**}p<.05$, $^{***}p<.01$.}
 \end{tabular}
 \end{table}
 
-\paragraph{Takeaway.}
-\begin{itemize}
-  \item \textbf{Non-banks.} $\alpha_{1h},\alpha_{2h}$ are
-        insignificant: non-bank size does not move with total debt,
-        consistent with a \emph{hard} capacity $\bar\omega S_h$.
-  \item \textbf{Central- and private-bank size.} $\alpha_{2j}>0$ and
-        significant: banking-sector size \emph{grows} once
-        $D_{it}>\bar D$, consistent with banking's no-hard-ceiling
-        property in the model.
-\end{itemize}
+The estimates split cleanly along the model's two-versus-one
+taxonomy. For non-banks, neither $\alpha_{1h}$ nor $\alpha_{2h}$ is
+statistically distinguishable from zero, so the size of the non-bank
+sector does not move with total debt either below or above the
+threshold. This is what we would expect under a \emph{hard} capacity
+$\bar\omega S_h$ whose level evolves country by country but does not
+respond to the sovereign's issuance choices. The two banking-sector
+regressions tell the opposite story: $\alpha_{2j}$ is positive and
+significant in both the central-bank and private-bank columns, so
+banking-sector size \emph{grows} once $D_{it}$ crosses $\bar D$. That
+growth is the empirical counterpart of banking's no-hard-ceiling
+property in the model --- when non-banks and foreigners saturate, the
+planner channels marginal debt onto the banking system and the
+banking system itself expands to absorb it.
 
 %-------------------------------------------------------------
 \subsection{Second-stage results: debt allocation}
@@ -161,45 +230,63 @@ Table~\ref{tab:stage2} reports estimates of \eqref{eq:stage2}.
  & Non-bank ($d_h$) & Central bank ($d_{cb}$) & Private bank ($d_{pb}$) \\
 \midrule
 $\beta_j$: $D_{it}$
-  & $0.314^{***}$ & $0.053^{***}$ & $0.192^{***}$ \\
-  & $(0.040)$ & $(0.012)$ & $(0.020)$ \\
+  & $0.315^{***}$ & $0.057^{***}$ & $0.194^{***}$ \\
+  & $(0.039)$     & $(0.014)$     & $(0.019)$ \\
 $\theta_j$: $\hat{\delta}_{ij}\!\cdot D_{it}$
-  & $0.0018^{***}$ & $0.0131^{***}$ & $-0.0002$ \\
-  & $(0.0005)$ & $(0.0044)$ & $(0.0007)$ \\
+  & $0.0018^{***}$ & $0.0127^{***}$ & $-0.0002$ \\
+  & $(0.0005)$     & $(0.0043)$     & $(0.0007)$ \\
 $\mu_j$: threshold slope
-  & $-0.018$ & $0.334^{**}$ & $0.462^{**}$ \\
-  & $(0.171)$ & $(0.153)$ & $(0.220)$ \\
+  & $-0.037$  & $0.281^{*}$    & $0.537^{**}$ \\
+  & $(0.165)$ & $(0.159)$      & $(0.243)$ \\
 $\nu_j$: threshold $\times\,\hat{\delta}$
-  & $-0.004$ & $-0.055$ & $-0.009$ \\
-  & $(0.003)$ & $(0.036)$ & $(0.008)$ \\
+  & $-0.003$  & $-0.063^{***}$ & $-0.012$ \\
+  & $(0.003)$ & $(0.022)$      & $(0.009)$ \\
 \midrule
-$N$  & $753$ & $780$ & $780$ \\
-$F$  & $83.26$ & $177.55$ & $72.93$ \\
-$R^2$& $0.802$ & $0.705$ & $0.819$ \\
+Obs.   & $753$    & $780$    & $780$    \\
+$F$    & $75.76$  & $33.13$  & $137.00$ \\
+$R^2$  & $0.802$  & $0.713$  & $0.821$  \\
 \bottomrule
-\multicolumn{4}{p{0.85\linewidth}}{\footnotesize Notes: Standard errors in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\multicolumn{4}{p{0.9\linewidth}}{\footnotesize Two-way cluster-robust standard errors (country and year) in parentheses. Regressions omit a constant by construction. $F$ from joint test on all four regressors. $R^2$ is uncentered (no constant). $^{*}p<.10$, $^{**}p<.05$, $^{***}p<.01$.}
 \end{tabular}
 \end{table}
 
-\paragraph{Takeaways.}
-\begin{itemize}
-  \item \textbf{All sectors absorb part of new debt.} $\beta_j>0$
-        across the three sectors.
-  \item \textbf{Non-banks scale with size.} $\theta_h>0$ and
-        significant: countries with intrinsically larger non-bank
-        sectors absorb a larger share of government debt at any given
-        $D$. This maps to model prediction~2 (size scaling).
-  \item \textbf{Banking takes over above $\bar D$.}
-        $\mu_{cb}+\mu_{pb}\approx 0.80$: banking's marginal
-        absorption jumps by roughly 80 percentage points once
-        $D_{it}>100\%$ of GDP. This maps to model prediction~4
-        (banking takeover).
-\end{itemize}
+The Stage~2 estimates line up with three of the four model
+predictions and refine the fourth. The baseline slopes $\beta_j$ are
+positive and highly significant across all three sectors, confirming
+that every domestic creditor absorbs some share of marginal issuance
+--- the empirical counterpart of Proposition~\ref{prop:monotone}.
+The non-bank slope scales further with structural size: $\theta_h>0$
+at conventional significance, so countries with intrinsically larger
+non-bank sectors absorb a larger fraction of any given $D$, exactly
+the size-scaling channel of Proposition~\ref{prop:Sh}. Above the
+threshold the picture becomes one of banking dominance. The combined
+post-threshold slope $\mu_{cb}+\mu_{pb}\approx 0.82$ implies that,
+once $D_{it}$ crosses $\bar D$, banking absorbs roughly $82$
+percentage points more of each additional unit of debt than below;
+the private-bank component ($\mu_{pb}=0.54$, $p=0.03$) is significant
+at conventional levels and the central-bank component ($\mu_{cb}=0.28$,
+$p=0.08$) at the $10\%$ level under two-way clustering. This is the
+banking-takeover prediction of Section~\ref{sec:model} in
+quantitative form.
+
+A subtler pattern shows up in the heterogeneity of the central-bank
+takeover. The interaction $\nu_{cb}$ is negative and significant,
+meaning that the post-threshold acceleration is concentrated in
+countries whose baseline central-bank balance sheet is \emph{small}:
+economies with already-large central banks have less marginal
+absorption to do once $D$ crosses $\bar D$. Read alongside the
+model, this is the natural reflection of the planner's logic ---
+central banks that are already large at low $D$ have already done
+their share of crowding-in, leaving the post-threshold absorption to
+fall on the smaller-balance-sheet countries.
 
 \paragraph{Foreign debt residual.}
 Using the fitted domestic components from \eqref{eq:stage2}, the
-implied foreign residual tracks the data: correlation $=0.779$, slope
-$=0.744^{***}$, $R^2=0.608$, MAE $=8.79$.
+implied foreign residual tracks the data: correlation
+$\approx 0.78$, slope $\approx 0.74$, $R^2\approx 0.61$, MAE
+$\approx 8.8$. These diagnostics are essentially unchanged from a
+$\bar D=100$ specification, since changing the kink location by a
+few percentage points of GDP barely shifts the fitted values.
 
 %-------------------------------------------------------------
 \subsection{Concavity in debt absorption}
@@ -246,26 +333,33 @@ $\kappa\,(D^2)$
 $N$   & $780$ & $780$ & $701$ & $701$ & $747$ & $747$ \\
 $R^2$ & $0.735$ & $0.381$ & $0.801$ & $0.381$ & $0.773$ & $0.454$ \\
 \bottomrule
-\multicolumn{7}{p{0.95\linewidth}}{\footnotesize Notes: Standard errors omitted for space. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.}
+\multicolumn{7}{p{0.95\linewidth}}{\footnotesize Standard errors omitted for space. $^{*}p<0.10$, $^{**}p<0.05$, $^{***}p<0.01$.}
 \end{tabular}
 \end{table}
 
-\paragraph{Takeaways.}
-\begin{itemize}
-  \item \textbf{Non-banks.} Concavity ($\kappa_h<0$) shows up
-        \emph{within country} but disappears once we control for
-        size ($\hat\delta_h\!\cdot D$): the slowdown is driven by
-        country-specific capacity $S_h$.
-  \item \textbf{Foreigners.} Concavity ($\kappa_f<0$) shows up
-        \emph{across countries} but not within: consistent with a
-        \emph{common} foreign ceiling $\bar D_f$.
-\end{itemize}
+The two capped sectors show concavity, but at different margins.
+For non-banks the curvature term $\kappa_h$ is negative and
+significant in the country-FE specification but moves toward zero
+once we condition on the size interaction $\hat\delta_h\!\cdot D$,
+so the within-country slowdown is driven by country-specific
+non-bank capacity $S_h$ rather than by an absolute level of debt.
+For foreigners, by contrast, $\kappa_f<0$ shows up only in the
+pooled specification and not within country, which is exactly the
+signature of a \emph{common} foreign ceiling $\bar D_f$ that is
+shared across the panel: the curvature is identified by
+cross-country variation in how close each economy sits to the same
+underlying limit. Taken together these two findings deliver
+Proposition~\ref{prop:concave}: the marginal absorption shares of
+non-banks and foreigners both decline as $D$ grows, but the source
+of concavity differs by sector --- country-specific $S_h$ for
+non-banks, a common $\bar D_f$ for foreigners.
 
-\paragraph{Map to predictions.}
-These two findings jointly support model prediction~3: the marginal
-absorption shares of non-banks and foreigners fall as $D$ grows, but
-the source of concavity differs by sector---country-specific $S_h$
-for non-banks, a common $\bar D_f$ for foreigners.
+\paragraph{Robustness appendix.}
+Appendix~\ref{app:robustness} reports matched-sample and
+sparse-country variants of the Stage~2 specifications in
+Tables~\ref{tab:threshold}--\ref{tab:stage2}. The headline
+size-scaling coefficients and the magnitude of the banking takeover
+($\mu_{cb}+\mu_{pb}$) are stable across these designs.
 
 % Smart bibliography: only included when compiled standalone with citations
 \smartbib
