@@ -10,6 +10,7 @@ dependencies:
   - python=3.10
   - numpy>=1.26
   - pandas>=2.1
+  - scipy>=1.11
   - matplotlib>=3.8
   - seaborn>=0.13
   - statsmodels>=0.14
@@ -19,4 +20,3 @@ dependencies:
   - pip
   - pip:
       - linearmodels>=6.0
-      - pyreadstat>=1.2

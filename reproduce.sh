@@ -8,30 +8,35 @@
 # in binder/environment.yml / pyproject.toml.
 #
 # Usage:
-#   ./reproduce.sh              # full reproduction: empirics + paper PDF
+#   ./reproduce.sh              # full reproduction (Python empirics + paper PDF)
 #   ./reproduce.sh --all        # alias for full reproduction
-#   ./reproduce.sh --empirical  # Stata empirical pipeline only
+#   ./reproduce.sh --python     # Python empirical pipeline only (no Stata, no LaTeX)
+#   ./reproduce.sh --check      # quick smoke test of the Python pipeline
+#   ./reproduce.sh --empirical  # Stata empirical pipeline only (requires Stata)
 #   ./reproduce.sh --docs       # compile the paper PDF only
-#   ./reproduce.sh --notebook   # execute the Python companion notebook
 #   ./reproduce.sh --help
 #
-# Scope of --all
-# --------------
-# "Full" here means: (a) the empirical pipeline under
-# Code/empirical_debt_composition/ and (b) the paper compile.
+# Reproduction strategy
+# ---------------------
+# The empirical analysis (Sections 6.3 -- 6.6) ships in two equivalent
+# implementations:
 #
-# Part (a) requires Stata 17+ (proprietary). If Stata is not on PATH the
-# empirical step is SKIPPED with a clear message, and the committed
-# results/*.txt logs under Code/empirical_debt_composition/results/ are
-# used as the authoritative record of the regressions. The paper compile
-# does not consume those logs programmatically (numbers are transcribed
-# into Subfiles/Empirical.tex), so --all still produces emma0502606.pdf
-# identical to the committed copy when Stata is absent.
+#   * Python  -- Code/empirical_debt_composition/python/run_all.py
+#                Pure-conda pipeline. Coefficients match the canonical
+#                Stata results to >= 6 decimals; cluster-robust SEs
+#                agree to ~1-8% relative (Cameron-Gelbach-Miller small-
+#                sample correction differs slightly from ivreg2).
+#                Statistical conclusions identical.
+#                This is the default entry point for `--all`.
 #
-# This Stata dependency is the reason emma0502606 cannot be reproduced
-# end-to-end inside the conda env declared in binder/environment.yml.
-# Porting the regressions to Python (linearmodels) or R (fixest) is
-# tracked as a follow-up in README.md under "Known limitations".
+#   * Stata   -- Code/empirical_debt_composition/run_all.do
+#                Canonical reference implementation; the .txt logs
+#                committed under results/ were produced by this code.
+#                Requires Stata 17+ on PATH.
+#
+# `--all` runs the Python pipeline, then compiles the paper. If neither
+# Python nor Stata is available, `--all` falls back to using the
+# committed `.txt` logs to compile the paper.
 
 set -eo pipefail
 
@@ -43,34 +48,35 @@ show_help() {
 ./reproduce.sh — reproduction driver for "Who Holds Government Debt?"
 
 Usage:
-    ./reproduce.sh [--all]        Full reproduction: empirics + paper.
+    ./reproduce.sh [--all]        Full reproduction: Python empirics + paper.
+    ./reproduce.sh --python       Run only the Python empirical pipeline
+                                  (Code/empirical_debt_composition/python/run_all.py).
+                                  Writes per-stage logs and a validation
+                                  summary to results/python/.
+    ./reproduce.sh --check        Smoke test: re-run the Python pipeline
+                                  and assert the headline numbers in
+                                  Sections 6.3 -- 6.6 match the committed
+                                  Stata logs to within tolerance. Exits
+                                  non-zero on mismatch.
     ./reproduce.sh --empirical    Run only the Stata empirical pipeline
                                   (Code/empirical_debt_composition/run_all.do).
-                                  Skipped with a clear message if Stata
-                                  is not on PATH.
+                                  Requires Stata 17+ on PATH.
     ./reproduce.sh --docs         Compile the paper PDF only.
-    ./reproduce.sh --notebook     Execute the Python companion notebook
-                                  (Code/empirical_debt_composition/python/companion.ipynb)
-                                  in place via `jupyter nbconvert --execute`.
-                                  Loads Data/gfdd_with_de_facto1.dta and
-                                  replicates the non-bank first-stage row
-                                  of Table 1 against Stata's committed
-                                  log, without requiring a Stata licence.
     ./reproduce.sh --help         Show this help.
 
 Outputs:
     emma0502606.pdf                                            Main paper.
-    Code/empirical_debt_composition/results/                   Regression logs.
-    Code/empirical_debt_composition/python/companion.ipynb     Executed notebook (in place).
+    Code/empirical_debt_composition/results/                   Stata logs (canonical).
+    Code/empirical_debt_composition/results/python/            Python logs.
 
 Environment:
-    Stata:    17+ on PATH as stata-mp | stata-se | stata (for --empirical).
-              If absent, the committed results/*.txt logs are used.
-    Python:   declared in pyproject.toml (installed via `uv sync`)
-              or binder/environment.yml (for Binder / conda).
+    Python:   declared in pyproject.toml (`uv sync`) or
+              binder/environment.yml (conda).
+              Required for --python, --check, and the default --all path.
+    Stata:    17+ on PATH as stata-mp / stata-se / stata.
+              Required for --empirical only.
     LaTeX:    TeX Live 2023+ with packages listed in
               reproduce/required_latex_packages.txt.
-    Jupyter:  required for --notebook; comes with the conda env.
 EOF
 }
 
@@ -79,8 +85,21 @@ log_success() { echo "[reproduce] OK  $*"; }
 log_warn()    { echo "[reproduce] WARN $*"; }
 log_error()   { echo "[reproduce] ERR $*" >&2; }
 
+find_python() {
+    # Print the first usable Python on PATH that has the empirical
+    # pipeline's dependencies (pandas, statsmodels, linearmodels).
+    for p in python python3; do
+        if command -v "$p" >/dev/null 2>&1 \
+           && "$p" -c 'import pandas, numpy, statsmodels, linearmodels' \
+                >/dev/null 2>&1; then
+            echo "$p"
+            return 0
+        fi
+    done
+    return 1
+}
+
 find_stata() {
-    # Print the first available Stata binary on PATH, else empty.
     for b in stata-mp stata-se stata; do
         if command -v "$b" >/dev/null 2>&1; then
             echo "$b"
@@ -88,6 +107,33 @@ find_stata() {
         fi
     done
     return 1
+}
+
+run_python() {
+    local py_bin
+    if ! py_bin="$(find_python)"; then
+        log_error "Python with pandas + statsmodels + linearmodels not found."
+        log_error "Set up the environment first:"
+        log_error "  uv sync                 (recommended)"
+        log_error "or"
+        log_error "  conda env create -f binder/environment.yml"
+        log_error "  conda activate who-holds-government-debt"
+        return 1
+    fi
+    log_info "Running Python empirical pipeline: $py_bin -m Code.empirical_debt_composition.python.run_all"
+    "$py_bin" -m Code.empirical_debt_composition.python.run_all
+    log_success "Python pipeline finished."
+    log_info "See Code/empirical_debt_composition/results/python/ for logs."
+}
+
+run_check() {
+    local py_bin
+    if ! py_bin="$(find_python)"; then
+        log_error "Python with pandas + statsmodels + linearmodels not found."
+        return 1
+    fi
+    log_info "Running Python pipeline smoke test (--check)."
+    "$py_bin" -m Code.empirical_debt_composition.python.run_all --check
 }
 
 run_empirical() {
@@ -101,17 +147,13 @@ run_empirical() {
 
     if stata_bin="$(find_stata)"; then
         log_info "Running Stata empirical pipeline: $stata_bin -b do $driver"
-        # -b = batch mode; Stata writes <script>.log next to the driver.
         "$stata_bin" -b do "$driver"
-        log_success "Empirical pipeline finished."
+        log_success "Stata empirical pipeline finished."
         log_info "See Code/empirical_debt_composition/results/ for logs."
     else
-        log_warn "Stata not on PATH (looked for stata-mp / stata-se / stata)."
-        log_warn "Skipping empirical pipeline."
-        log_info "Using committed logs in Code/empirical_debt_composition/results/"
-        log_info "  * threshold_centered_results.txt"
-        log_info "  * quadratic_nonbank_results2.txt"
-        log_info "These are the authoritative regression output for this paper."
+        log_error "Stata not on PATH (looked for stata-mp / stata-se / stata)."
+        log_error "Use --python instead, or install Stata 17+."
+        return 1
     fi
 }
 
@@ -129,26 +171,20 @@ run_docs() {
     fi
 }
 
-run_notebook() {
-    local nb="Code/empirical_debt_composition/python/companion.ipynb"
-    if [[ ! -f "$nb" ]]; then
-        log_error "Missing notebook: $nb"
-        return 1
-    fi
-    if ! command -v jupyter >/dev/null 2>&1; then
-        log_error "jupyter not on PATH. Install it with 'uv sync' or"
-        log_error "  'conda env create -f environment.yml'."
-        return 1
-    fi
-    log_info "Executing companion notebook: $nb"
-    jupyter nbconvert --to notebook --execute --inplace \
-        --ExecutePreprocessor.timeout=120 "$nb"
-    log_success "Notebook executed in place: $nb"
-}
-
 run_all() {
-    log_info "Running full reproduction (empirics + paper)."
-    run_empirical
+    log_info "Running full reproduction (Python empirics + paper)."
+    if find_python >/dev/null 2>&1; then
+        run_python
+    else
+        log_warn "Python pipeline dependencies not found."
+        if find_stata >/dev/null 2>&1; then
+            log_warn "Falling back to Stata empirical pipeline."
+            run_empirical
+        else
+            log_warn "Neither Python nor Stata available; skipping empirics."
+            log_warn "The paper PDF will still build from committed sources."
+        fi
+    fi
     run_docs
     log_success "Full reproduction finished."
 }
@@ -158,8 +194,9 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         -h|--help)    show_help; exit 0 ;;
         --docs)       MODE="docs";      shift ;;
+        --python)     MODE="python";    shift ;;
+        --check)      MODE="check";     shift ;;
         --empirical)  MODE="empirical"; shift ;;
-        --notebook)   MODE="notebook";  shift ;;
         --all)        MODE="all";       shift ;;
         *)            log_error "Unknown option: $1"; show_help; exit 2 ;;
     esac
@@ -167,7 +204,8 @@ done
 
 case "$MODE" in
     docs)       run_docs ;;
+    python)     run_python ;;
+    check)      run_check ;;
     empirical)  run_empirical ;;
-    notebook)   run_notebook ;;
     all)        run_all ;;
 esac

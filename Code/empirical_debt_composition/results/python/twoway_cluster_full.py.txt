@@ -1,0 +1,170 @@
+Python port of twoway_cluster_full.do
+Dbar = 102.74851
+
+==============================================================================
+STAGE 1 (Section 6.4) -- ivreg2-equivalent two-way clustered SE
+==============================================================================
+--- nonbank_size (Section 6.4 column) ---
+  N = 547
+  d          =     -0.1978076  (SE 0.2346085, z =  -0.84)
+  d_high_c   =     -0.2191246  (SE 0.1935207, z =  -1.13)
+
+  vs Stata target for nonbank_size:
+    OK d                        python=    -0.1978076 stata=    -0.1978076 diff=  -0.0000000  rel=5.19e-08
+    !! d_se                     python=     0.2346085 stata=     0.2170597 diff=  +0.0175488  rel=8.08e-02
+    OK d_high_c                 python=    -0.2191246 stata=    -0.2191246 diff=  +0.0000000  rel=2.12e-07
+    !! d_high_c_se              python=     0.1935207 stata=     0.1833025 diff=  +0.0102182  rel=5.57e-02
+    OK n                        python=   547.0000000 stata=   547.0000000 diff=  +0.0000000  rel=0.00e+00
+
+--- cb_size (Section 6.4 column) ---
+  N = 718
+  d          =      0.0227601  (SE 0.0415826, z =   0.55)
+  d_high_c   =      0.5417426  (SE 0.1680862, z =   3.22)
+
+  vs Stata target for cb_size:
+    OK d                        python=     0.0227601 stata=     0.0227601 diff=  +0.0000000  rel=4.07e-07
+    !! d_se                     python=     0.0415826 stata=     0.0399629 diff=  +0.0016197  rel=4.05e-02
+    OK d_high_c                 python=     0.5417426 stata=     0.5417426 diff=  -0.0000000  rel=7.45e-08
+    !! d_high_c_se              python=     0.1680862 stata=     0.1582924 diff=  +0.0097938  rel=6.19e-02
+    OK n                        python=   718.0000000 stata=   718.0000000 diff=  +0.0000000  rel=0.00e+00
+
+--- di02 (Section 6.4 column) ---
+  N = 732
+  d          =     -0.3085846  (SE 0.2674515, z =  -1.15)
+  d_high_c   =      0.8820057  (SE 0.4186054, z =   2.11)
+
+  vs Stata target for di02:
+    OK d                        python=    -0.3085846 stata=    -0.3085846 diff=  -0.0000000  rel=2.57e-08
+    !! d_se                     python=     0.2674515 stata=     0.2579003 diff=  +0.0095512  rel=3.70e-02
+    OK d_high_c                 python=     0.8820057 stata=     0.8820057 diff=  +0.0000000  rel=5.02e-08
+    !! d_high_c_se              python=     0.4186054 stata=     0.4019010 diff=  +0.0167044  rel=4.16e-02
+    OK n                        python=   732.0000000 stata=   732.0000000 diff=  +0.0000000  rel=0.00e+00
+
+==============================================================================
+STAGE 2 HEADLINE (Section 6.5) -- ivreg2 nocons cluster(country, year)
+==============================================================================
+--- dh headline ---
+  N = 753
+  d                        =      0.3153371  (SE 0.0404189, z =   7.80)
+  delta_n_th_d             =      0.0018219  (SE 0.0004956, z =   3.68)
+  d_high_c                 =     -0.0367219  (SE 0.1676051, z =  -0.22)
+  delta_n_th_dhc           =     -0.0033172  (SE 0.0031994, z =  -1.04)
+
+  vs Stata target for dh:
+    OK d                        python=     0.3153371 stata=     0.3153371 diff=  +0.0000000  rel=5.51e-08
+    !! d_se                     python=     0.0404189 stata=     0.0394070 diff=  +0.0010119  rel=2.57e-02
+    OK d_high_c                 python=    -0.0367219 stata=    -0.0367219 diff=  +0.0000000  rel=6.68e-07
+    !! d_high_c_se              python=     0.1676051 stata=     0.1648912 diff=  +0.0027139  rel=1.65e-02
+    OK delta_n_th_d             python=     0.0018219 stata=     0.0018219 diff=  -0.0000000  rel=9.06e-06
+    !! delta_n_th_d_se          python=     0.0004956 stata=     0.0004912 diff=  +0.0000044  rel=9.00e-03
+    OK delta_n_th_dhc           python=    -0.0033172 stata=    -0.0033172 diff=  -0.0000000  rel=1.36e-05
+    !! delta_n_th_dhc_se        python=     0.0031994 stata=     0.0031548 diff=  +0.0000446  rel=1.41e-02
+    OK n                        python=   753.0000000 stata=   753.0000000 diff=  +0.0000000  rel=0.00e+00
+
+--- dcb headline ---
+  N = 780
+  d                        =      0.0574604  (SE 0.0136836, z =   4.20)
+  delta_cb_th_d            =      0.0126816  (SE 0.0044192, z =   2.87)
+  d_high_c                 =      0.2813412  (SE 0.1641720, z =   1.71)
+  delta_cb_th_dhc          =     -0.0633393  (SE 0.0265186, z =  -2.39)
+
+  vs Stata target for dcb:
+    OK d                        python=     0.0574604 stata=     0.0574604 diff=  +0.0000000  rel=7.53e-07
+    !! d_se                     python=     0.0136836 stata=     0.0135715 diff=  +0.0001121  rel=8.26e-03
+    OK d_high_c                 python=     0.2813412 stata=     0.2813412 diff=  +0.0000000  rel=1.27e-07
+    !! d_high_c_se              python=     0.1641720 stata=     0.1589916 diff=  +0.0051804  rel=3.26e-02
+    OK delta_cb_th_d            python=     0.0126816 stata=     0.0126816 diff=  -0.0000000  rel=2.29e-06
+    !! delta_cb_th_d_se         python=     0.0044192 stata=     0.0043309 diff=  +0.0000883  rel=2.04e-02
+    OK delta_cb_th_dhc          python=    -0.0633393 stata=    -0.0633393 diff=  -0.0000000  rel=5.27e-07
+    !! delta_cb_th_dhc_se       python=     0.0265186 stata=     0.0215141 diff=  +0.0050045  rel=2.33e-01
+    OK n                        python=   780.0000000 stata=   780.0000000 diff=  +0.0000000  rel=0.00e+00
+
+--- dpb headline ---
+  N = 780
+  d                        =      0.1935454  (SE 0.0190546, z =  10.16)
+  delta_pb_th_d            =     -0.0001746  (SE 0.0007040, z =  -0.25)
+  d_high_c                 =      0.5371138  (SE 0.2502359, z =   2.15)
+  delta_pb_th_dhc          =     -0.0120700  (SE 0.0091938, z =  -1.31)
+
+  vs Stata target for dpb:
+    OK d                        python=     0.1935454 stata=     0.1935454 diff=  +0.0000000  rel=4.91e-08
+    !! d_se                     python=     0.0190546 stata=     0.0192930 diff=  -0.0002384  rel=1.24e-02
+    OK d_high_c                 python=     0.5371138 stata=     0.5371138 diff=  +0.0000000  rel=7.35e-08
+    !! d_high_c_se              python=     0.2502359 stata=     0.2431145 diff=  +0.0071214  rel=2.93e-02
+    OK delta_pb_th_d            python=    -0.0001746 stata=    -0.0001746 diff=  -0.0000000  rel=4.66e-05
+    !! delta_pb_th_d_se         python=     0.0007040 stata=     0.0007186 diff=  -0.0000146  rel=2.03e-02
+    OK delta_pb_th_dhc          python=    -0.0120700 stata=    -0.0120700 diff=  +0.0000000  rel=1.38e-06
+    !! delta_pb_th_dhc_se       python=     0.0091938 stata=     0.0089072 diff=  +0.0002866  rel=3.22e-02
+    OK n                        python=   780.0000000 stata=   780.0000000 diff=  +0.0000000  rel=0.00e+00
+
+==============================================================================
+STAGE 2 MATCHED -- restrict to Stage-1 estimating sample
+==============================================================================
+--- dh matched ---
+  N = 547
+  d                        =      0.2970116  (SE 0.0378842, z =   7.84)
+  delta_n_th_d             =      0.0020479  (SE 0.0005069, z =   4.04)
+  d_high_c                 =     -0.0550689  (SE 0.1459096, z =  -0.38)
+  delta_n_th_dhc           =     -0.0020105  (SE 0.0025096, z =  -0.80)
+
+--- dcb matched ---
+  N = 718
+  d                        =      0.0598173  (SE 0.0142432, z =   4.20)
+  delta_cb_th_d            =      0.0126980  (SE 0.0045499, z =   2.79)
+  d_high_c                 =      0.2736358  (SE 0.1621354, z =   1.69)
+  delta_cb_th_dhc          =     -0.0638357  (SE 0.0261301, z =  -2.44)
+
+--- dpb matched ---
+  N = 732
+  d                        =      0.1905520  (SE 0.0186430, z =  10.22)
+  delta_pb_th_d            =     -0.0002123  (SE 0.0007189, z =  -0.30)
+  d_high_c                 =      0.5262520  (SE 0.2229795, z =   2.36)
+  delta_pb_th_dhc          =     -0.0113776  (SE 0.0081019, z =  -1.40)
+
+==============================================================================
+STAGE 2 SPARSE-COUNTRY DROP k>=5
+==============================================================================
+--- dh k>=5 ---
+  N = 709
+  d                        =      0.3143996  (SE 0.0414760, z =   7.58)
+  delta_n_th_d             =      0.0018617  (SE 0.0005048, z =   3.69)
+  d_high_c                 =     -0.0309058  (SE 0.1687120, z =  -0.18)
+  delta_n_th_dhc           =     -0.0034883  (SE 0.0031994, z =  -1.09)
+
+--- dcb k>=5 ---
+  N = 780
+  d                        =      0.0574604  (SE 0.0136836, z =   4.20)
+  delta_cb_th_d            =      0.0126816  (SE 0.0044192, z =   2.87)
+  d_high_c                 =      0.2813412  (SE 0.1641720, z =   1.71)
+  delta_cb_th_dhc          =     -0.0633393  (SE 0.0265186, z =  -2.39)
+
+--- dpb k>=5 ---
+  N = 780
+  d                        =      0.1935454  (SE 0.0190546, z =  10.16)
+  delta_pb_th_d            =     -0.0001746  (SE 0.0007040, z =  -0.25)
+  d_high_c                 =      0.5371138  (SE 0.2502359, z =   2.15)
+  delta_pb_th_dhc          =     -0.0120700  (SE 0.0091938, z =  -1.31)
+
+==============================================================================
+STAGE 2 SPARSE-COUNTRY DROP k>=10
+==============================================================================
+--- dh k>=10 ---
+  N = 709
+  d                        =      0.3143996  (SE 0.0414760, z =   7.58)
+  delta_n_th_d             =      0.0018617  (SE 0.0005048, z =   3.69)
+  d_high_c                 =     -0.0309058  (SE 0.1687120, z =  -0.18)
+  delta_n_th_dhc           =     -0.0034883  (SE 0.0031994, z =  -1.09)
+
+--- dcb k>=10 ---
+  N = 762
+  d                        =      0.0572283  (SE 0.0139122, z =   4.11)
+  delta_cb_th_d            =      0.0127302  (SE 0.0044150, z =   2.88)
+  d_high_c                 =      0.2830046  (SE 0.1692420, z =   1.67)
+  delta_cb_th_dhc          =     -0.0632481  (SE 0.0228666, z =  -2.77)
+
+--- dpb k>=10 ---
+  N = 759
+  d                        =      0.1938342  (SE 0.0201259, z =   9.63)
+  delta_pb_th_d            =     -0.0001596  (SE 0.0007673, z =  -0.21)
+  d_high_c                 =      0.5362587  (SE 0.2490274, z =   2.15)
+  delta_pb_th_dhc          =     -0.0121054  (SE 0.0091504, z =  -1.32)

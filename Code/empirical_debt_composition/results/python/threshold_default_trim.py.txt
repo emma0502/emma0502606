@@ -1,0 +1,182 @@
+Python port of threshold_estimation_default_trim.do
+Source data: Data/gfdd_with_de_facto1.dta (N=780 rows)
+
+==============================================================================
+OUTCOME = db_total  (N = 780)
+==============================================================================
+--- db_total: 0-threshold (linear with country FE) ---
+  N              = 780
+  k (params)     = 33
+  SSR            = 29074.6522
+  BIC (Stata-ish)= 5262.2560
+  d coefficient = 0.3902147  (SE 0.0136957, t = 28.49)
+
+--- db_total: 1-threshold (Hansen, trim=0.10) ---
+  tau            = 102.7485149
+  N              = 780
+  k (params)     = 35
+  SSR            = 19087.9868
+  BIC (Stata-ish)= 4947.3447
+  Region 1 (d <= tau):
+    _cons =  -1.084728  (SE 1.224357, z =  -0.89)
+    d     =  0.2736636  (SE 0.0148498, z =  18.43)
+  Region 2 (d > tau):
+    _cons = -76.935250  (SE 4.015158, z = -19.16)
+    d     =  0.9638325  (SE 0.0316925, z =  30.41)
+
+  vs Stata target for db_total:
+    OK tau            python=   102.7485149 stata=   102.7485100 diff=  +0.0000049  rel=4.79e-08
+    OK region1_d      python=     0.2736636 stata=     0.2735618 diff=  +0.0001018  rel=3.72e-04
+    OK region1_d_se   python=     0.0148498 stata=     0.0148598 diff=  -0.0000100  rel=6.70e-04
+    OK region2_d      python=     0.9638325 stata=     0.9638326 diff=  -0.0000001  rel=6.38e-08
+    OK region2_d_se   python=     0.0316925 stata=     0.0317138 diff=  -0.0000213  rel=6.71e-04
+
+--- db_total: 2-thresholds (Bai sequential, trim=0.10) ---
+  tau1           = 52.2088147
+  tau2           = 102.7485149
+  N              = 780
+  k (params)     = 37
+  SSR            = 18312.6427
+  BIC (Stata-ish)= 4928.3187
+  Region1 (d<=tau1):
+    _cons =  -0.343283  (SE 1.368692, z =  -0.25)
+    d     =  0.2267794  (SE 0.0304147, z =   7.46)
+  Region2:
+    _cons =   5.522375  (SE 2.066040, z =   2.67)
+    d     =  0.2028615  (SE 0.0231115, z =   8.78)
+  Region3 (d>tau2):
+    _cons = -76.577362  (SE 3.943444, z = -19.42)
+    d     =  0.9682882  (SE 0.0310953, z =  31.14)
+
+==============================================================================
+OUTCOME = dcb  (N = 780)
+==============================================================================
+--- dcb: 0-threshold (linear with country FE) ---
+  N              = 780
+  k (params)     = 33
+  SSR            = 29283.0479
+  BIC (Stata-ish)= 5267.8268
+  d coefficient = 0.2341045  (SE 0.0137447, t = 17.03)
+
+--- dcb: 1-threshold (Hansen, trim=0.10) ---
+  tau            = 109.0260000
+  N              = 780
+  k (params)     = 35
+  SSR            = 22024.6720
+  BIC (Stata-ish)= 5058.9659
+  Region 1 (d <= tau):
+    _cons =  -2.187944  (SE 1.305575, z =  -1.68)
+    d     =  0.1616759  (SE 0.0147514, z =  10.96)
+  Region 2 (d > tau):
+    _cons = -77.875196  (SE 4.961912, z = -15.69)
+    d     =  0.7948658  (SE 0.0379196, z =  20.96)
+
+  vs Stata target for dcb:
+    OK tau            python=   109.0260000 stata=   109.0260000 diff=  +0.0000000  rel=0.00e+00
+    OK region1_d      python=     0.1616759 stata=     0.1617667 diff=  -0.0000908  rel=5.61e-04
+    OK region1_d_se   python=     0.0147514 stata=     0.0147613 diff=  -0.0000099  rel=6.72e-04
+    OK region2_d      python=     0.7948658 stata=     0.7948680 diff=  -0.0000022  rel=2.72e-06
+    OK region2_d_se   python=     0.0379196 stata=     0.0379451 diff=  -0.0000255  rel=6.71e-04
+
+--- dcb: 2-thresholds (Bai sequential, trim=0.10) ---
+  tau1           = 43.1738978
+  tau2           = 109.0260000
+  N              = 780
+  k (params)     = 37
+  SSR            = 21741.5380
+  BIC (Stata-ish)= 5062.1923
+  Region1 (d<=tau1):
+    _cons =  -0.117166  (SE 1.569556, z =  -0.07)
+    d     =  0.0693749  (SE 0.0397858, z =   1.74)
+  Region2:
+    _cons =  -1.384658  (SE 1.813073, z =  -0.76)
+    d     =  0.1541407  (SE 0.0190967, z =   8.07)
+  Region3 (d>tau2):
+    _cons = -77.783574  (SE 4.941853, z = -15.74)
+    d     =  0.7951481  (SE 0.0377259, z =  21.08)
+
+==============================================================================
+OUTCOME = dpb  (N = 780)
+==============================================================================
+--- dpb: 0-threshold (linear with country FE) ---
+  N              = 780
+  k (params)     = 33
+  SSR            = 20844.0345
+  BIC (Stata-ish)= 5002.6728
+  d coefficient = 0.1561102  (SE 0.0115962, t = 13.46)
+
+--- dpb: 1-threshold (Hansen, trim=0.10) ---
+  tau            = 109.0260000
+  N              = 780
+  k (params)     = 35
+  SSR            = 18959.3207
+  BIC (Stata-ish)= 4942.0692
+  Region 1 (d <= tau):
+    _cons =   1.567510  (SE 1.211319, z =   1.29)
+    d     =  0.0942184  (SE 0.0136864, z =   6.88)
+  Region 2 (d > tau):
+    _cons =   3.302201  (SE 4.603686, z =   0.72)
+    d     =  0.1537855  (SE 0.0351820, z =   4.37)
+
+  vs Stata target for dpb:
+    OK tau            python=   109.0260000 stata=   109.0260000 diff=  +0.0000000  rel=0.00e+00
+    !! region1_d      python=     0.0942184 stata=     0.0940137 diff=  +0.0002047  rel=2.18e-03
+    OK region1_d_se   python=     0.0136864 stata=     0.0136957 diff=  -0.0000093  rel=6.79e-04
+    OK region2_d      python=     0.1537855 stata=     0.1537806 diff=  +0.0000049  rel=3.16e-05
+    OK region2_d_se   python=     0.0351820 stata=     0.0352059 diff=  -0.0000239  rel=6.78e-04
+
+--- dpb: 2-thresholds (Bai sequential, trim=0.10) ---
+  tau1           = 62.4650000
+  tau2           = 109.0260000
+  N              = 780
+  k (params)     = 37
+  SSR            = 18285.2667
+  BIC (Stata-ish)= 4927.1517
+  Region1 (d<=tau1):
+    _cons =   0.584498  (SE 1.315151, z =   0.44)
+    d     =  0.1318400  (SE 0.0252233, z =   5.23)
+  Region2:
+    _cons =  13.031409  (SE 2.499559, z =   5.21)
+    d     = -0.0251602  (SE 0.0264870, z =  -0.95)
+  Region3 (d>tau2):
+    _cons =   3.904260  (SE 4.535391, z =   0.86)
+    d     =  0.1548370  (SE 0.0345984, z =   4.48)
+
+==============================================================================
+OUTCOME = dh  (N = 780)
+==============================================================================
+--- dh: 0-threshold (linear with country FE) ---
+  N              = 780
+  k (params)     = 33
+  SSR            = 25339.2379
+  BIC (Stata-ish)= 5154.9962
+  d coefficient = 0.0810503  (SE 0.0127857, t = 6.34)
+
+--- dh: 1-threshold (Hansen, trim=0.10) ---
+  tau            = 108.7550000
+  N              = 780
+  k (params)     = 35
+  SSR            = 22086.2234
+  BIC (Stata-ish)= 5061.1427
+  Region 1 (d <= tau):
+    _cons =   6.439307  (SE 1.307752, z =   4.92)
+    d     =  0.1124374  (SE 0.0148177, z =   7.59)
+  Region 2 (d > tau):
+    _cons =  56.960488  (SE 4.918697, z =  11.58)
+    d     = -0.2896332  (SE 0.0375823, z =  -7.71)
+
+  vs Stata target for dh:
+    OK tau            python=   108.7550000 stata=   108.7550000 diff=  +0.0000000  rel=0.00e+00
+    OK region1_d      python=     0.1124374 stata=     0.1124473 diff=  -0.0000099  rel=8.79e-05
+    OK region1_d_se   python=     0.0148177 stata=     0.0148277 diff=  -0.0000100  rel=6.72e-04
+    OK region2_d      python=    -0.2896332 stata=    -0.2896330 diff=  -0.0000002  rel=5.50e-07
+    OK region2_d_se   python=     0.0375823 stata=     0.0376075 diff=  -0.0000252  rel=6.71e-04
+
+==============================================================================
+SUMMARY OF BIC (lower = better)
+==============================================================================
+Outcome             0 thr        1 thr        2 thr
+db_total        5262.2560    4947.3447    4928.3187
+dcb             5267.8268    5058.9659    5062.1923
+dpb             5002.6728    4942.0692    4927.1517
+dh              5154.9962    5061.1427          nan
