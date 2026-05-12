@@ -10,7 +10,7 @@ tags:
 keywords:
   - Sovereign Debt
   - Debt Composition
-  - Financial Repression
+  - Banking Takeover
   - Borrowing Limits
 ---
 
