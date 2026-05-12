@@ -4,44 +4,38 @@
 
 \begin{document}
 
-\section{Model}\whenintegrated{\label{model}}
-\whenintegrated{\label{sec:model}} % integrated doc: SST for labels
+\section{Model}\whenintegrated{\label{sec:model}}
 
-A cost-minimizing government chooses how to allocate a given stock of
-debt across three creditor sectors---domestic non-banks, foreigners,
-and the banking sector. The three sectors differ in \emph{how}
+A cost-minimising government chooses how to allocate a given stock of
+debt across three creditor sectors --- domestic non-banks, foreigners,
+and the domestic banking system (central bank plus private banks,
+treated as one block). The three sectors differ in \emph{how}
 placement becomes costly at the margin, and those differences produce
-a tractable pecking order that we take to the data.
+a tractable pecking order with sharp comparative-static predictions
+that we take to the data.
 
 %-------------------------------------------------------------
 \subsection{Setting}
 %-------------------------------------------------------------
 
-A government has a given amount of outstanding debt $D>0$ and chooses
-non-negative holdings $(d_h,d_f,d_b)$ satisfying
+The government has a given stock of outstanding debt $D>0$ and chooses
+non-negative holdings $(d_h,d_f,d_b)$ satisfying the budget constraint
 \begin{equation}\label{eq:budget}
   d_h + d_f + d_b = D,
 \end{equation}
 where $d_h$ is non-bank holdings, $d_f$ is foreign holdings, and $d_b$
-is banking (central bank plus private banks).
-
-\paragraph{Every placement is costly.}
-\begin{itemize}
-  \item \textbf{Non-banks and foreigners} lend at interest rates
-        $r_h(d_h,S_h)$ and $r_f(d_f)$; the government's cash cost of
-        placement is the interest bill $r_h\,d_h + r_f\,d_f$.
-  \item \textbf{Banking} is not summarised by an interest rate:
-        placing $d_b$ with the banking system carries a separate
-        welfare (quasi-fiscal) cost $\Psi(d_b)$---inflation,
-        monetary/fiscal trade-offs, financial-stability risk.
-\end{itemize}
-
-\paragraph{Structural size.}
-$S_h>0$ is the \emph{country-specific} non-bank sector size (capacity).
-
-\paragraph{Planner problem.}
-Total debt $D>0$ is given. Choose $d_h,d_f,d_b\ge 0$ to minimise total
-placement cost subject to the budget constraint:
+is banking absorption. Each sector is summarised by the cost of
+placing debt with it. Non-banks and foreigners lend at interest rates
+$r_h(d_h,S_h)$ and $r_f(d_f)$, so the government's cash cost of placing
+$d_h$ and $d_f$ is the interest bill $r_h\,d_h + r_f\,d_f$. The
+non-bank schedule depends on a country-specific structural size
+$S_h>0$, which captures the depth of the domestic non-bank investor
+base. The banking sector is not described by an interest rate:
+placing $d_b$ with the banking system carries a separate welfare cost
+$\Psi(d_b)$ that proxies for inflation, monetary--fiscal trade-offs,
+and financial-stability risk. The planner therefore chooses
+$d_h,d_f,d_b\ge 0$ to minimise total economic cost subject to the
+budget constraint:
 \begin{equation}\label{eq:planner}
   \min_{d_h,d_f,d_b}\;
     r_h(d_h,S_h)\,d_h + r_f(d_f)\,d_f + \Psi(d_b)
@@ -49,148 +43,272 @@ placement cost subject to the budget constraint:
 \end{equation}
 
 %-------------------------------------------------------------
-\subsection{The three sectors: how placement becomes costly}
+\subsection{The three sectors}
 %-------------------------------------------------------------
 
-Marginal cost rises with the sector's \emph{degree of saturation}.
-What differs is \emph{how} saturation is measured.
+Marginal cost rises with the sector's degree of saturation. What
+differs is \emph{how} saturation is measured.
 
 \paragraph{Non-banks.}
+Non-banks operate in a segmented domestic market. Their interest rate
+depends on the portfolio share $d_h/S_h$, not on $d_h$ alone: the same
+absolute amount of debt is harder to place in a country with a thinner
+non-bank investor base. We adopt the schedule
 \begin{equation}\label{eq:nonbank-rate}
   r_h(d_h,S_h) = \bar r_h + \gamma_h\,
-    \frac{d_h/S_h}{\bar\omega - d_h/S_h}.
+    \frac{d_h/S_h}{\bar\omega - d_h/S_h},
+  \qquad 0\le d_h/S_h<\bar\omega,
 \end{equation}
-Saturation is the \emph{relative amount} $d_h/S_h$. The rate stays
-near $\bar r_h$ when the sector is far from its cap $\bar\omega S_h$
-and diverges as $d_h\to\bar\omega S_h$. Larger $S_h$ means more
-headroom and later saturation. $S_h$ differs across countries.
+with $\bar r_h,\gamma_h,\bar\omega>0$. The rate stays near $\bar r_h$
+when the sector is far from its country-specific cap $\bar\omega S_h$
+and diverges as $d_h\to\bar\omega S_h$. A larger $S_h$ shifts the
+capacity outward, so the same $d_h$ leaves more headroom and is
+cheaper at the margin. Cross-country differences in $S_h$ are the
+empirical hook of the model and the structural object recovered by
+Stage~1 of the two-stage estimator in
+Section~\ref{sec:empirical}.
 
 \paragraph{Foreigners.}
+Foreign participation is disciplined by a no-default / incentive
+constraint that imposes a uniform upper bound $\bar D_f$ on foreign
+holdings, common across countries. Risk premia rise as the sovereign
+approaches that ceiling. We posit
 \begin{equation}\label{eq:foreign-rate}
   r_f(d_f) = \bar r_f + \gamma_f\,
-    \frac{d_f}{\bar D_f - d_f}.
+    \frac{d_f}{\bar D_f - d_f},
+  \qquad 0\le d_f<\bar D_f,
 \end{equation}
-Saturation is the level of foreign exposure $d_f$. The rate diverges
-as $d_f\to\bar D_f$ (a no-default ceiling). $\bar D_f$ is
-\emph{common} across countries.
+with $\bar r_f,\gamma_f>0$. The schedule is flat when
+$d_f\ll\bar D_f$ (the global market is deep) and diverges as
+$d_f\to\bar D_f$.
 
 \paragraph{Banking.}
+The banking sector absorbs the residual $d_b=D-d_h-d_f$. Unlike
+non-banks and foreigners, it has no hard ceiling --- the central bank
+can in principle keep expanding its balance sheet --- but doing so is
+distortionary. We summarise that distortion by an increasing, convex
+welfare cost
 \begin{equation}\label{eq:banking-cost}
-  \Psi(d_b),\qquad \Psi'(d_b)>0,\quad \Psi''(d_b)>0.
+  \Psi(d_b),\qquad \Psi'(d_b)>0,\qquad \Psi''(d_b)>0.
 \end{equation}
-There is no hard ceiling, but placement carries a welfare cost that
-is increasing and convex.
+The level $\Psi'(0)$ is the cost of placing the first dollar with
+banks and is directly comparable to $\bar r_h$ and $\bar r_f$. For
+the numerical illustrations below we use the simplest
+affine-marginal-cost specification
+\begin{equation}\label{eq:psi-affine}
+  \Psi(d_b) = \bar r_b\,d_b + \tfrac{\psi}{2}\,d_b^{2},
+  \qquad \Psi'(d_b)=\bar r_b+\psi d_b,\qquad \psi>0,
+\end{equation}
+with $\bar r_b,\psi>0$.
 
 %-------------------------------------------------------------
-\subsection{Equilibrium: who absorbs the next dollar?}
+\subsection{Equilibrium and closed-form solution}
 %-------------------------------------------------------------
 
-At the optimum, the planner equates the marginal cost of placing one
-more dollar of debt across all three sectors:
+With Lagrange multiplier $\lambda$ on the budget constraint, the
+interior first-order conditions equate marginal placement costs across
+all three sectors:
 \begin{equation}\label{eq:foc}
-  MC_h(d_h;S_h) \;=\; MC_f(d_f) \;=\; MC_b(d_b) \;=\; \lambda(D),
-  \qquad d_h + d_f + d_b = D.
+  \text{MC}_h(d_h,S_h) \;=\; \text{MC}_f(d_f) \;=\; \Psi'(d_b)
+  \;=\; \lambda(D),
 \end{equation}
-If one sector were cheaper at the margin, the planner would shift
+where, from \eqref{eq:nonbank-rate} and \eqref{eq:foreign-rate},
+\begin{align}
+  \text{MC}_h(d_h,S_h)
+    &= \bar r_h + \gamma_h\,
+      \frac{(d_h/S_h)\!\bigl[2\bar\omega - d_h/S_h\bigr]}
+            {\bigl[\bar\omega - d_h/S_h\bigr]^{2}},
+      \label{eq:MCh}\\
+  \text{MC}_f(d_f)
+    &= \bar r_f + \gamma_f\,
+      \frac{d_f\,(2\bar D_f - d_f)}{(\bar D_f - d_f)^{2}}.
+      \label{eq:MCf}
+\end{align}
+If any sector were cheaper at the margin, the planner would shift
 toward it.
 
-\paragraph{How the equilibrium plays out as $D$ grows.}
-\begin{itemize}
-  \item \textbf{Low $D$.} Non-banks and foreigners are far from their
-        limits; $MC_h$ and $MC_f$ are low and they absorb most new
-        debt. Banking is costlier at the margin and absorbs little.
-  \item \textbf{Rising $D$.} Non-banks and foreigners approach their
-        limits; $MC_h$ and $MC_f$ rise sharply and their absorption
-        share shrinks. Banking still has room and starts picking up.
-  \item \textbf{High $D$.} Non-banks and foreigners are near their
-        caps; $MC_h, MC_f \to \infty$ and they absorb almost nothing
-        at the margin. Banking is the only sector with a finite
-        marginal cost and absorbs nearly all new debt.
-\end{itemize}
+The system \eqref{eq:budget}--\eqref{eq:foc} admits a closed-form
+parametric solution in the shadow rate $\lambda$:
+\begin{align}
+  d_h^\ast(\lambda,S_h)
+    &= S_h\,\bar\omega\!\left(1 - \frac{1}{\sqrt{1+(\lambda-\bar r_h)/\gamma_h}}\right),
+      \label{eq:dhstar}\\
+  d_f^\ast(\lambda)
+    &= \bar D_f\!\left(1 - \frac{1}{\sqrt{1+(\lambda-\bar r_f)/\gamma_f}}\right),
+      \label{eq:dfstar}\\
+  d_b^\ast(\lambda) &= \frac{\lambda-\bar r_b}{\psi},
+      \label{eq:dbstar}
+\end{align}
+with $D(\lambda)=d_h^\ast+d_f^\ast+d_b^\ast$ strictly increasing in
+$\lambda$ on the admissible range. Inverting numerically yields the
+equilibrium allocation as a function of $D$.
 
 %-------------------------------------------------------------
-\subsection{Model predictions}
+\subsection{Comparative statics: who absorbs the next dollar?}
 %-------------------------------------------------------------
 
-\begin{enumerate}
-  \item \textbf{Every sector absorbs more debt as $D$ grows.}
-        Upward-sloping $MC_j$ implies that as $D$ rises, all three
-        margins rise together and every $d_j^\ast$ rises.
-  \item \textbf{Larger non-bank sectors absorb more debt at any given
-        $D$.} A bigger $S_h$ means a less saturated non-bank sector
-        at any $d_h$, a lower $MC_h$ at the margin, and so the
-        planner allocates more to non-banks.
-  \item \textbf{As $D$ grows, non-banks and foreigners absorb a
-        smaller share of each extra dollar; their marginal shares go
-        to zero. Under symmetry, the paths of $d_h^\ast$ and
-        $d_f^\ast$ are strictly concave in $D$.} Both approach caps,
-        so $MC_h$ and $MC_f$ rise and diverge, and the planner shifts
-        each extra dollar toward banking.
-  \item \textbf{Banking takeover at high $D$.} With non-banks and
-        foreigners near their caps, banking is the only sector with
-        room, and its share of new issuance rises sharply.
-\end{enumerate}
+The substantive content of the model rests on a single structural
+property of the three placement-cost schedules: in each sector, the
+marginal cost of placing additional debt is strictly increasing in
+that sector's existing holdings. Differentiating
+\eqref{eq:MCh}--\eqref{eq:MCf} and \eqref{eq:psi-affine} gives the
+slopes of the marginal-cost schedules,
+\begin{align}
+  H_h \;\equiv\; \frac{\partial\text{MC}_h}{\partial d_h}
+    &= \frac{2\gamma_h\bar\omega^{2}}
+            {S_h\,[\bar\omega-d_h/S_h]^{3}}>0,
+      \label{eq:Hh}\\
+  H_f \;\equiv\; \frac{\partial\text{MC}_f}{\partial d_f}
+    &= \frac{2\gamma_f\bar D_f^{\,2}}
+            {[\bar D_f-d_f]^{3}}>0,
+      \label{eq:Hf}\\
+  H_b \;\equiv\; \frac{\partial\text{MC}_b}{\partial d_b} &= \psi>0,
+      \label{eq:Hb}
+\end{align}
+with $H_h\to\infty$ as $d_h\to\bar\omega S_h$ and $H_f\to\infty$ as
+$d_f\to\bar D_f$. The banking slope is constant; the other two
+diverge as their respective sectors saturate.
+
+Total differentiation of the FOC \eqref{eq:foc} together with the
+budget constraint \eqref{eq:budget} delivers the marginal share of
+new debt absorbed by each sector,
+\begin{equation}\label{eq:shares}
+  s_j \;\equiv\; \frac{\partial d_j^\ast}{\partial D}
+  = \frac{1/H_j}{1/H_h + 1/H_f + 1/H_b},
+  \qquad j\in\{h,f,b\},
+\end{equation}
+which sum to one by construction. The marginal share of each sector
+is therefore inversely proportional to the local curvature of its
+marginal cost: at low $D$ all three $H_j$ are bounded and the $s_j$
+are roughly constant; as $d_h\to\bar\omega S_h$ and
+$d_f\to\bar D_f$, $H_h$ and $H_f$ diverge, $s_h$ and $s_f$ collapse to
+zero, and $s_b\to 1$.
 
 %-------------------------------------------------------------
-\subsection{Mechanics I: three phases of absorption}
+\subsection{Three predictions}
 %-------------------------------------------------------------
 
-\noindent\textbf{One country, $S_h=150$.} Baseline calibration
+The structural property $H_j>0$ delivers three substantive
+comparative-static results, which we record as propositions.
+Proofs are collected in Appendix~\ref{app:proofs}.
+
+\begin{proposition}[Sectoral holdings rise with total debt]
+\label{prop:monotone}
+Under upward-sloping marginal cost in every sector ($H_j>0$),
+$d_j^\ast$ is weakly increasing in $D$ for $j\in\{h,f,b\}$, and
+strictly increasing whenever $d_j^\ast>0$.
+\end{proposition}
+
+\noindent\emph{Intuition.} If, when the government must place more
+debt, some sector's holdings actually \emph{fell}, that sector's
+marginal cost would drop. The FOC requires all active sectors to
+share the same marginal cost, so the others would have to drop too
+--- meaning every sector absorbs less even though total debt has
+risen. That is impossible, so no sector can shrink as $D$ grows.
+
+\begin{proposition}[Non-bank absorption rises with non-bank sector size]
+\label{prop:Sh}
+Fix total debt $D>0$ and suppose the equilibrium is interior for
+non-banks with $d_h^\ast>0$. Then
+$\partial d_h^\ast/\partial S_h>0$.
+\end{proposition}
+
+\noindent\emph{Intuition.} Non-bank marginal cost depends on the
+portfolio share $d_h/S_h$, not on $d_h$ alone: the sector becomes
+expensive only as $d_h/S_h$ approaches $\bar\omega$. A larger $S_h$
+means that any given level of $d_h$ corresponds to a smaller share,
+so marginal cost is lower; holding $D$ fixed, the planner tilts the
+allocation toward non-banks when $S_h$ rises. This is the mechanism
+behind the cross-country pecking order in
+Figure~\ref{fig:pecking-order}, and it is the structural object
+recovered by Stage~2 of the empirical estimator.
+
+\begin{proposition}[Strict concavity in the symmetric calibration]
+\label{prop:concave}
+Suppose $\bar r_h=\bar r_f$, $\gamma_h=\gamma_f$, and the equilibrium
+path is interior for both capped sectors. Then $d_h^\ast(D)$ and
+$d_f^\ast(D)$ are strictly concave in $D$ on the interior of their
+domains.
+\end{proposition}
+
+\noindent\emph{Intuition.} Each sector's holdings rise with total
+debt, but ever more slowly: placement is cheap when a sector is far
+from its ceiling and expensive as it approaches $\bar\omega S_h$
+(non-banks) or $\bar D_f$ (foreigners), so marginal issuance tilts
+toward whichever margin still has room. Both capped curves therefore
+bend downward, even though the government continuously substitutes
+across sectors as relative costs shift.
+
+\paragraph{Banking takeover at high debt.}
+The three propositions sharpen into a single qualitative prediction
+for the high-$D$ region. As $d_h\to\bar\omega S_h$ and
+$d_f\to\bar D_f$, $H_h$ and $H_f$ diverge while $H_b$ remains
+constant; \eqref{eq:shares} then forces $s_h,s_f\to 0$ and $s_b\to 1$.
+Because the non-bank ceiling $\bar\omega S_{h,i}$ varies across
+countries while $\bar D_f$ is common, each country has its \emph{own}
+takeover level
+$\bar D^{\text{bt}}_i\approx\bar\omega S_{h,i}+\bar D_f$ at which
+banking begins to absorb the bulk of new issuance. Once $D$ exceeds
+$\max_i\bar D^{\text{bt}}_i$, every country has exhausted its capped
+sectors and banking absorbs nearly every additional dollar of debt
+regardless of $S_h$. Cutting the horizontal axis at $D\approx 100\%$
+of GDP therefore gives a uniform picture across countries: this is
+the theoretical counterpart of the pooled empirical kink we estimate
+in Section~\ref{sec:empirical}.
+
+%-------------------------------------------------------------
+\subsection{Numerical illustration: three phases of absorption}
+%-------------------------------------------------------------
+
+We illustrate the equilibrium with the baseline calibration
 $\bar r_h=\bar r_f=\bar r_b=1$, $\gamma_h=\gamma_f=0.02$,
-$\bar\omega=0.30$, $\psi=0.04$, $\bar D_f=55$. Figure~\ref{fig:phases}
-shades the three equilibrium phases, defined by banking's marginal
-share $s_b \equiv d d_b^\ast/dD$.
+$\bar\omega=0.30$, $\psi=0.04$, and $\bar D_f=55$.
+Figure~\ref{fig:phases} traces the equilibrium for a single country
+with $S_h=150$ and shades the three phases defined by banking's
+marginal share $s_b=\partial d_b^\ast/\partial D$. In Phase~1 both
+capped sectors are far from their caps, $H_h$ and $H_f$ are bounded,
+and \eqref{eq:shares} delivers a small $s_b$: non-banks and
+foreigners absorb most new debt while banking is essentially flat.
+As $D$ rises into Phase~2, $d_h$ and $d_f$ approach their caps, $H_h$
+and $H_f$ rise sharply, and the planner shifts the marginal dollar
+toward banking. In Phase~3 both capped sectors are close to their
+limits, $1/H_h$ and $1/H_f$ collapse to zero, and $s_b$ approaches
+one.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.85\linewidth]{\latexroot/Figures/absorption_phases.png}
-  \caption{Three phases of debt absorption for a representative
-    country ($S_h=150$).}
+  \caption{Three phases of debt absorption.}
   \label{fig:phases}
 \end{figure}
 
-\begin{itemize}
-  \item \textbf{Phase 1.} Non-banks and foreigners absorb; banking
-        flat.
-  \item \textbf{Phase 2.} Non-banks and foreigners saturate; banking
-        starts picking up.
-  \item \textbf{Phase 3.} Banking takes over. The transition happens
-        at $D\approx \bar\omega S_h+\bar D_f=100$, matching the
-        empirical kink at $100\%$ of GDP documented in
-        Section~\ref{sec:empirical}.
-\end{itemize}
-
 %-------------------------------------------------------------
-\subsection{Mechanics II: heterogeneous non-bank sector}
+\subsection{Numerical illustration: heterogeneous non-bank sector}
 %-------------------------------------------------------------
 
-\noindent\textbf{Comparative statics in $S_h$}
-($S_h\in\{30,70,110,150,200\}$; $\bar D_f$, $\bar\omega$,
-$\gamma_h$, $\gamma_f$, $\psi$ fixed at the baseline).
+Figure~\ref{fig:pecking-order} overlays equilibrium allocations for
+five countries that differ only in non-bank capacity,
+$S_h\in\{30,70,110,150,200\}$, holding $\bar D_f=55$ and all other
+parameters at the baseline. Because $1/H_h$ in \eqref{eq:shares} is
+increasing in $S_h$, the model implies a pecking order in $S_h$:
+at every level of $D$, countries with smaller non-bank sectors hold
+a higher share of debt with foreigners and with banks. The middle
+panel shows that small-$S_h$ economies climb the foreign schedule
+faster and hit the uniform ceiling $\bar D_f$ at lower $D$; the right
+panel shows that they also load more onto banking, and their banking
+curves lie uniformly above those of large-$S_h$ countries. Once $D$
+is large enough that every country has crossed its own
+$\bar D^{\text{bt}}_i$, the five banking curves become approximately
+parallel with $s_b\to 1$, while non-bank and foreign curves are flat
+at their respective caps --- the cross-country signature of the
+banking-takeover prediction.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.95\linewidth]{\latexroot/Figures/pecking_order.png}
-  \caption{Pecking order across countries with different non-bank
-    sector sizes $S_h$.}
+  \caption{Pecking order across countries with different non-bank sector sizes $S_h$.}
   \label{fig:pecking-order}
 \end{figure}
-
-\paragraph{Pecking order.}
-\begin{itemize}
-  \item \textbf{Non-banks:} five different saturation levels, one per
-        country, at $\bar\omega S_h$.
-  \item \textbf{Foreigners:} essentially one curve---all countries
-        approach the \emph{same} ceiling $\bar D_f$, differing only in
-        how fast they get there.
-  \item \textbf{Banking:} once total debt is large enough, banking
-        takes over for all countries.
-\end{itemize}
-
-% Placeholder labels carried over from earlier drafts that may still
-% be referenced elsewhere in the package.
-\whenintegrated{\label{sec:recessions}}
-\whenintegrated{\label{sec:ADeffects}}
 
 % Smart bibliography: only included when compiled standalone with citations
 \smartbib

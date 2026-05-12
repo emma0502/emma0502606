@@ -9,33 +9,91 @@
 \whenintegrated{\label{related-literature}}\par\subsection{Related literature}
 \whenintegrated{\label{sec:relatedlit}} % integrated doc: SST for labels
 
-Our paper builds on, and brings together, four strands of the sovereign-debt literature: work on the composition of debt holders and default risk; the financial-repression literature on domestic debt bias; the sovereign--bank ``doom loop''; and the classical literature on the optimal level of government debt. Existing work addresses pieces of the picture: the default literature studies the choice between domestic and foreign creditors; the financial-repression literature explains why governments push debt onto banks; and the home-bias literature documents preferences for domestic sovereign debt. Our contribution is to shift the focus from the \emph{level} of debt to the \emph{allocation} across holder types and to provide a structural framework that links observable financial-sector heterogeneity to the cross-country pattern of debt composition.
+This paper speaks to three related strands of literature: theoretical work on sovereign debt demand, empirical work on the holder composition of sovereign debt, and the literature on high-debt regimes and financial repression.
+The central gap across these strands is that existing work typically studies either one creditor sector at a time or documents creditor composition descriptively.
+By contrast, this paper develops a joint framework in which a government allocates a given stock of debt across domestic non-banks, foreign investors, and the banking sector, and then brings the model directly to data.
 
-\whenintegrated{\label{lit-composition}}
-\subsubsection{Government debt composition and default risk}
-A first strand studies how sovereigns choose between domestic and foreign creditors when default is selective. \citet{Broneretal2010} show that secondary-market trading between foreigners and domestic residents can sustain cross-border lending even when sovereigns would otherwise prefer to default on foreigners. \citet{GennaioliMartinRossi2014} model the interaction between sovereign default and domestic financial development, showing how the holdings of sovereign debt by domestic banks determine the government's default incentives. Empirically, \citet{ArslanalpTsuda2014} construct a database that tracks global demand for advanced-economy sovereign debt by holder type, and \citet{FangHardyLewis2025} document the patterns and macroeconomic consequences of sovereign-debt holdings across countries. Our paper builds on this empirical infrastructure but goes further by providing a unified framework for the \emph{three-way} allocation---domestic non-banks, foreigners, and banks---that the data actually display.
+\subsubsection{Sovereign debt demand and creditor-sector mechanisms}
+\whenintegrated{\label{lit-sovereign-demand}}
 
-\whenintegrated{\label{lit-repression}}
-\subsubsection{Financial repression and domestic debt bias}
-A second strand studies why governments push debt onto the domestic banking sector. \citet{ReinhartSbrancia2015} provide historical evidence that financial repression---a mix of interest-rate ceilings, reserve requirements and captive domestic audiences for government debt---has been a quantitatively important mechanism through which governments liquidate their debt burdens. \citet{ChariDovisKehoe2020} rationalize these policies in a Ramsey framework and show that forcing banks to hold sovereign debt can be part of an optimal taxation scheme when the government lacks commitment. Most directly related to our paper, \citet{Jeanne2025} models optimal financial repression as a sequential process: below a debt threshold banks act as marginal buyers (balance-sheet repression), and above it the government extracts quasi-fiscal revenue from the banking sector. That paper establishes why banks must absorb debt beyond a certain level, but treats the non-bank sector as a single passive residual. We take the balance-sheet-repression mechanism as a starting point and ask a complementary question: \emph{among the non-bank creditors, how does debt distribute between domestic non-banks and foreigners, and what determines the cross-country heterogeneity in this allocation?}
+A first strand of literature studies why particular sectors hold government debt.
+In models of domestic non-bank or household demand, government debt can provide liquidity and self-insurance services.
+For example, \citet{AiyagariMcGrattan1998} analyze the optimal quantity of public debt in an incomplete-markets environment, where government bonds help households smooth consumption in the presence of idiosyncratic risk.
+This mechanism highlights why domestic private agents may willingly absorb government debt even when debt is not needed to finance current spending.
 
-\whenintegrated{\label{lit-doomloop}}
-\subsubsection{Sovereign--bank doom loop}
-A third strand emphasizes the two-way feedback between sovereign risk and bank balance sheets. \citet{BrunnermeierEtAl2016} formalize the ``diabolic loop'' between weak sovereigns and weak banks and propose safe-asset designs that would break it. \citet{FarhiTirole2018} develop a general-equilibrium model in which bank bailouts and sovereign distress reinforce each other, generating a genuine doom loop. This literature motivates a central premise of our framework: placing marginal debt in the banking sector is not costless, because bank-held sovereign debt distorts bank balance sheets and amplifies macro-financial feedbacks. Our model captures this by treating bank absorption as the \emph{residual} margin with a convex welfare cost, rather than as a perfectly elastic funding source.
+A second branch focuses on foreign demand for sovereign debt, especially in the presence of default risk.
+In canonical sovereign-default models such as \citet{Arellano2008}, foreign investors price sovereign debt according to the government's endogenous default incentives.
+Borrowing is limited not by an exogenous portfolio capacity, but by the interaction between default risk, interest rates, and the government's willingness to repay.
+This literature is central for understanding external debt and international investor discipline, but it does not ask how foreign demand competes with domestic non-bank or bank demand for a common stock of government liabilities.
 
-\whenintegrated{\label{lit-optimaldebt}}
-\subsubsection{Optimal government debt level}
-A fourth strand provides a rationale for why non-banks hold government debt in the first place. \citet{AiyagariMcGrattan1998} show that in an incomplete-markets setting, households value government bonds as a self-insurance instrument against uninsured idiosyncratic income risk, pinning down an optimal positive quantity of public debt. This provides a microeconomic rationale for a downward-sloping, capacity-bounded non-bank demand curve. That framework, however, is closed-economy and has no sovereign default, so it leaves unaddressed the two margins at the center of our paper: sovereign default risk and the role of foreign investors. Our model does not micro-found the non-bank demand curve in the Aiyagari--McGrattan sense; instead, we posit a reduced-form demand $d_h = S_h \cdot g(r_h)$ consistent with that tradition, and focus on how non-bank demand, a foreign no-default ceiling, and bank residual absorption jointly determine the allocation of sovereign debt.
+A third branch studies banks as sovereign-debt holders.
+The sovereign--bank nexus literature emphasizes that banks may become large holders of domestic government debt because of regulation, collateral needs, implicit guarantees, or financial repression.
+\citet{BrunnermeierEtAl2016}, for example, describe the sovereign--bank ``diabolic loop,'' in which weak sovereigns and fragile banks reinforce each other through banks' holdings of domestic public debt.
+This literature explains why bank holdings are macro-financially important, but it generally treats the banking sector in isolation rather than as one sector among several competing buyers of government debt.
+
+The limitation of these theoretical approaches is therefore not that they miss important mechanisms.
+Rather, each mechanism is usually developed separately.
+Households and non-banks provide liquidity demand, foreigners price default risk, and banks generate sovereign--bank feedbacks.
+What is missing is a joint allocation problem: given a fixed amount of government debt, how much is placed with each sector, and how does that allocation change with the level of debt and with the country's financial structure?
+This paper addresses that gap by placing the three creditor sectors in a single cost-minimization framework.
+
+\subsubsection{Empirical evidence on the composition of sovereign debt}
+\whenintegrated{\label{lit-empirical-composition}}
+
+A second strand of literature documents who holds sovereign debt across countries and over time.
+\citet{ArslanalpTsuda2014} provide a key dataset for advanced-economy sovereign debt holdings by creditor sector.
+Their work makes it possible to study the evolution of sovereign debt demand across domestic banks, central banks, non-banks, and foreign investors in a systematic cross-country panel.
+
+More recent empirical work emphasizes that the creditor composition of sovereign debt matters for macroeconomic outcomes.
+\citet{FangHardyLewis2023} show that the identity of sovereign-debt holders varies meaningfully across countries and is related to fiscal and financial vulnerabilities.
+This work is closest to the empirical motivation of the present paper because it focuses not only on the level of public debt, but also on who holds that debt.
+
+However, the existing empirical literature is primarily descriptive.
+It documents that creditor mixes differ across countries and that the composition of holders changes as debt rises, but it does not provide a structural account of why the split across sectors takes the form it does.
+In particular, it does not explain why, at similar debt-to-GDP levels, some countries place debt mainly with domestic non-banks, others with foreigners, and others with the banking sector.
+Nor does it explicitly connect cross-country heterogeneity in debt composition to differences in domestic financial structure.
+This paper uses the Arslanalp--Tsuda debt-holder panel, but interprets the data through a model in which sectoral absorption depends on creditor-sector capacity and marginal placement costs.
+
+\subsubsection{High debt, thresholds, and financial repression}
+\whenintegrated{\label{lit-high-debt-repression}}
+
+A third related literature studies what happens when public debt becomes very high.
+One influential line of work focuses on debt thresholds and the macroeconomic consequences of high debt.
+\citet{ReinhartRogoff2010} argue that high public debt is associated with weaker growth, motivating a broad literature on whether debt becomes especially costly above certain levels.
+
+More directly related to this paper is the literature on financial repression and the role of banks as marginal buyers at high debt levels.
+\citet{Jeanne2025} develops a framework in which, once fiscal adjustment becomes politically or economically difficult, governments may increasingly rely on the domestic financial system to absorb public debt.
+This mechanism is closely connected to the high-debt pattern studied here: above a threshold level of debt, the banking sector becomes the dominant marginal absorber of additional government liabilities.
+
+The contribution of the present paper is to embed this high-debt banking takeover into a broader allocation framework.
+The high-debt threshold is only one part of the debt-allocation problem.
+Below the threshold, most of the cross-country variation lies in the split between domestic non-banks and foreign investors.
+This paper therefore adds a below-threshold mechanism: domestic non-bank absorption depends on country-specific sector size, while foreign absorption is disciplined by a common foreign-investor ceiling.
+The banking sector then becomes increasingly important only when the other sectors approach their effective limits.
+
+\subsubsection{Contribution of this paper}
+\whenintegrated{\label{lit-contribution}}
+
+Relative to the theoretical literature, the paper's first contribution is to build a joint three-sector model of sovereign debt allocation.
+A government must place a given amount of debt and chooses the allocation across domestic non-banks, foreign investors, and the banking sector to minimize total placement cost.
+Domestic non-banks have a country-specific capacity, foreign investors face a common exposure ceiling, and the banking sector has no hard ceiling but carries an increasing quasi-fiscal cost.
+The model therefore generates predictions for both the level and marginal composition of sovereign debt holdings.
+
+Relative to the empirical literature, the paper's second contribution is to connect the model directly to cross-country data.
+The empirical strategy uses variation in sectoral financial structure to explain why countries with similar debt levels have different creditor mixes.
+Country-level structural sector sizes are recovered from financial-sector data and then used to explain sectoral debt absorption in the Arslanalp--Tsuda sovereign-debt-holder panel.
+This provides a structural interpretation of patterns that the existing empirical literature has mostly documented descriptively.
+
+Finally, relative to the high-debt and financial-repression literature, the paper's third contribution is to show that banking-sector absorption is part of a broader pecking-order logic.
+Banking takeover occurs not simply because banks are always the preferred buyers, but because domestic non-banks and foreign investors become increasingly saturated as debt rises.
+The model and empirical results therefore connect the high-debt banking threshold to the lower-debt allocation between non-bank and foreign creditors, producing a unified account of sovereign debt composition across the full debt distribution.
 
 \whenintegrated{\label{organization}}\par\subsection{Organization}
 \whenintegrated{\label{sec:org}} % integrated doc: SST for labels
 
-The paper is organized as follows. Section~\ref{sec:model} presents the three-sector cost-minimization model, in which the government allocates debt across domestic non-banks with country-specific capacity, foreigners with a uniform no-default ceiling, and banks as the residual absorber with convex financial-repression costs, and derives the resulting equilibrium predictions for debt composition. Section~\ref{sec:empirical} takes the model to the data: we describe the panel of advanced-economy debt-composition data and structural sector-size variables, implement a two-stage estimator that identifies structural sector sizes in a first stage and the cross-country allocation of debt in a second stage, and document the resulting heterogeneous pecking order and concavity in debt absorption. Section~\ref{sec:conclusion} concludes.
+The paper is organized as follows. Section~\ref{sec:motivation} documents two stylized facts that motivate the framework: a banking-takeover kink at high debt and cross-country heterogeneity in creditor mix at any given debt level. Section~\ref{sec:model} presents the three-sector cost-minimization model, in which the government allocates debt across domestic non-banks with country-specific capacity, foreigners with a uniform no-default ceiling, and banks as the residual absorber with convex financial-repression costs, and derives the resulting equilibrium predictions for debt composition. Section~\ref{sec:empirical} takes the model to the data: we describe the panel of advanced-economy debt-composition data and structural sector-size variables, implement a two-stage estimator that identifies structural sector sizes in a first stage and the cross-country allocation of debt in a second stage, and document the resulting heterogeneous pecking order and concavity in debt absorption. Section~\ref{sec:conclusion} concludes.
 
 % Smart bibliography: Only include bibliography if standalone AND has citations
 \smartbib
 
-\pdfonly{
-% execute this version if compiling with pdflatex
 \end{document}
-}

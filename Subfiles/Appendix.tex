@@ -1,0 +1,263 @@
+\input{./._relpath-to-latexroot.ltx}
+\documentclass[\latexroot/\projectname]{subfiles}
+\input{\latexroot/@resources/subfile-setup.ltx}
+\begin{document}
+
+\appendix
+
+\section{Proofs of model propositions}
+\whenintegrated{\label{app:proofs}}
+
+This appendix collects proofs of Propositions~\ref{prop:monotone},
+\ref{prop:Sh}, and~\ref{prop:concave} stated in
+Section~\ref{sec:model}. Throughout, $H_j\equiv\partial\text{MC}_j/\partial d_j$
+denotes the slope of sector $j$'s marginal-cost schedule, with closed
+forms given in equations~\eqref{eq:Hh}--\eqref{eq:Hb}; the structural
+property used at every step is $H_j>0$ in each sector.
+
+\paragraph{Proof of Proposition~\ref{prop:monotone}.}
+Suppose, for contradiction, that $D$ rises but $d_h^\ast$ falls.
+Because $H_h>0$ strictly, $\text{MC}_h$ falls, so the new equilibrium
+shadow rate $\lambda$ is lower. The first-order condition
+\eqref{eq:foc} then implies that $\text{MC}_f$ and $\Psi'(d_b)$ also
+fall, so $d_f^\ast$ and $d_b^\ast$ fall as well (since $H_f,H_b>0$).
+But then $d_h^\ast+d_f^\ast+d_b^\ast=D$ has declined, contradicting
+the premise that $D$ rose. The same argument applies to $d_f^\ast$
+and $d_b^\ast$ by symmetry. Strict positivity of every $H_j$
+delivers strict inequality at any interior allocation. $\square$
+
+\paragraph{Proof of Proposition~\ref{prop:Sh}.}
+Differentiate the FOC \eqref{eq:foc} and the budget constraint
+\eqref{eq:budget} with respect to $S_h$, holding $D$ fixed. Write
+$K_h\equiv\partial\text{MC}_h/\partial S_h$ at fixed $d_h$. Then
+\[
+  H_h\,\mathrm{d}d_h + K_h\,\mathrm{d}S_h \;=\; \mathrm{d}\lambda,
+  \quad
+  H_f\,\mathrm{d}d_f \;=\; \mathrm{d}\lambda,
+  \quad
+  H_b\,\mathrm{d}d_b \;=\; \mathrm{d}\lambda,
+  \quad
+  \mathrm{d}d_h+\mathrm{d}d_f+\mathrm{d}d_b=0.
+\]
+Using the last three equations to eliminate $\mathrm{d}d_f,
+\mathrm{d}d_b,\mathrm{d}\lambda$ in terms of $\mathrm{d}d_h$ yields
+\[
+  \Bigl(H_h+\frac{H_fH_b}{H_f+H_b}\Bigr)\,\mathrm{d}d_h
+  \;=\;-K_h\,\mathrm{d}S_h.
+\]
+Because $\text{MC}_h$ depends on $d_h$ only through the share
+$x\equiv d_h/S_h$, the chain rule gives
+$K_h=-(\partial\text{MC}_h/\partial x)\,d_h/S_h^{2}=-H_h\,d_h/S_h<0$
+whenever $d_h>0$. The bracket multiplying $\mathrm{d}d_h$ is strictly
+positive, hence $\partial d_h^\ast/\partial S_h>0$. $\square$
+
+\paragraph{Proof of Proposition~\ref{prop:concave}.}
+Let $m\equiv\lambda-\bar r_h>0$. Differentiating the closed-form
+solutions \eqref{eq:dhstar}--\eqref{eq:dbstar} in $\lambda$,
+\[
+  A_h(\lambda)\equiv\frac{\mathrm{d}d_h^\ast}{\mathrm{d}\lambda}
+    =\frac{S_h\bar\omega}{2\gamma_h}\bigl(1+m/\gamma_h\bigr)^{-3/2},
+  \qquad
+  A_f(\lambda)\equiv\frac{\mathrm{d}d_f^\ast}{\mathrm{d}\lambda}
+    =\frac{\bar D_f}{2\gamma_f}\bigl(1+m/\gamma_f\bigr)^{-3/2},
+  \qquad
+  \frac{\mathrm{d}d_b^\ast}{\mathrm{d}\lambda}=\frac{1}{\psi}.
+\]
+Because $D'(\lambda)=A_h+A_f+1/\psi>0$, the change of variables
+$\lambda\mapsto D(\lambda)$ is a strictly increasing
+$C^{1}$-diffeomorphism, with
+\begin{equation}\label{eq:dhdD-app}
+  \frac{\mathrm{d}d_h^\ast}{\mathrm{d}D}
+  \;=\;\frac{1}{\,1+A_f/A_h+1/(\psi A_h)\,}.
+\end{equation}
+Under the symmetric calibration $\bar r_h=\bar r_f$ and
+$\gamma_h=\gamma_f\equiv\gamma$, the $\lambda$-dependent factors in
+$A_h$ and $A_f$ are identical, so $A_f/A_h=\bar D_f/(S_h\bar\omega)$
+is constant in $\lambda$. The denominator of \eqref{eq:dhdD-app} can
+therefore be written
+\[
+  \varphi(\lambda)
+  \;=\;\Bigl(1+\frac{\bar D_f}{S_h\bar\omega}\Bigr)
+  \;+\;\frac{2\gamma}{\psi\,S_h\bar\omega}\,(1+m/\gamma)^{3/2},
+\]
+which is strictly increasing in $\lambda$ on $[\bar r_h,\infty)$, so
+$\mathrm{d}d_h^\ast/\mathrm{d}D=1/\varphi(\lambda)$ is strictly
+decreasing in $\lambda$. Since $D(\lambda)$ is strictly increasing,
+$\mathrm{d}d_h^\ast/\mathrm{d}D$ is also strictly decreasing in $D$,
+which is equivalent to strict concavity of $d_h^\ast(D)$. Replacing
+the roles of $A_h$ and $A_f$ in the same argument delivers strict
+concavity of $d_f^\ast(D)$. $\square$
+
+\section{Robustness of the two-stage estimator}
+\whenintegrated{\label{app:robustness}}
+
+The Stage~1 / Stage~2 design recovers a country-level structural-size
+effect $\hat\delta_{ij}$ from a fixed-effects regression of sector
+size on debt (Equation~\eqref{eq:stage1}), and uses
+$\hat\delta_{ij}$ as a country-constant regressor in Stage~2
+(Equation~\eqref{eq:stage2}). Two features of this design merit
+robustness checks.
+
+\paragraph{Sample mismatch.}
+The Stage~1 sample uses GFDD sector-size data, which is sparser than
+the Arslanalp--Tsuda holdings data used in Stage~2. After Stage~1,
+$\hat\delta_{ij}$ is constructed as the country-level fixed effect
+and is propagated to every country-year of country $i$, including
+country-years where the underlying size variable was \emph{not}
+observed. As a result, Stage~2 includes country-years that were not
+in the Stage~1 sample.
+
+\paragraph{Sparsely-measured countries.}
+$\hat\delta_{ij}$ is more precisely estimated for countries with many
+Stage~1 observations and noisier for countries with few. The
+per-country Stage~1 observation counts are: most countries contribute
+$\geq\!11$ non-bank size observations; the exceptions are
+\textit{Cyprus} ($0$, dropped automatically because $\hat\delta_{i,h}$
+is missing), \textit{Luxembourg} ($1$) and \textit{Malta} ($4$).
+For the central-bank size, only \textit{Latvia} has fewer than $10$
+observations ($9$). For private-bank size, only \textit{Canada}
+has fewer than $10$ ($8$).
+
+We address both concerns with two robustness specifications.
+
+\begin{itemize}
+  \item[\textbf{(2) Matched sample.}]
+        Stage~2 is restricted to country-years that were also in the
+        Stage~1 sample for the corresponding sector, eliminating the
+        propagated rows (only rows where $s_{ij,it}$ was directly
+        observed are kept).
+  \item[\textbf{(3) Sparse-country drop.}]
+        Stage~2 drops countries with fewer than $k$ Stage~1
+        observations for the corresponding sector. We report
+        $k\geq\!5$ and $k\geq\!10$.
+\end{itemize}
+
+All specifications use the Hansen threshold estimate
+$\hat{\bar D}=102{.}7\%$ of GDP (Section~\ref{sec:hansen-threshold}
+and Table~\ref{tab:threshold}) and two-way cluster-robust standard errors at
+country and year. Robustness regressions are implemented jointly with the
+canonical Stage~2 in
+\texttt{Code/empirical\_debt\_composition/python/twoway\_cluster\_full.py}; the Stata analogue is
+\texttt{Code/empirical\_debt\_composition/do/twoway\_cluster\_full.do}
+(driven by \texttt{run\_all.do}).
+
+\subsubsection{Robustness results}
+\whenintegrated{\label{app:robustness-results}}
+
+Headline coefficients (Tables~\ref{tab:threshold}--\ref{tab:stage2}) are reproduced in column~(1) of each table below. Columns~(2)--(4) report matched and sparse-country specifications. In every column, $\theta_{cb}$ rounds to $0.013$ and stays significant two-way clustered; the headline non-bank size-scaling $\theta_h\in[0{.}002,0{.}003]$ remains significant at least at the $1\%$ level; and $\mu_{cb}+\mu_{pb}$ stays close to $\sim\!0{.}82$ apart from matched samples where it softens modestly toward $0{.}78$.
+
+\begin{table}[htbp]\centering
+\caption{Non-bank holdings ($d_h$): Stage~2 robustness}
+\label{tab:app-nonbank}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lcccc}
+\toprule
+ & (1) Headline & (2) Matched & (3a) $k\!\ge\!5$ & (3b) $k\!\ge\!10$ \\
+\midrule
+$\beta_h$: $D_{it}$
+  & $0.315^{***}$ & $0.297^{***}$ & $0.314^{***}$ & $0.314^{***}$ \\
+  & $(0.039)$ & $(0.038)$ & $(0.041)$ & $(0.041)$ \\
+$\theta_h$: $\hat\delta_h\!\cdot D_{it}$
+  & $0.0018^{***}$ & $0.0021^{***}$ & $0.0019^{***}$ & $0.0019^{***}$ \\
+  & $(0.0005)$ & $(0.001)$ & $(0.001)$ & $(0.001)$ \\
+$\mu_h$: threshold slope
+  & $-0.037$ & $-0.055$ & $-0.031$ & $-0.031$ \\
+  & $(0.165)$ & $(0.146)$ & $(0.169)$ & $(0.169)$ \\
+$\nu_h$: threshold $\times\,\hat\delta$
+  & $-0.003$ & $-0.002$ & $-0.003$ & $-0.003$ \\
+  & $(0.003)$ & $(0.003)$ & $(0.003)$ & $(0.003)$ \\
+\midrule
+Obs.        & $753$ & $547$ & $709$ & $709$ \\
+Countries   & $31$ & $31$ & $29$ & $29$ \\
+$R^2$       & $0.802$ & $0.818$ & $0.804$ & $0.804$ \\
+\bottomrule
+\multicolumn{5}{p{0.9\linewidth}}{\footnotesize Notes: Columns match \texttt{twoway\_cluster\_full}: headline, Stage~1-matched Stage~2, and sparse-country drops $k\ge5$ / $k\ge10$. $R^2$ is uncentered (Stage~2 has no intercept). Stars: *** $p<0.01$, ** $p<0.05$, * $p<0.10$ (based on asymptotic cluster-robust $z$ ratios). Columns (3a) and (3b) coincide numerically because the marginal countries below $k\ge10$ for non-bank Stage~1 are already excluded by the $k\ge5$ subset in this baseline.}
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering
+\caption{Central-bank holdings ($d_{cb}$): Stage~2 robustness}
+\label{tab:app-cb}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lcccc}
+\toprule
+ & (1) Headline & (2) Matched & (3a) $k\!\ge\!5$ & (3b) $k\!\ge\!10$ \\
+\midrule
+$\beta_{cb}$: $D_{it}$
+  & $0.057^{***}$ & $0.060^{***}$ & $0.057^{***}$ & $0.057^{***}$ \\
+  & $(0.014)$ & $(0.014)$ & $(0.014)$ & $(0.014)$ \\
+$\theta_{cb}$: $\hat\delta_{cb}\!\cdot D_{it}$
+  & $0.0127^{***}$ & $0.0127^{**}$ & $0.0127^{***}$ & $0.0128^{***}$ \\
+  & $(0.0043)$ & $(0.0045)$ & $(0.0044)$ & $(0.0044)$ \\
+$\mu_{cb}$: threshold slope
+  & $0.281^{*}$ & $0.274$ & $0.281^{*}$ & $0.283$ \\
+  & $(0.159)$ & $(0.162)$ & $(0.164)$ & $(0.169)$ \\
+$\nu_{cb}$: threshold $\times\,\hat\delta$
+  & $-0.063^{***}$ & $-0.064^{**}$ & $-0.063^{**}$ & $-0.063^{**}$ \\
+  & $(0.022)$ & $(0.026)$ & $(0.027)$ & $(0.023)$ \\
+\midrule
+Obs.        & $780$ & $718$ & $780$ & $762$ \\
+Countries   & $32$ & $32$ & $32$ & $31$ \\
+$R^2$       & $0.713$ & $0.716$ & $0.713$ & $0.714$ \\
+\bottomrule
+\multicolumn{5}{p{0.9\linewidth}}{\footnotesize Notes: Columns (1), (3a), and~(3b) differ only mildly for columns (3a) versus (3b) except for the sample tightening to $762$ observations when countries with $<10$ private-bank size observations drop out of Stage~2's cross-country feasibility set.}
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]\centering
+\caption{Private-bank holdings ($d_{pb}$): Stage~2 robustness}
+\label{tab:app-pb}
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lcccc}
+\toprule
+ & (1) Headline & (2) Matched & (3a) $k\!\ge\!5$ & (3b) $k\!\ge\!10$ \\
+\midrule
+$\beta_{pb}$: $D_{it}$
+  & $0.194^{***}$ & $0.191^{***}$ & $0.194^{***}$ & $0.194^{***}$ \\
+  & $(0.019)$ & $(0.019)$ & $(0.019)$ & $(0.020)$ \\
+$\theta_{pb}$: $\hat\delta_{pb}\!\cdot D_{it}$
+  & $-0.0002$ & $-0.0002$ & $-0.0002$ & $-0.0002$ \\
+  & $(0.0007)$ & $(0.001)$ & $(0.0007)$ & $(0.001)$ \\
+$\mu_{pb}$: threshold slope
+  & $0.537^{**}$ & $0.526^{**}$ & $0.537^{**}$ & $0.536^{**}$ \\
+  & $(0.243)$ & $(0.223)$ & $(0.250)$ & $(0.249)$ \\
+$\nu_{pb}$: threshold $\times\,\hat\delta$
+  & $-0.012$ & $-0.011$ & $-0.012$ & $-0.012$ \\
+  & $(0.009)$ & $(0.008)$ & $(0.009)$ & $(0.009)$ \\
+\midrule
+Obs.        & $780$ & $732$ & $780$ & $759$ \\
+Countries   & $32$ & $32$ & $32$ & $31$ \\
+$R^2$       & $0.821$ & $0.823$ & $0.821$ & $0.817$ \\
+\bottomrule
+\multicolumn{5}{p{0.9\linewidth}}{\footnotesize Notes: As in Tables~\ref{tab:stage1}--\ref{tab:stage2}, Cyprus is unavailable for Stage~2 non-bank specifications; matched samples follow the tighter Stage~1 coverage for banks.}
+\end{tabular}
+\end{table}
+
+\subsubsection{Banking takeover sum across specifications}
+\whenintegrated{\label{app:banking-sum}}
+
+\begin{table}[htbp]\centering
+\caption{Combined banking-sector threshold slope $\mu_{cb}+\mu_{pb}$}
+\label{tab:app-musum}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabular}{lc}
+\toprule
+Specification & $\mu_{cb}+\mu_{pb}$ \\
+\midrule
+(1) Headline (Tables~\ref{tab:threshold}--\ref{tab:stage2}) & $0.82$ \\
+(2) Matched sample                                         & $0.80$ \\
+(3a) Sparse drop $k\!\ge\!5$                              & $0.82$ \\
+(3b) Sparse drop $k\!\ge\!10$                             & $0.82$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Summary.}
+Two implementation concerns about the two-stage estimator do not materially affect the headline findings. (i) The \textit{propagation} of $\hat\delta_{ij}$ to country-years not in the Stage~1 sample is innocuous: restricting Stage~2 to the matched sample leaves the size-scaling and threshold-slope coefficients within sampling variability of the headline estimates and, for non-banks, slightly strengthens $\theta_h$. (ii) The presence of countries with very few Stage~1 observations (Luxembourg, Malta for non-banks; Latvia, Canada for banking-size variables) does not drive the size-scaling result: dropping these countries leaves the headline coefficients essentially unchanged. The banking-takeover sum $\mu_{cb}+\mu_{pb}$ is between $0.78$ and $0.82$ in every specification.
+
+\smartbib
+
+\end{document}

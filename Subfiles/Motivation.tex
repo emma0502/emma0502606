@@ -1,0 +1,84 @@
+\input{./._relpath-to-latexroot.ltx}
+\documentclass[\latexroot/\projectname]{subfiles}
+\input{\latexroot/@resources/subfile-setup.ltx}
+
+\begin{document}
+
+\section{Motivation: two stylized facts}
+\whenintegrated{\label{sec:motivation}} % integrated doc: SST for labels
+
+Two patterns in the cross-country data on advanced-economy sovereign
+debt motivate the framework that follows. First, a sharp \emph{kink}
+at high debt: once total government debt crosses roughly $100\%$ of
+GDP, banking-sector holdings rise much more steeply than below the
+threshold. Second, substantial \emph{cross-country heterogeneity} at
+any given debt level: countries with similar debt-to-GDP ratios place
+their debt in very different hands.
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}[t]{0.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/db_total_vs_totalD.png}
+  \subcaption*{(a) Bank holdings vs.\ total debt.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Figures/debt_composition_examples.png}
+  \subcaption*{(b) Creditor composition at similar debt levels.}
+\end{minipage}
+\caption{Motivating evidence.}
+\label{fig:motivation}
+\end{figure}
+
+%-------------------------------------------------------------
+\subsection{Fact 1 — Banking takeover above a high-debt threshold}
+%-------------------------------------------------------------
+
+Once total government debt rises beyond roughly $100\%$ of GDP, the
+banking sector begins to absorb a noticeably larger share of marginal
+debt issuance than at lower debt levels. Below the threshold, an
+additional unit of total debt translates into only a modest increase in
+combined central-bank and private-bank holdings; above it, the same
+incremental unit of debt is absorbed mostly by the banking system. The
+slope of bank holdings against total debt steepens sharply around this
+point, and banking eventually accounts for nearly all of the marginal
+issuance. This is the empirical pattern we will refer to as the
+``banking takeover'' and which the model in
+Section~\ref{sec:model} is designed to rationalize.
+
+%-------------------------------------------------------------
+\subsection{Fact 2 — Cross-country heterogeneity at the same debt level}
+%-------------------------------------------------------------
+
+At any given debt-to-GDP ratio, advanced economies place their debt
+with strikingly different creditor sectors. Some lean heavily on
+domestic non-bank investors such as pension funds and insurance
+companies; others rely on foreign investors; others place a large
+share of their debt with the domestic banking system. This
+heterogeneity does not vanish once we condition on the level of debt:
+countries with intrinsically larger non-bank financial sectors absorb
+a larger share of government debt through non-banks, while countries
+with structurally smaller non-bank sectors push more debt onto
+foreigners and the banking system.
+
+%-------------------------------------------------------------
+\subsection{What this implies for a framework}
+%-------------------------------------------------------------
+
+Together the two facts pin down what a useful framework needs to
+deliver. It must (i) generate a sharp threshold in marginal banking
+absorption as total debt rises, and (ii) allow the cross-country mix
+of creditors at a given debt level to vary with the country's domestic
+financial structure. Section~\ref{sec:model} develops a
+cost-minimization model that produces both features: domestic
+non-banks have country-specific capacity, foreign investors face a
+common exposure ceiling, and banking is the residual margin with no
+hard ceiling but a convex placement cost. Section~\ref{sec:empirical}
+takes that framework directly to panel data and shows that both
+stylized facts emerge as predicted.
+
+% Smart bibliography: Only include bibliography if standalone AND has citations
+\smartbib
+
+\end{document}
