@@ -446,6 +446,8 @@ node_*/
 # Local env and build artifacts
 ha_latest/
 hafiscal_latest.egg*/
+*.egg-info/
+who_holds_government_debt.egg-info/
 
 # Generated title pages
 *-titlepage.pdf
