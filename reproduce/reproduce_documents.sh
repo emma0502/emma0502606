@@ -17,7 +17,7 @@ DRY_RUN=false
 STOP_ON_ERROR="${STOP_ON_ERROR:-false}"
 SCOPE="main"
 DRAFT_MODE_ENABLED="false"
-REPO_TYPE="STANDARD"  # Will be set to "QE" if HAFiscal.tex exists
+REPO_TYPE="STANDARD"
 
 show_help() {
     cat << 'EOF'
@@ -31,10 +31,8 @@ OPTIONS:
     --quick, -q             Quick compilation (single pass)
     --verbose, -v           Verbose output
     --clean, -c             Clean build artifacts before compilation
-    --draft                 Compile HAFiscal*.tex in draft mode
-                              - Latest/Public: Shows equation/figure/section labels
-                              - QE: Shows line numbers (output: HAFiscal-draft.pdf)
-                            Only applicable to HAFiscal.tex and HAFiscal.tex
+    --draft                 Compile the main paper in draft mode
+                              (shows equation/figure/section labels)
                             Can also be controlled via DRAFT_MODE environment variable
     --single DOCUMENT       Compile only specified document
     --list                  List available documents
@@ -49,18 +47,15 @@ OPTIONS:
                             subfiles: root + Subfiles/
 
 TARGETS:
-    main                    HAFiscal.tex (main paper)
-    slides                  HAFiscal-Slides.tex
-    appendix-hank          Subfiles/Appendix-HANK.tex
-    appendix-nosplurge     Subfiles/Appendix-NoSplurge.tex
+    main                    emma0502606.tex (main paper)
     all                    All documents (default)
 
 EXAMPLES:
     ./reproduce_documents.sh                    # Compile all documents
-    ./reproduce_documents.sh main slides       # Compile specific documents
-    ./reproduce_documents.sh --single HAFiscal.tex
+    ./reproduce_documents.sh main              # Compile main paper
+    ./reproduce_documents.sh --single emma0502606.tex
     ./reproduce_documents.sh --quick           # Fast compilation
-    ./reproduce_documents.sh --draft           # Compile HAFiscal*.tex in draft mode
+    ./reproduce_documents.sh --draft           # Compile main paper in draft mode
     DRAFT_MODE=1 ./reproduce_documents.sh      # Draft mode via environment variable
 EOF
 }
@@ -69,9 +64,6 @@ log_info() { echo "📋 $*"; }
 log_success() { echo "✅ $*"; }
 log_error() { echo "❌ ERROR: $*" >&2; }
 log_warning() { echo "⚠️  WARNING: $*"; }
-
-# Track if we fetched bibliography from with-precomputed-artifacts (for cleanup later)
-FETCHED_BIBLIOGRAPHY=false
 
 # Function to clean up auxiliary files after document compilation
 cleanup_auxiliary_files() {
@@ -142,9 +134,7 @@ cleanup_auxiliary_files() {
 # Function to resolve document target to file path
 resolve_document() {
     case "$1" in
-        "main") echo "HAFiscal.tex" ;;
-        "slides") echo "HAFiscal-Slides.tex" ;;
-        "appendix-hank") echo "Subfiles/Appendix-HANK.tex" ;;
+        "main") echo "emma0502606.tex" ;;
         "appendix-nosplurge") echo "Subfiles/Appendix-NoSplurge.tex" ;;
         *) echo "$1" ;;  # Return as-is for direct file paths
     esac
@@ -152,9 +142,7 @@ resolve_document() {
 
 list_documents() {
     echo "Available document targets:"
-    echo "  main -> HAFiscal.tex"
-    echo "  slides -> HAFiscal-Slides.tex"
-    echo "  appendix-hank -> Subfiles/Appendix-HANK.tex"
+    echo "  main -> emma0502606.tex"
     echo "  appendix-nosplurge -> Subfiles/Appendix-NoSplurge.tex"
 }
 
@@ -304,54 +292,6 @@ parse_latex_error() {
     printf "\n"
 }
 
-# Function to fetch HAFiscal.bib from with-precomputed-artifacts branch via HTTP
-fetch_bibliography_if_needed() {
-    # Check if HAFiscal.bib already exists - if so, don't fetch or track it
-    # This ensures we only clean up files we fetched, not pre-existing ones
-    if [[ -f "HAFiscal.bib" ]]; then
-        return 0
-    fi
-
-    log_info "HAFiscal.bib not found in working directory"
-
-    # Download from GitHub raw URL (avoids git fetch which bloats .git/objects/)
-    GITHUB_REPO="${GITHUB_REPO:-llorracc/HAFiscal-QE}"
-    PRECOMPUTED_BRANCH="${PRECOMPUTED_BRANCH:-with-precomputed-artifacts}"
-    RAW_URL="https://raw.githubusercontent.com/${GITHUB_REPO}/${PRECOMPUTED_BRANCH}/HAFiscal.bib"
-
-    echo ""
-    echo "========================================"
-    echo "📦 Downloading Bibliography File"
-    echo "========================================"
-    echo ""
-    echo "HAFiscal.bib is required for citations but not present in main branch."
-    echo "Downloading from GitHub (${PRECOMPUTED_BRANCH} branch)..."
-    echo ""
-
-    echo "→ Downloading HAFiscal.bib..."
-    if curl -L --fail --silent --show-error -o HAFiscal.bib "$RAW_URL" 2>&1; then
-        if [[ -f "HAFiscal.bib" && -s "HAFiscal.bib" ]]; then
-            FILE_SIZE=$(du -h "HAFiscal.bib" 2>/dev/null | cut -f1)
-            echo "  ✓ HAFiscal.bib ($FILE_SIZE)"
-            echo ""
-            echo "✅ Successfully downloaded bibliography"
-            echo "   (This will be automatically cleaned up after document compilation)"
-            echo ""
-            FETCHED_BIBLIOGRAPHY=true
-        else
-            log_error "HAFiscal.bib download failed or file is empty"
-            rm -f HAFiscal.bib 2>/dev/null || true
-        fi
-    else
-        log_warning "Could not download HAFiscal.bib from GitHub"
-        log_warning "URL: $RAW_URL"
-        log_warning "Bibliography citations may not work correctly"
-        rm -f HAFiscal.bib 2>/dev/null || true
-    fi
-
-    return 0
-}
-
 validate_environment() {
     log_info "Validating compilation environment..."
     
@@ -388,8 +328,8 @@ validate_environment() {
             log_error "Tried PATH: $PATH"
             return 1
         fi
-        if [[ ! -f "HAFiscal.tex" ]]; then
-            log_error "HAFiscal.tex not found - run from project root directory"
+        if [[ ! -f "emma0502606.tex" ]]; then
+            log_error "emma0502606.tex not found - run from project root directory"
             return 1
         fi
         log_success "Environment validation completed (minimal checks)"
@@ -436,8 +376,8 @@ validate_environment() {
         return 1
     fi
     
-    if [[ ! -f "HAFiscal.tex" ]]; then
-        log_error "HAFiscal.tex not found - run from project root directory"
+    if [[ ! -f "emma0502606.tex" ]]; then
+        log_error "emma0502606.tex not found - run from project root directory"
         return 1
     fi
     
@@ -835,9 +775,6 @@ main() {
         cd ..
     fi
 
-    # Fetch bibliography from with-precomputed-artifacts if needed
-    fetch_bibliography_if_needed
-
     # Validate and setup
     if ! validate_environment; then
         exit 1
@@ -845,20 +782,12 @@ main() {
     
     setup_build_environment
     
-    # Detect repository type for draft mode handling
-    if [[ -f "HAFiscal.tex" ]]; then
-        REPO_TYPE="QE"
-        if [[ "$VERBOSE" == "true" ]]; then
-            log_info "Repository type: QE"
-        fi
-    else
-        REPO_TYPE="STANDARD"
-        if [[ "$VERBOSE" == "true" ]]; then
-            log_info "Repository type: Latest/Public"
-        fi
+    REPO_TYPE="STANDARD"
+    if [[ "$VERBOSE" == "true" ]]; then
+        log_info "Repository type: Latest/Public"
     fi
-    
-    log_info "Starting HAFiscal document reproduction (mode: $REPRODUCTION_MODE)"
+
+    log_info "Starting document reproduction (mode: $REPRODUCTION_MODE)"
     
     # Handle single document compilation
     if [[ -n "$single_document" ]]; then
@@ -1109,18 +1038,6 @@ main() {
         echo "of all computational results shown in the documents."
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    fi
-
-    # Clean up fetched bibliography file - ONLY if we fetched it (didn't exist at start)
-    # FETCHED_BIBLIOGRAPHY is only true if the file was absent and we fetched it
-    if [[ "$FETCHED_BIBLIOGRAPHY" == "true" ]]; then
-        echo ""
-        echo "→ Cleaning up fetched HAFiscal.bib..."
-        if [[ -f "HAFiscal.bib" ]]; then
-            rm -f HAFiscal.bib
-            echo "  ✓ Removed HAFiscal.bib"
-        fi
-        echo "✅ Cleanup complete - working tree is clean"
     fi
 
     if [[ $success_count -eq $total_count ]]; then

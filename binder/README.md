@@ -4,34 +4,31 @@ This directory contains configuration files for [MyBinder.org](https://mybinder.
 
 ## Files
 
-- **`environment.yml`** → symlink to `../environment.yml` (Single Source of Truth)
-- **`apt.txt`** - System packages to install via apt-get
-- **`postBuild`** - Post-installation script
-- **`requirements.txt`** - Additional pip requirements
+- **`environment.yml`** — conda environment for the "Who Holds Government Debt?" REMARK. Kept in sync by hand with the repo-root `../environment.yml` (which is the file editors and developers use locally).
+- **`apt.txt`** — system packages installed by Binder (`latexmk` + minimal TeX Live).
+- **`postBuild`** — post-installation script (warms the matplotlib font cache).
+- **`requirements.txt`** — additional pip requirements layered on top of `environment.yml`.
 
-## Single Source of Truth
+## Testing locally
 
-The `environment.yml` file is a **symlink** to the root-level `environment.yml`. This ensures:
-
-- Only one environment specification to maintain
-- Binder environment matches local development environment
-- Changes to root `environment.yml` automatically apply to binder
-
-When synced to HAFiscal-Public via `makePublic-master.sh`, the symlink is materialized (converted to a regular file) by rsync's `-L` flag, which is the correct behavior for distribution.
-
-## Testing Binder
-
-To test the binder configuration locally:
+To recreate the same environment Binder uses, from the repo root:
 
 ```bash
-# Activate the environment
-conda env create -f ../environment.yml
-conda activate hafiscal
+conda env create -f environment.yml
+conda activate who-holds-government-debt
+```
 
-# Or with uv
-uv sync --group=standalone
+Or, with `uv` (recommended for development):
+
+```bash
+uv sync
 ```
 
 ## Launching on MyBinder
 
-Click the binder badge in the main README to launch the repository on MyBinder.org.
+Click the Binder badge in the main `README.md` to launch the repository
+on [mybinder.org](https://mybinder.org). Once the kernel is up,
+`./reproduce.sh --docs` compiles the paper and `./reproduce.sh --all`
+runs the full pipeline (the Stata empirical step is skipped — see the
+top-level `README.md`'s "Known limitations" section for the rationale
+and the documented fall-back to committed Stata result logs).

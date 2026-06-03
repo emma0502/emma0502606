@@ -1,0 +1,1097 @@
+------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\马怡然\Documents\MLE on finacial repression\twoway_cluster_full.txt
+  log type:  text
+ opened on:   7 May 2026, 16:37:32
+
+. 
+. xtset country_id year
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 1989 to 2021
+         Delta: 1 unit
+
+. 
+. ****************************************************
+. * Threshold level Dbar (percent of GDP)
+. *   Default here = Hansen 1-threshold estimate for db_total
+. *   with country FE (see threshold_estimation_default_trim.txt:
+. *   Order 1 Threshold = 102.74851). Set to 100 to match the
+. *   round number used in the main paper text.
+. *   Changing Dbar redefines highD and centered interactions, so
+. *   delta_ij and Stage 2 coefficients are not comparable across
+. *   different Dbar values.
+. ****************************************************
+. local Dbar = 102.74851
+
+. * local Dbar = 100
+. 
+. ****************************************************
+. * Step 1: threshold variables
+. ****************************************************
+. capture drop highD d_high_c
+
+. gen highD       = d > `Dbar' if !missing(d)
+
+. gen double d_high_c = highD * (d - `Dbar')
+
+. 
+. ****************************************************
+. * Step 2: First stage (xtreg) --- to extract delta_ij
+. *   Point estimates of delta_ij do NOT depend on the SE
+. *   clustering scheme. We use xtreg here only to recover
+. *   delta_ij. SEs reported here are not used in the paper.
+. ****************************************************
+. 
+. * Non-bank size --- extract delta_n_th
+. capture drop delta_n_hat_th delta_n_th stage1_n_obs
+
+. xtreg nonbank_size c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        547
+Group variable: country_id                      Number of groups  =         31
+
+R-squared:                                      Obs per group:
+     Within  = 0.4361                                         min =          1
+     Between = 0.0702                                         avg =       17.6
+     Overall = 0.0123                                         max =         26
+
+                                                F(24, 30)         =          .
+corr(u_i, Xb) = -0.1913                         Prob > F          =          .
+
+                            (Std. err. adjusted for 31 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+nonbank_size | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.1978076   .2318933    -0.85   0.400    -.6713968    .2757816
+    d_high_c |  -.2191246   .1984452    -1.10   0.278    -.6244036    .1861545
+             |
+        year |
+       1996  |   1.598438   .5502827     2.90   0.007      .474611    2.722266
+       1997  |  -13.04082   11.08947    -1.18   0.249    -35.68855    9.606906
+       1998  |  -7.082518   7.571455    -0.94   0.357    -22.54549    8.380456
+       1999  |   1.235846   2.294004     0.54   0.594    -3.449135    5.920828
+       2000  |  -4.338226   4.318132    -1.00   0.323    -13.15703    4.480576
+       2001  |  -18.01813    9.33143    -1.93   0.063    -37.07545    1.039191
+       2002  |   -22.7439   7.962556    -2.86   0.008    -39.00561   -6.482188
+       2003  |  -16.29784   6.652615    -2.45   0.020    -29.88429   -2.711384
+       2004  |  -11.28481   6.224276    -1.81   0.080    -23.99647    1.426862
+       2005  |  -5.437071   6.214202    -0.87   0.389    -18.12816    7.254022
+       2006  |   7.254253   2.925797     2.48   0.019     1.278978    13.22953
+       2007  |   6.957299   3.483959     2.00   0.055    -.1578947    14.07249
+       2008  |   2.274882   2.624769     0.87   0.393    -3.085612    7.635376
+       2009  |   15.24207   3.387068     4.50   0.000     8.324754    22.15939
+       2010  |   19.41466   4.399742     4.41   0.000     10.42918    28.40013
+       2011  |   20.36866   5.446442     3.74   0.001     9.245544    31.49178
+       2012  |    25.7768   5.576436     4.62   0.000      14.3882    37.16541
+       2013  |   29.97359   5.613371     5.34   0.000     18.50956    41.43762
+       2014  |   32.71014   4.892756     6.69   0.000      22.7178    42.70248
+       2015  |   32.23766   5.298235     6.08   0.000     21.41722     43.0581
+       2016  |   33.68567   5.265969     6.40   0.000     22.93112    44.44021
+       2017  |   36.20573   5.325892     6.80   0.000     25.32881    47.08265
+       2018  |   34.37511   5.807945     5.92   0.000      22.5137    46.23651
+       2019  |   37.31327   5.239703     7.12   0.000     26.61237    48.01418
+       2020  |   47.12479   8.346342     5.65   0.000     30.07929     64.1703
+             |
+       _cons |   86.45008   13.16351     6.57   0.000     59.56661    113.3335
+-------------+----------------------------------------------------------------
+     sigma_u |   69.50004
+     sigma_e |  20.512157
+         rho |  .91987274   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. predict double delta_n_hat_th if e(sample), u
+(233 missing values generated)
+
+. bys country_id: egen double delta_n_th  = mean(delta_n_hat_th)
+(27 missing values generated)
+
+. bys country_id: egen long   stage1_n_obs = count(delta_n_hat_th)
+
+. 
+. * Central bank size
+. capture drop delta_cb_hat_th delta_cb_th stage1_cb_obs
+
+. xtreg cb_size c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        718
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.6114                                         min =          9
+     Between = 0.9150                                         avg =       22.4
+     Overall = 0.7373                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.3749                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+     cb_size | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0227601   .0435184     0.52   0.605    -.0659963    .1115166
+    d_high_c |   .5417426   .1611885     3.36   0.002     .2129965    .8704886
+             |
+        year |
+       1990  |  -1.358711   .9228836    -1.47   0.151    -3.240945    .5235223
+       1991  |  -2.734237   2.166731    -1.26   0.216    -7.153313    1.684839
+       1992  |   .3953351   .3085263     1.28   0.210    -.2339083    1.024579
+       1993  |  -.0500825   .5220894    -0.10   0.924    -1.114891    1.014726
+       1994  |   .1973926   1.169581     0.17   0.867    -2.187984    2.582769
+       1995  |  -1.207872   2.644829    -0.46   0.651    -6.602037    4.186293
+       1996  |  -1.545013   2.822394    -0.55   0.588    -7.301324    4.211298
+       1997  |  -1.213819   2.678232    -0.45   0.654    -6.676109    4.248471
+       1998  |   -1.07342   2.650514    -0.40   0.688    -6.479179    4.332339
+       1999  |   .1537675   2.576116     0.06   0.953    -5.100256    5.407791
+       2000  |   .3373731   2.623452     0.13   0.899    -5.013192    5.687938
+       2001  |  -1.104138   2.563223    -0.43   0.670    -6.331865    4.123589
+       2002  |  -.9842552   2.598634    -0.38   0.707    -6.284205    4.315695
+       2003  |  -.9248995    2.56827    -0.36   0.721    -6.162922    4.313123
+       2004  |  -.9813205   2.544153    -0.39   0.702    -6.170155    4.207514
+       2005  |  -1.089797      2.578    -0.42   0.675    -6.347663    4.168069
+       2006  |  -1.224742   2.581557    -0.47   0.639    -6.489863    4.040378
+       2007  |  -1.066076   2.530585    -0.42   0.676    -6.227238    4.095085
+       2008  |  -1.253362   2.605188    -0.48   0.634    -6.566678    4.059955
+       2009  |  -2.494505   2.884496    -0.86   0.394    -8.377473    3.388463
+       2010  |  -2.681968    3.02064    -0.89   0.381    -8.842603    3.478667
+       2011  |  -3.094126   3.218052    -0.96   0.344    -9.657388    3.469135
+       2012  |  -3.527328   3.311479    -1.07   0.295    -10.28113    3.226477
+       2013  |  -2.757982   3.286506    -0.84   0.408    -9.460854     3.94489
+       2014  |  -2.249904   3.253939    -0.69   0.494    -8.886357    4.386549
+       2015  |   .2256199   3.007222     0.08   0.941     -5.90765     6.35889
+       2016  |   2.834301   2.873425     0.99   0.332    -3.026088    8.694689
+       2017  |   4.542042   2.800613     1.62   0.115    -1.169847    10.25393
+       2018  |     5.0378   2.798487     1.80   0.082    -.6697514    10.74535
+       2019  |   5.176938   2.765878     1.87   0.071    -.4641084    10.81798
+       2020  |   7.998197   2.976756     2.69   0.011     1.927063    14.06933
+       2021  |   11.17341   3.070861     3.64   0.001      4.91035    17.43647
+             |
+       _cons |   1.176052   3.296339     0.36   0.724    -5.546876    7.898981
+-------------+----------------------------------------------------------------
+     sigma_u |  2.4140749
+     sigma_e |  4.8055045
+         rho |  .20150866   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. predict double delta_cb_hat_th if e(sample), u
+(62 missing values generated)
+
+. bys country_id: egen double delta_cb_th  = mean(delta_cb_hat_th)
+
+. bys country_id: egen long   stage1_cb_obs = count(delta_cb_hat_th)
+
+. 
+. * Private bank size
+. capture drop delta_pb_hat_th delta_pb_th stage1_pb_obs
+
+. xtreg di02 c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        732
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.1997                                         min =          8
+     Between = 0.0202                                         avg =       22.9
+     Overall = 0.0884                                         max =         32
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.0778                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+        di02 | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.3085846   .2598315    -1.19   0.244    -.8385144    .2213452
+    d_high_c |   .8820057   .3823938     2.31   0.028     .1021084    1.661903
+             |
+        year |
+       1990  |  -1.470674   1.001198    -1.47   0.152    -3.512631    .5712842
+       1991  |  -.1474662   2.887986    -0.05   0.960    -6.037553     5.74262
+       1992  |   4.409817   7.699189     0.57   0.571    -11.29278    20.11242
+       1993  |   4.364139    8.10032     0.54   0.594    -12.15657    20.88485
+       1994  |  -12.78694   15.42787    -0.83   0.414     -44.2523    18.67842
+       1995  |  -4.275301   12.73849    -0.34   0.739    -30.25563    21.70503
+       1996  |  -3.394642   12.79694    -0.27   0.793    -29.49418     22.7049
+       1997  |  -1.981322   13.07346    -0.15   0.881    -28.64482    24.68218
+       1998  |  -8.453342   14.00526    -0.60   0.551    -37.01726    20.11058
+       1999  |  -6.917023   17.01409    -0.41   0.687    -41.61749    27.78344
+       2000  |   2.914759   14.94329     0.20   0.847    -27.56228     33.3918
+       2001  |   6.446515   10.89002     0.59   0.558    -15.76382    28.65685
+       2002  |   6.573767   10.91567     0.60   0.551    -15.68888    28.83641
+       2003  |   8.913466   11.02179     0.81   0.425    -13.56562    31.39255
+       2004  |   10.91579   10.93441     1.00   0.326    -11.38509    33.21667
+       2005  |   22.83129   11.78447     1.94   0.062    -1.203304    46.86588
+       2006  |   30.25205   12.50855     2.42   0.022      4.74069    55.76342
+       2007  |   33.82681   12.19404     2.77   0.009     8.956897    58.69673
+       2008  |   31.24746   12.12277     2.58   0.015     6.522909    55.97201
+       2009  |   36.60636   12.54435     2.92   0.007       11.022    62.19072
+       2010  |   36.25867    12.6705     2.86   0.007     10.41702    62.10032
+       2011  |   32.98996   12.80117     2.58   0.015     6.881801    59.09812
+       2012  |   31.22351   13.19368     2.37   0.024     4.314831    58.13219
+       2013  |   29.27197   13.29808     2.20   0.035     2.150355    56.39359
+       2014  |   26.08979   13.32429     1.96   0.059    -1.085286    53.26487
+       2015  |   22.74771   13.18198     1.73   0.094    -4.137121    49.63254
+       2016  |   21.38996   13.02496     1.64   0.111    -5.174623    47.95454
+       2017  |   17.92959   12.87322     1.39   0.174    -8.325522     44.1847
+       2018  |   16.53387   12.74544     1.30   0.204    -9.460622    42.52837
+       2019  |   15.50439   12.80002     1.21   0.235    -10.60141     41.6102
+       2020  |   23.90725   14.07073     1.70   0.099    -4.790186    52.60469
+       2021  |   19.78307   13.92416     1.42   0.165    -8.615438    48.18157
+             |
+       _cons |   99.56641   15.68314     6.35   0.000     67.58044    131.5524
+-------------+----------------------------------------------------------------
+     sigma_u |  33.480135
+     sigma_e |   26.59753
+         rho |  .61307771   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. predict double delta_pb_hat_th if e(sample), u
+(48 missing values generated)
+
+. bys country_id: egen double delta_pb_th  = mean(delta_pb_hat_th)
+
+. bys country_id: egen long   stage1_pb_obs = count(delta_pb_hat_th)
+
+. 
+. ****************************************************
+. * Step 3: Stage 2 interactions
+. ****************************************************
+. capture drop delta_n_th_d delta_cb_th_d delta_pb_th_d
+
+. gen double delta_n_th_d  = delta_n_th  * d
+(27 missing values generated)
+
+. gen double delta_cb_th_d = delta_cb_th * d
+
+. gen double delta_pb_th_d = delta_pb_th * d
+
+. 
+. capture drop delta_n_th_dhc delta_cb_th_dhc delta_pb_th_dhc
+
+. gen double delta_n_th_dhc  = delta_n_th  * d_high_c
+(27 missing values generated)
+
+. gen double delta_cb_th_dhc = delta_cb_th * d_high_c
+
+. gen double delta_pb_th_dhc = delta_pb_th * d_high_c
+
+. 
+. ****************************************************
+. * Step 4: STAGE 1 with TWO-WAY clustering (for Table 6.3)
+. *
+. * ivreg2 with partial(i.country_id) absorbs country fixed
+. * effects (within transformation, like xtreg ..., fe).
+. * Year fixed effects are included as regressors via i.year.
+. * Coefficients on D and on highD*(D-Dbar) match xtreg
+. * exactly; only the reported SEs change.
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  STAGE 1  --  ivreg2, two-way (country, year)"
+  STAGE 1  --  ivreg2, two-way (country, year)
+
+. di "  with country FE absorbed and year FE as regressors"
+  with country FE absorbed and year FE as regressors
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline(2) "--- Non-bank size (Table 6.3 col 1) ---"
+
+
+--- Non-bank size (Table 6.3 col 1) ---
+
+. ivreg2 nonbank_size d d_high_c i.year i.country_id, ///
+>     partial(i.country_id) cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     31              Number of obs =      547
+Number of clusters (year) =         26                F( 27,    25) =     2.89
+                                                      Prob > F      =   0.0047
+Total (centered) SS     =   364861.315                Centered R2   =   0.4361
+Total (uncentered) SS   =   364861.315                Uncentered R2 =   0.4361
+Residual SS             =  205746.0674                Root MSE      =    19.39
+
+------------------------------------------------------------------------------
+             |               Robust
+nonbank_size | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.1978076   .2170597    -0.91   0.362    -.6232368    .2276216
+    d_high_c |  -.2191246   .1833025    -1.20   0.232    -.5783909    .1401418
+             |
+        year |
+       1996  |   1.598438   .5150826     3.10   0.002     .5888949    2.607982
+       1997  |  -13.04082   2.474161    -5.27   0.000    -17.89009   -8.191555
+       1998  |  -7.082518   2.454672    -2.89   0.004    -11.89359    -2.27145
+       1999  |   1.235846   .4949796     2.50   0.013     .2657043    2.205989
+       2000  |  -4.338226          .        .       .            .           .
+       2001  |  -18.01813   4.228295    -4.26   0.000    -26.30544   -9.730825
+       2002  |   -22.7439   2.900252    -7.84   0.000    -28.42829   -17.05951
+       2003  |  -16.29784   2.535724    -6.43   0.000    -21.26776   -11.32791
+       2004  |  -11.28481   2.482601    -4.55   0.000    -16.15061   -6.418996
+       2005  |  -5.437071    3.01728    -1.80   0.072    -11.35083    .4766891
+       2006  |   7.254253   2.063086     3.52   0.000     3.210679    11.29783
+       2007  |   6.957299   2.459358     2.83   0.005     2.137046    11.77755
+       2008  |   2.274882          .        .       .            .           .
+       2009  |   15.24207   1.738109     8.77   0.000     11.83544     18.6487
+       2010  |   19.41466   2.819787     6.89   0.000     13.88797    24.94134
+       2011  |   20.36866   3.863435     5.27   0.000     12.79647    27.94086
+       2012  |    25.7768   4.462222     5.78   0.000     17.03101     34.5226
+       2013  |   29.97359    4.68891     6.39   0.000     20.78349    39.16369
+       2014  |   32.71014   3.777416     8.66   0.000     25.30654    40.11374
+       2015  |   32.23766   4.122625     7.82   0.000     24.15746    40.31786
+       2016  |   33.68567   3.997163     8.43   0.000     25.85137    41.51996
+       2017  |   36.20573   3.609543    10.03   0.000     29.13116    43.28031
+       2018  |   34.37511   4.126247     8.33   0.000     26.28781     42.4624
+       2019  |   37.31327   3.023309    12.34   0.000      31.3877    43.23885
+       2020  |   47.12479   5.860076     8.04   0.000     35.63926    58.61033
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d d_high_c 1996.year 1997.year 1998.year 1999.year
+                      2000.year 2001.year 2002.year 2003.year 2004.year
+                      2005.year 2006.year 2007.year 2008.year 2009.year
+                      2010.year 2011.year 2012.year 2013.year 2014.year
+                      2015.year 2016.year 2017.year 2018.year 2019.year
+                      2020.year
+Partialled-out:       2.country_id 3.country_id 4.country_id 6.country_id
+                      7.country_id 8.country_id 9.country_id 10.country_id
+                      11.country_id 12.country_id 13.country_id 14.country_id
+                      15.country_id 16.country_id 17.country_id 18.country_id
+                      19.country_id 20.country_id 21.country_id 22.country_id
+                      23.country_id 24.country_id 25.country_id 26.country_id
+                      27.country_id 28.country_id 29.country_id 30.country_id
+                      31.country_id 32.country_id _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- CB size (Table 6.3 col 2) ---"
+
+
+--- CB size (Table 6.3 col 2) ---
+
+. ivreg2 cb_size d d_high_c i.year i.country_id, ///
+>     partial(i.country_id) cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      718
+Number of clusters (year) =         33                F( 34,    31) =    25.09
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38745.86121                Centered R2   =   0.6114
+Total (uncentered) SS   =  38745.86121                Uncentered R2 =   0.6114
+Residual SS             =  15056.55358                Root MSE      =    4.579
+
+------------------------------------------------------------------------------
+             |               Robust
+     cb_size | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0227601   .0399629     0.57   0.569    -.0555657    .1010859
+    d_high_c |   .5417426   .1582924     3.42   0.001     .2314952      .85199
+             |
+        year |
+       1990  |  -1.358711          .        .       .            .           .
+       1991  |  -2.734237          .        .       .            .           .
+       1992  |   .3953351          .        .       .            .           .
+       1993  |  -.0500825          .        .       .            .           .
+       1994  |   .1973926          .        .       .            .           .
+       1995  |  -1.207872   .2848856    -4.24   0.000    -1.766238   -.6495065
+       1996  |  -1.545013   1.231784    -1.25   0.210    -3.959266    .8692403
+       1997  |  -1.213819   1.028369    -1.18   0.238    -3.229386    .8017478
+       1998  |   -1.07342   .9906298    -1.08   0.279    -3.015019    .8681786
+       1999  |   .1537675   .8428099     0.18   0.855     -1.49811    1.805645
+       2000  |   .3373731   .8019673     0.42   0.674    -1.234454      1.9092
+       2001  |  -1.104138   .9994944    -1.10   0.269    -3.063111     .854835
+       2002  |  -.9842552   1.071877    -0.92   0.358    -3.085096    1.116586
+       2003  |  -.9248995   1.009718    -0.92   0.360    -2.903911    1.054112
+       2004  |  -.9813205   .9535429    -1.03   0.303     -2.85023    .8875893
+       2005  |  -1.089797   1.005702    -1.08   0.279    -3.060937    .8813429
+       2006  |  -1.224742   1.011043    -1.21   0.226     -3.20635    .7568647
+       2007  |  -1.066076    .868793    -1.23   0.220    -2.768879    .6367265
+       2008  |  -1.253362   .9480201    -1.32   0.186    -3.111447    .6047235
+       2009  |  -2.494505   1.534743    -1.63   0.104    -5.502546    .5135362
+       2010  |  -2.681968   1.727295    -1.55   0.120    -6.067404     .703468
+       2011  |  -3.094126   1.982596    -1.56   0.119    -6.979944    .7916909
+       2012  |  -3.527328   2.112348    -1.67   0.095    -7.667455    .6127985
+       2013  |  -2.757982   2.121492    -1.30   0.194     -6.91603    1.400066
+       2014  |  -2.249904   2.052792    -1.10   0.273    -6.273302    1.773494
+       2015  |   .2256199   1.740002     0.13   0.897    -3.184722    3.635962
+       2016  |   2.834301   1.464718     1.94   0.053    -.0364937    5.705095
+       2017  |   4.542042   1.218735     3.73   0.000     2.153365    6.930719
+       2018  |     5.0378   1.119741     4.50   0.000     2.843149    7.232452
+       2019  |   5.176938   1.046862     4.95   0.000     3.125126    7.228749
+       2020  |   7.998197   1.449677     5.52   0.000     5.156883    10.83951
+       2021  |   11.17341   1.370114     8.16   0.000     8.488037    13.85879
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d d_high_c 1990.year 1991.year 1992.year 1993.year
+                      1994.year 1995.year 1996.year 1997.year 1998.year
+                      1999.year 2000.year 2001.year 2002.year 2003.year
+                      2004.year 2005.year 2006.year 2007.year 2008.year
+                      2009.year 2010.year 2011.year 2012.year 2013.year
+                      2014.year 2015.year 2016.year 2017.year 2018.year
+                      2019.year 2020.year 2021.year
+Partialled-out:       2.country_id 3.country_id 4.country_id 5.country_id
+                      6.country_id 7.country_id 8.country_id 9.country_id
+                      10.country_id 11.country_id 12.country_id 13.country_id
+                      14.country_id 15.country_id 16.country_id 17.country_id
+                      18.country_id 19.country_id 20.country_id 21.country_id
+                      22.country_id 23.country_id 24.country_id 25.country_id
+                      26.country_id 27.country_id 28.country_id 29.country_id
+                      30.country_id 31.country_id 32.country_id _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Private bank size (Table 6.3 col 3) ---"
+
+
+--- Private bank size (Table 6.3 col 3) ---
+
+. ivreg2 di02 d d_high_c i.year i.country_id, ///
+>     partial(i.country_id) cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      732
+Number of clusters (year) =         33                F( 34,    31) =     1.25
+                                                      Prob > F      =   0.2653
+Total (centered) SS     =  588725.8443                Centered R2   =   0.1997
+Total (uncentered) SS   =  588725.8443                Uncentered R2 =   0.1997
+Residual SS             =  471147.4502                Root MSE      =    25.37
+
+------------------------------------------------------------------------------
+             |               Robust
+        di02 | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.3085846   .2579003    -1.20   0.231    -.8140599    .1968906
+    d_high_c |   .8820057    .401901     2.19   0.028     .0942943    1.669717
+             |
+        year |
+       1990  |  -1.470674          .        .       .            .           .
+       1991  |  -.1474662          .        .       .            .           .
+       1992  |   4.409817          .        .       .            .           .
+       1993  |   4.364139          .        .       .            .           .
+       1994  |  -12.78694          .        .       .            .           .
+       1995  |  -4.275301   1.784017    -2.40   0.017    -7.771911   -.7786913
+       1996  |  -3.394642          .        .       .            .           .
+       1997  |  -1.981322   .1623582   -12.20   0.000    -2.299538   -1.663106
+       1998  |  -8.453342   3.086904    -2.74   0.006    -14.50356   -2.403121
+       1999  |  -6.917023     3.2695    -2.12   0.034    -13.32513   -.5089202
+       2000  |   2.914759   4.745049     0.61   0.539    -6.385367    12.21488
+       2001  |   6.446515   3.995923     1.61   0.107     -1.38535    14.27838
+       2002  |   6.573767   4.274437     1.54   0.124    -1.803975    14.95151
+       2003  |   8.913466   4.727436     1.89   0.059    -.3521383    18.17907
+       2004  |   10.91579   4.561003     2.39   0.017     1.976386    19.85519
+       2005  |   22.83129   4.571947     4.99   0.000     13.87044    31.79214
+       2006  |   30.25205    4.73728     6.39   0.000     20.96716    39.53695
+       2007  |   33.82681   5.203683     6.50   0.000     23.62778    44.02584
+       2008  |   31.24746   5.758244     5.43   0.000     19.96151    42.53341
+       2009  |   36.60636   6.206823     5.90   0.000     24.44121    48.77151
+       2010  |   36.25867   6.733258     5.39   0.000     23.06172    49.45561
+       2011  |   32.98996   7.209494     4.58   0.000     18.85961    47.12031
+       2012  |   31.22351   8.021217     3.89   0.000     15.50221    46.94481
+       2013  |   29.27197   8.405343     3.48   0.000      12.7978    45.74614
+       2014  |   26.08979   8.467067     3.08   0.002     9.494644    42.68494
+       2015  |   22.74771   8.174234     2.78   0.005     6.726506    38.76891
+       2016  |   21.38996   7.763955     2.76   0.006     6.172885    36.60703
+       2017  |   17.92959   7.342836     2.44   0.015     3.537894    32.32128
+       2018  |   16.53387   7.065396     2.34   0.019     2.685953     30.3818
+       2019  |   15.50439   6.826622     2.27   0.023     2.124462    28.88433
+       2020  |   23.90725   8.514593     2.81   0.005     7.218955    40.59555
+       2021  |   19.78307   8.211079     2.41   0.016     3.689648    35.87649
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d d_high_c 1990.year 1991.year 1992.year 1993.year
+                      1994.year 1995.year 1996.year 1997.year 1998.year
+                      1999.year 2000.year 2001.year 2002.year 2003.year
+                      2004.year 2005.year 2006.year 2007.year 2008.year
+                      2009.year 2010.year 2011.year 2012.year 2013.year
+                      2014.year 2015.year 2016.year 2017.year 2018.year
+                      2019.year 2020.year 2021.year
+Partialled-out:       2.country_id 3.country_id 4.country_id 5.country_id
+                      6.country_id 7.country_id 8.country_id 9.country_id
+                      10.country_id 11.country_id 12.country_id 13.country_id
+                      14.country_id 15.country_id 16.country_id 17.country_id
+                      18.country_id 19.country_id 20.country_id 21.country_id
+                      22.country_id 23.country_id 24.country_id 25.country_id
+                      26.country_id 27.country_id 28.country_id 29.country_id
+                      30.country_id 31.country_id 32.country_id _cons
+                      nb: total SS, model F and R2s are after partialling-out;
+                          any small-sample adjustments include partialled-out
+                          variables in regressor count K
+------------------------------------------------------------------------------
+
+. 
+. ****************************************************
+. * Step 5: STAGE 2 HEADLINE Spec A with TWO-WAY clustering
+. *   Plain OLS, no constant, two-way cluster (country, year)
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  STAGE 2 HEADLINE  --  ivreg2, two-way (country, year)"
+  STAGE 2 HEADLINE  --  ivreg2, two-way (country, year)
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline(2) "--- Non-bank (dh) -- headline ---"
+
+
+--- Non-bank (dh) -- headline ---
+
+. ivreg2 dh d delta_n_th_d d_high_c delta_n_th_dhc, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     31              Number of obs =      753
+Number of clusters (year) =         33                F(  4,    30) =    75.76
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  239582.4829                Centered R2   =   0.5630
+Total (uncentered) SS   =  528435.4072                Uncentered R2 =   0.8019
+Residual SS             =  104692.1595                Root MSE      =    11.79
+
+--------------------------------------------------------------------------------
+               |               Robust
+            dh | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+             d |   .3153371    .039407     8.00   0.000     .2381009    .3925733
+  delta_n_th_d |   .0018219   .0004912     3.71   0.000     .0008592    .0027846
+      d_high_c |  -.0367219   .1648912    -0.22   0.824    -.3599026    .2864589
+delta_n_th_dhc |  -.0033172   .0031548    -1.05   0.293    -.0095005     .002866
+--------------------------------------------------------------------------------
+Included instruments: d delta_n_th_d d_high_c delta_n_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Central bank (dcb) -- headline ---"
+
+
+--- Central bank (dcb) -- headline ---
+
+. ivreg2 dcb d delta_cb_th_d d_high_c delta_cb_th_dhc, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      780
+Number of clusters (year) =         33                F(  4,    31) =    33.13
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  77011.03265                Centered R2   =   0.6426
+Total (uncentered) SS   =  96020.24338                Uncentered R2 =   0.7133
+Residual SS             =  27526.98873                Root MSE      =    5.941
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dcb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .0574604   .0135715     4.23   0.000     .0308608    .0840601
+  delta_cb_th_d |   .0126816   .0043309     2.93   0.003     .0041931    .0211701
+       d_high_c |   .2813412   .1589916     1.77   0.077    -.0302766    .5929591
+delta_cb_th_dhc |  -.0633393   .0215141    -2.94   0.003    -.1055062   -.0211724
+---------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d delta_cb_th_d d_high_c delta_cb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Private bank (dpb) -- headline ---"
+
+
+--- Private bank (dpb) -- headline ---
+
+. ivreg2 dpb d delta_pb_th_d d_high_c delta_pb_th_dhc, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      780
+Number of clusters (year) =         33                F(  4,    31) =   137.00
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  109202.9728                Centered R2   =   0.6001
+Total (uncentered) SS   =  243372.3787                Uncentered R2 =   0.8206
+Residual SS             =   43670.9786                Root MSE      =    7.483
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dpb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .1935454    .019293    10.03   0.000     .1557318     .231359
+  delta_pb_th_d |  -.0001746   .0007186    -0.24   0.808     -.001583    .0012338
+       d_high_c |   .5371138   .2431145     2.21   0.027     .0606181     1.01361
+delta_pb_th_dhc |    -.01207   .0089072    -1.36   0.175    -.0295278    .0053879
+---------------------------------------------------------------------------------
+Included instruments: d delta_pb_th_d d_high_c delta_pb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. ****************************************************
+. * Step 6: STAGE 2 MATCHED SAMPLE  +  TWO-WAY clustering
+. *   Non-bank: 547,  CB: 718,  PB: 732
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  STAGE 2 MATCHED  --  ivreg2, two-way (country, year)"
+  STAGE 2 MATCHED  --  ivreg2, two-way (country, year)
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline(2) "--- Non-bank (dh) -- matched ---"
+
+
+--- Non-bank (dh) -- matched ---
+
+. ivreg2 dh d delta_n_th_d d_high_c delta_n_th_dhc ///
+>     if !missing(delta_n_hat_th), ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     31              Number of obs =      547
+Number of clusters (year) =         26                F(  4,    25) =    72.40
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  166330.9513                Centered R2   =   0.5874
+Total (uncentered) SS   =  377499.7457                Uncentered R2 =   0.8182
+Residual SS             =  68635.60804                Root MSE      =     11.2
+
+--------------------------------------------------------------------------------
+               |               Robust
+            dh | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+             d |   .2970116   .0368204     8.07   0.000     .2248449    .3691784
+  delta_n_th_d |   .0020479   .0005005     4.09   0.000      .001067    .0030289
+      d_high_c |  -.0550689    .142931    -0.39   0.700    -.3352087    .2250708
+delta_n_th_dhc |  -.0020105   .0024827    -0.81   0.418    -.0068764    .0028555
+--------------------------------------------------------------------------------
+Included instruments: d delta_n_th_d d_high_c delta_n_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Central bank (dcb) -- matched ---"
+
+
+--- Central bank (dcb) -- matched ---
+
+. ivreg2 dcb d delta_cb_th_d d_high_c delta_cb_th_dhc ///
+>     if !missing(delta_cb_hat_th), ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      718
+Number of clusters (year) =         33                F(  4,    31) =    32.72
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =   75603.3604                Centered R2   =   0.6410
+Total (uncentered) SS   =  95944.58948                Uncentered R2 =   0.7171
+Residual SS             =   27143.6151                Root MSE      =    6.149
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dcb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .0598173    .014116     4.24   0.000     .0321503    .0874842
+  delta_cb_th_d |    .012698   .0044582     2.85   0.004     .0039602    .0214359
+       d_high_c |   .2736358   .1568439     1.74   0.081    -.0337726    .5810442
+delta_cb_th_dhc |  -.0638357   .0209897    -3.04   0.002    -.1049746   -.0226967
+---------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d delta_cb_th_d d_high_c delta_cb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Private bank (dpb) -- matched ---"
+
+
+--- Private bank (dpb) -- matched ---
+
+. ivreg2 dpb d delta_pb_th_d d_high_c delta_pb_th_dhc ///
+>     if !missing(delta_pb_hat_th), ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      732
+Number of clusters (year) =         33                F(  4,    31) =   116.80
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  101596.5683                Centered R2   =   0.6109
+Total (uncentered) SS   =  224197.4611                Uncentered R2 =   0.8237
+Residual SS             =  39526.18739                Root MSE      =    7.348
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dpb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |    .190552   .0188757    10.10   0.000     .1535563    .2275477
+  delta_pb_th_d |  -.0002123   .0007329    -0.29   0.772    -.0016486    .0012241
+       d_high_c |    .526252   .2163825     2.43   0.015     .1021501    .9503538
+delta_pb_th_dhc |  -.0113776   .0078326    -1.45   0.146    -.0267292     .003974
+---------------------------------------------------------------------------------
+Included instruments: d delta_pb_th_d d_high_c delta_pb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. ****************************************************
+. * Step 7: STAGE 2 SPARSE-COUNTRY DROP k>=5  +  TWO-WAY
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  STAGE 2 SPARSE k>=5  --  ivreg2, two-way"
+  STAGE 2 SPARSE k>=5  --  ivreg2, two-way
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline(2) "--- Non-bank (dh) -- k>=5 ---"
+
+
+--- Non-bank (dh) -- k>=5 ---
+
+. ivreg2 dh d delta_n_th_d d_high_c delta_n_th_dhc ///
+>     if stage1_n_obs >= 5, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     29              Number of obs =      709
+Number of clusters (year) =         33                F(  4,    28) =    76.03
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =   228467.397                Centered R2   =   0.5516
+Total (uncentered) SS   =  516601.0934                Uncentered R2 =   0.8017
+Residual SS             =  102441.6802                Root MSE      =    12.02
+
+--------------------------------------------------------------------------------
+               |               Robust
+            dh | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+             d |   .3143996   .0402681     7.81   0.000     .2354754    .3933237
+  delta_n_th_d |   .0018617   .0004955     3.76   0.000     .0008906    .0028327
+      d_high_c |  -.0309058   .1664669    -0.19   0.853    -.3571749    .2953633
+delta_n_th_dhc |  -.0034883   .0031479    -1.11   0.268    -.0096581    .0026815
+--------------------------------------------------------------------------------
+Included instruments: d delta_n_th_d d_high_c delta_n_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Central bank (dcb) -- k>=5 ---"
+
+
+--- Central bank (dcb) -- k>=5 ---
+
+. ivreg2 dcb d delta_cb_th_d d_high_c delta_cb_th_dhc ///
+>     if stage1_cb_obs >= 5, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      780
+Number of clusters (year) =         33                F(  4,    31) =    33.13
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  77011.03265                Centered R2   =   0.6426
+Total (uncentered) SS   =  96020.24338                Uncentered R2 =   0.7133
+Residual SS             =  27526.98873                Root MSE      =    5.941
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dcb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .0574604   .0135715     4.23   0.000     .0308608    .0840601
+  delta_cb_th_d |   .0126816   .0043309     2.93   0.003     .0041931    .0211701
+       d_high_c |   .2813412   .1589916     1.77   0.077    -.0302766    .5929591
+delta_cb_th_dhc |  -.0633393   .0215141    -2.94   0.003    -.1055062   -.0211724
+---------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d delta_cb_th_d d_high_c delta_cb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Private bank (dpb) -- k>=5 ---"
+
+
+--- Private bank (dpb) -- k>=5 ---
+
+. ivreg2 dpb d delta_pb_th_d d_high_c delta_pb_th_dhc ///
+>     if stage1_pb_obs >= 5, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     32              Number of obs =      780
+Number of clusters (year) =         33                F(  4,    31) =   137.00
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  109202.9728                Centered R2   =   0.6001
+Total (uncentered) SS   =  243372.3787                Uncentered R2 =   0.8206
+Residual SS             =   43670.9786                Root MSE      =    7.483
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dpb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .1935454    .019293    10.03   0.000     .1557318     .231359
+  delta_pb_th_d |  -.0001746   .0007186    -0.24   0.808     -.001583    .0012338
+       d_high_c |   .5371138   .2431145     2.21   0.027     .0606181     1.01361
+delta_pb_th_dhc |    -.01207   .0089072    -1.36   0.175    -.0295278    .0053879
+---------------------------------------------------------------------------------
+Included instruments: d delta_pb_th_d d_high_c delta_pb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. ****************************************************
+. * Step 8: STAGE 2 SPARSE-COUNTRY DROP k>=10  +  TWO-WAY
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  STAGE 2 SPARSE k>=10  --  ivreg2, two-way"
+  STAGE 2 SPARSE k>=10  --  ivreg2, two-way
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline(2) "--- Non-bank (dh) -- k>=10 ---"
+
+
+--- Non-bank (dh) -- k>=10 ---
+
+. ivreg2 dh d delta_n_th_d d_high_c delta_n_th_dhc ///
+>     if stage1_n_obs >= 10, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     29              Number of obs =      709
+Number of clusters (year) =         33                F(  4,    28) =    76.03
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =   228467.397                Centered R2   =   0.5516
+Total (uncentered) SS   =  516601.0934                Uncentered R2 =   0.8017
+Residual SS             =  102441.6802                Root MSE      =    12.02
+
+--------------------------------------------------------------------------------
+               |               Robust
+            dh | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+---------------+----------------------------------------------------------------
+             d |   .3143996   .0402681     7.81   0.000     .2354754    .3933237
+  delta_n_th_d |   .0018617   .0004955     3.76   0.000     .0008906    .0028327
+      d_high_c |  -.0309058   .1664669    -0.19   0.853    -.3571749    .2953633
+delta_n_th_dhc |  -.0034883   .0031479    -1.11   0.268    -.0096581    .0026815
+--------------------------------------------------------------------------------
+Included instruments: d delta_n_th_d d_high_c delta_n_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Central bank (dcb) -- k>=10 ---"
+
+
+--- Central bank (dcb) -- k>=10 ---
+
+. ivreg2 dcb d delta_cb_th_d d_high_c delta_cb_th_dhc ///
+>     if stage1_cb_obs >= 10, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     31              Number of obs =      762
+Number of clusters (year) =         33                F(  4,    30) =    33.07
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  76684.77858                Centered R2   =   0.6430
+Total (uncentered) SS   =   95789.2031                Uncentered R2 =   0.7142
+Residual SS             =   27374.6657                Root MSE      =    5.994
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dcb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .0572283   .0136138     4.20   0.000     .0305458    .0839109
+  delta_cb_th_d |   .0127302    .004374     2.91   0.004     .0041573    .0213032
+       d_high_c |   .2830046   .1601897     1.77   0.077    -.0309615    .5969708
+delta_cb_th_dhc |  -.0632481    .021502    -2.94   0.003    -.1053912    -.021105
+---------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Included instruments: d delta_cb_th_d d_high_c delta_cb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. di _newline(2) "--- Private bank (dpb) -- k>=10 ---"
+
+
+--- Private bank (dpb) -- k>=10 ---
+
+. ivreg2 dpb d delta_pb_th_d d_high_c delta_pb_th_dhc ///
+>     if stage1_pb_obs >= 10, ///
+>     nocons cluster(country_id year)
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on country_id and year
+
+Number of clusters (country_id) =     31              Number of obs =      759
+Number of clusters (year) =         33                F(  4,    30) =   134.24
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  109029.1959                Centered R2   =   0.6009
+Total (uncentered) SS   =  239224.6902                Uncentered R2 =   0.8181
+Residual SS             =  43517.31119                Root MSE      =    7.572
+
+---------------------------------------------------------------------------------
+                |               Robust
+            dpb | Coefficient  std. err.      z    P>|z|     [95% conf. interval]
+----------------+----------------------------------------------------------------
+              d |   .1938342   .0196083     9.89   0.000     .1554027    .2322657
+  delta_pb_th_d |  -.0001596   .0007527    -0.21   0.832    -.0016349    .0013156
+       d_high_c |   .5362587   .2433366     2.20   0.028     .0593277     1.01319
+delta_pb_th_dhc |  -.0121054   .0089387    -1.35   0.176     -.029625    .0054142
+---------------------------------------------------------------------------------
+Included instruments: d delta_pb_th_d d_high_c delta_pb_th_dhc
+------------------------------------------------------------------------------
+
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\马怡然\Documents\MLE on finacial repression\twoway_cluster_full.txt
+  log type:  text
+ closed on:   7 May 2026, 16:37:34
+------------------------------------------------------------------------------------------------------------------------

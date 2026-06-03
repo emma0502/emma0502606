@@ -2,240 +2,315 @@
 \documentclass[\latexroot/\projectname]{subfiles}
 \input{\latexroot/@resources/subfile-setup.ltx}
 
-% Model.tex-specific: Redefine verbatimwrite to be a no-op in standalone mode
-% (whenstandalone removed - redundant in preamble)
-\makeatletter
-\renewenvironment{verbatimwrite}[1]{\comment}{\endcomment}
-\makeatother
-
 \begin{document}
 
-% When compiled as a subfile of an integrated document, path reset
-% is needed so that paths are relative to the root file location
-\whenintegrated{%
-  \input{\latexroot/._relpath-to-latexroot.ltx}%  % Resets \latexroot and reloads all paths
-}
+\section{Model}\whenintegrated{\label{sec:model}}
 
-\section{Model}\whenintegrated{\label{model}}
-\whenintegrated{\label{sec:model}} % integrated doc: SST for labels
+A cost-minimising government chooses how to allocate a given stock of
+debt across three creditor sectors --- domestic non-banks, foreigners,
+and the domestic banking system (central bank plus private banks,
+treated as one block). The three sectors differ in \emph{how}
+placement becomes costly at the margin, and those differences produce
+a tractable pecking order with sharp comparative-static predictions
+that we take to the data.
 
-Consumers differ by their level of education and, within education group, by subjective discount factors (calibrated to match the within-group distribution of liquid wealth). We first describe each kind of consumer's problem, given an income process with permanent and transitory shocks calibrated to their type, as well as type-specific shocks to employment. The next step describes the arrival of a recession and the policies we study as potential fiscal policy responses. The last section discusses an extension incorporating aggregate demand effects that induce feedback from aggregate consumption to income and (via the marginal propensity to consume) back to consumption, amplifying the effect of a recession when it occurs.
+%-------------------------------------------------------------
+\subsection{Setting}
+%-------------------------------------------------------------
 
-A consumer $i$ has education $e(i)$ and a subjective discount factor $\beta_i$. The consumer faces a stochastic income stream, $\mathbf{y}_{i,t}$, and chooses to consume a fraction of that income when it arrives---the `splurge', described in the introduction.\footnote{One attractive feature of the splurge assumption is that it is also consistent with evidence from~\cite{ganongConsumer2019}, that spending drops sharply following the large and predictable drop in income after the exhaustion of unemployment benefits; see Section~\ref{sec:nonTargetedMoments}.} With what is left over, the consumer chooses to optimize consumption without regard to the fraction that was already spent. Therefore, consumption each period for consumer $i$ can be written as in \eqref{eq:model}:
-\begin{verbatimwrite}{\eqns/splurge.ltx}
-  \begin{equation}
-    \begin{gathered}
-      \begin{aligned}
-        \mathbf{c}_{i,t} & = \mathbf{c}_{sp,i,t} + \mathbf{c}_{opt,i,t}, \whenintegrated{\label{eq:model}} % integrated doc: SST for labels
-      \end{aligned}
-    \end{gathered}
-  \end{equation}
-\end{verbatimwrite}
-\input{\eqns/splurge.ltx}
-{\noindent}where $\mathbf{c}_{i,t}$ is total consumption, $\mathbf{c}_{sp,i,t}$ is the splurge consumption, and $\mathbf{c}_{opt,i,t}$ is the consumer's optimal choice of consumption after splurging.
-Splurge consumption is simply a fraction of income, as shown in \eqref{eq:splurge}:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      \mathbf{c}_{sp,i,t} = \varsigma \mathbf{y}_{i,t},
-      \whenintegrated{\label{eq:splurge}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
+The government has a given stock of outstanding debt $D>0$ and chooses
+non-negative holdings $(d_h,d_f,d_b)$ satisfying the budget constraint
+\begin{equation}\label{eq:budget}
+  d_h + d_f + d_b = D,
 \end{equation}
-% RAG_METADATA: code_location=AggFiscalModel.py:getIncome()
-% RAG_METADATA: paper_reference=Section 2.1, Eq. (2)
-% RAG_METADATA: related_equations=eq:model
-% RAG_METADATA: equation_type=income_equation
-% RAG_METADATA: domain=consumption
-% RAG_METADATA: parameters=ς=0.249 (estimated)
-while the optimized portion of consumption is chosen to maximize the perpetual-youth lifetime expected-utility-maximizing consumption, where $D$ is the death probability:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      \sum_{t=0}^{\infty}\beta_i^t {(1-D)}^t \mathbb{E}_0 u(\mathbf{c}_{opt,i,t}),
-      \whenintegrated{\label{eq:utility}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
+where $d_h$ is non-bank holdings, $d_f$ is foreign holdings, and $d_b$
+is banking absorption. Each sector is summarised by the cost of
+placing debt with it. Non-banks and foreigners lend at interest rates
+$r_h(d_h,S_h)$ and $r_f(d_f)$, so the government's cash cost of placing
+$d_h$ and $d_f$ is the interest bill $r_h\,d_h + r_f\,d_f$. The
+non-bank schedule depends on a country-specific structural size
+$S_h>0$, which captures the depth of the domestic non-bank investor
+base. The banking sector is not described by an interest rate:
+placing $d_b$ with the banking system carries a separate welfare cost
+$\Psi(d_b)$ that proxies for inflation, monetary--fiscal trade-offs,
+and financial-stability risk. The planner therefore chooses
+$d_h,d_f,d_b\ge 0$ to minimise total economic cost subject to the
+budget constraint:
+\begin{equation}\label{eq:planner}
+  \min_{d_h,d_f,d_b}\;
+    r_h(d_h,S_h)\,d_h + r_f(d_f)\,d_f + \Psi(d_b)
+  \quad\text{s.t.}\quad d_h + d_f + d_b = D.
 \end{equation}
-% RAG_METADATA: paper_reference=Section 2.1
-% RAG_METADATA: related_equations=eq:model,eq:bellman
-% RAG_METADATA: equation_type=objective_function
-% RAG_METADATA: domain=optimization
-% RAG_METADATA: parameters=β=discount factor, D=death probability
-We use a standard CRRA (constant relative risk aversion) utility function, so $u(c) = c^{1-\gamma}/(1-\gamma)$ for $\gamma \neq 1$ and $u(c) = \log(c)$ for $\gamma=1$, where $\gamma$ is the coefficient of relative risk aversion.
-The optimization is subject to the budget constraint \eqref{eq:budget}, given existing market resources $\mathbf{m}_{i,t}$ and income state, and a no-borrowing constraint:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      \mathbf{a}_{i,t}   & = \mathbf{m}_{i,t} - \mathbf{c}_{i,t},     \\
-      \mathbf{m}_{i,t+1} & = R \mathbf{a}_{i,t} + \mathbf{y}_{i,t+1}, \\
-      \mathbf{a}_{i,t}   & \geq 0,
-      \whenintegrated{\label{eq:budget}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
+
+%-------------------------------------------------------------
+\subsection{The three sectors}
+%-------------------------------------------------------------
+
+Marginal cost rises with the sector's degree of saturation. What
+differs is \emph{how} saturation is measured.
+
+\paragraph{Non-banks.}
+Non-banks operate in a segmented domestic market. Their interest rate
+depends on the portfolio share $d_h/S_h$, not on $d_h$ alone: the same
+absolute amount of debt is harder to place in a country with a thinner
+non-bank investor base. We adopt the schedule
+\begin{equation}\label{eq:nonbank-rate}
+  r_h(d_h,S_h) = \bar r_h + \gamma_h\,
+    \frac{d_h/S_h}{\bar\omega - d_h/S_h},
+  \qquad 0\le d_h/S_h<\bar\omega,
 \end{equation}
-% RAG_METADATA: code_location=EstimAggFiscalModel.py
-% RAG_METADATA: paper_reference=Section 2.1
-% RAG_METADATA: related_equations=eq:model,eq:income
-% RAG_METADATA: equation_type=constraint_equation
-% RAG_METADATA: domain=budget_constraint
-% RAG_METADATA: parameters=R=gross interest factor
-where $R$ is the gross interest factor for accumulated assets $\mathbf{a}_{i,t}$, and $\mathbf{y}_{i,t+1}$ is determined by \eqref{eq:income}.
+with $\bar r_h,\gamma_h,\bar\omega>0$. The rate stays near $\bar r_h$
+when the sector is far from its country-specific cap $\bar\omega S_h$
+and diverges as $d_h\to\bar\omega S_h$. A larger $S_h$ shifts the
+capacity outward, so the same $d_h$ leaves more headroom and is
+cheaper at the margin. Cross-country differences in $S_h$ are the
+empirical hook of the model and the structural object recovered by
+Stage~1 of the two-stage estimator in
+Section~\ref{sec:empirical}.
 
-\subsection{The income process}\whenintegrated{\label{the-income-process}}
-
-Consumers face a stochastic income process with permanent and transitory shocks to income, along with unemployment shocks.
-In normal times, consumers who become unemployed receive unemployment benefits for two quarters.
-Permanent income evolves according to \eqref{eq:perm_income}:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      \mathbf{p}_{i,t+1} & = \psi_{i,t+1}\Gamma_{e(i)}\mathbf{p}_{i,t},
-      \whenintegrated{\label{eq:perm_income}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
+\paragraph{Foreigners.}
+Foreign participation is disciplined by a no-default / incentive
+constraint that imposes a uniform upper bound $\bar D_f$ on foreign
+holdings, common across countries. Risk premia rise as the sovereign
+approaches that ceiling. We posit
+\begin{equation}\label{eq:foreign-rate}
+  r_f(d_f) = \bar r_f + \gamma_f\,
+    \frac{d_f}{\bar D_f - d_f},
+  \qquad 0\le d_f<\bar D_f,
 \end{equation}
-% RAG_METADATA: code_location=EstimAggFiscalModel.py:getIncome()
-% RAG_METADATA: paper_reference=Section 2.2
-% RAG_METADATA: related_equations=eq:income
-% RAG_METADATA: equation_type=income_equation
-% RAG_METADATA: domain=income
-% RAG_METADATA: parameters=ψ=permanent income shock, Γ=growth rate by education
-where $\psi_{i,t+1}$ is the shock to permanent income and $\Gamma_{e(i)}$ is the average growth rate of income for the consumer's education group $e(i)$.\footnote{We model the rate of growth for permanent income for each education group and keep this rate unchanged during periods of unemployment.
-  There is evidence, e.g.\ in~\cite{davis-recessions-2011}, that unemployment, especially in a recession, leads to permanent income loss.
-  This finding could be added to the model---see~\cite{carroll2020modeling} for an example---but is not material to the evaluation of stimulus payments here so we have chosen to keep the model simple.
-} The realized growth rate of permanent income for consumer $i$ is thus $\hat{\Gamma}_{i,t+1} = \psi_{i,t+1} \Gamma_{e(i)}$.
-The shock to permanent income is normally distributed with variance $\sigma_{\psi}^2$.
+with $\bar r_f,\gamma_f>0$. The schedule is flat when
+$d_f\ll\bar D_f$ (the global market is deep) and diverges as
+$d_f\to\bar D_f$.
 
-The actual income a consumer receives, given the permanent income from \eqref{eq:perm_income}, will be subject to the individual's employment status as well as transitory shocks, $\xi_{i,t}$, as shown in \eqref{eq:income}:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      \mathbf{y}_{i,t} =   \begin{cases}
-                             \xi_{i,t}\mathbf{p}_{i,t},  & \text{if employed}                    \\
-                             \rho_b \mathbf{p}_{i,t},    & \text{if unemployed with benefits}    \\
-                             \rho_{nb} \mathbf{p}_{i,t}, & \text{if unemployed without benefits}
-                           \end{cases}
-      \whenintegrated{\label{eq:income}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
+\paragraph{Banking.}
+The banking sector absorbs the residual $d_b=D-d_h-d_f$. Unlike
+non-banks and foreigners, it has no hard ceiling --- the central bank
+can in principle keep expanding its balance sheet --- but doing so is
+distortionary. We summarise that distortion by an increasing, convex
+welfare cost
+\begin{equation}\label{eq:banking-cost}
+  \Psi(d_b),\qquad \Psi'(d_b)>0,\qquad \Psi''(d_b)>0.
 \end{equation}
-% RAG_METADATA: code_location=EstimAggFiscalModel.py:getIncome()
-% RAG_METADATA: paper_reference=Section 2.2
-% RAG_METADATA: related_equations=eq:perm_income,eq:budget
-% RAG_METADATA: equation_type=income_equation
-% RAG_METADATA: domain=income
-% RAG_METADATA: parameters=ξ=transitory shock, ρ_b=benefit replacement rate, ρ_nb=no-benefit replacement rate
-where $\xi_{i,t}$ is normally distributed with variance $\sigma_{\xi}^2$, and $\rho_b$ and $\rho_{nb}$ are the replacement rates for an unemployed consumer who is or is not eligible for unemployment benefits, respectively.
-
-A Markov transition matrix $\Pi$ generates the unemployment dynamics where the number of states is given by $2$ plus the number of periods that unemployment benefits last.
-An employed consumer can continue being employed or move to being unemployed with benefits.\footnote{That is, as long as we assume that there is at least one period of unemployment benefits.} The first row of $\Pi$ is thus given by $[1-\pi_{eu}^{e(i)}, \pi_{eu}^{e(i)}, \mathbf{0}]$, where $\pi_{eu}^{e(i)}$ indicates the probability of becoming unemployed from an employed state and $\mathbf{0}$ is a vector of zeros of the appropriate length.
-Note that we allow this probability to depend on the education group of consumer $i$ and will calibrate this parameter to match the average unemployment rate for each education group.
-Upon becoming unemployed, all consumers face a probability $\pi_{ue}$ of transitioning back into employment and a probability $1-\pi_{ue}$ of remaining unemployed with one less period of remaining benefits.
-After transitioning into the unemployment state where the consumer is no longer eligible for benefits, the consumer will remain in this state until becoming employed again.
-The probability of becoming employed is thus the same for each of the unemployment states and education groups.
-
-\subsection{Recessions and policies}\whenintegrated{\label{recessions-and-policies}}
-\whenintegrated{\label{sec:recessions}} % integrated doc: SST for labels
-We model the arrival of a recession, and the government policy response to it, as an unpredictable event---an MIT shock.
-We have four types of shocks: one representing a recession and one for each of the three different policy responses we consider.
-The policy responses are usually modeled as in addition to the recession, but we also consider a counterfactual in which the policy response occurs without a recession in order to understand the welfare effects of the policy.
-
-\paragraph{Recession.} At the onset of a recession, several changes occur.
-First, the unemployment rate for each education group doubles: Those who would have been unemployed in the absence of a recession are still unemployed, and an additional number of consumers move from employment to unemployment.
-Second, conditional on the recession continuing, the employment transition matrix is adjusted so that unemployment remains at the new high level and the expected length of time for an unemployment spell increases. In our baseline calibration, discussed in detail in section~\ref{sec:calib}, we set the expected length of an unemployment spell to one and a half quarters in normal times, and this length increases to four quarters in a recession.
-Third, the end of the recession occurs as a Bernoulli process calibrated for an average length of recession of six quarters.
-Finally, at the end of a recession, the employment transition matrix switches back to its original probabilities, and, as a result, the unemployment rate trends down over time, back to its steady-state level. The details of how certain model parameters change in a recession are presented in section~\ref{sec:calibRecession}.
-
-\paragraph{Policies.} The policies we consider in response to a recession are inspired by the Economic Stimulus Act of 2008 and the Tax Relief, Unemployment Insurance Reauthorization, and Job Creation Act of 2010.
-The former included means tested stimulus checks in the form of tax rebates, and the latter included both an extension of unemployment benefits and a tax cut.
-Based on these examples we therefore consider the following stimulus policies in our framework:
-
-\paragraph{1.
-  Stimulus check.} In this policy response, the government sends money to every consumer that directly increases the household's market resources.
-The checks are means-tested depending on permanent income.
-A check for \$1,200 is sent to every household with permanent income less than \$100,000, and this amount is then linearly reduced to zero for households with a permanent income greater than \$150,000.
-Similar policies were implemented in the U.S.
-in 2001, 2008, and during the pandemic.
-
-\paragraph{2.
-  Extended unemployment benefits.} In this policy response, unemployment benefits are extended from two quarters to four quarters.
-That is, those who become unemployed at the start of the recession, or who were already unemployed, will receive unemployment benefits for up to four quarters (including quarters leading up to the recession).
-Those who become unemployed one quarter into the recession will receive up to three quarters of unemployment benefits.
-These extended unemployment benefits will occur regardless of whether the recession ends, and no further extensions are granted if the recession continues.
-This policy reflects temporary changes made to unemployment benefits in the U.S.
-following the great recession.
-
-\paragraph{3.
-  Payroll tax cut.} In this policy response, employee-side payroll taxes are reduced for a period of eight quarters.\footnote{Although payroll taxes are paid by both the employer and the employee, the payroll tax cuts in the U.S.
-  have been applied only the employee side.} During this period, which continues irrespective of whether the recession continues or ends, employed consumers' income is increased by 2 percent.
-The income of the unemployed is unchanged by this policy.
-Households also believe there is a 50-50 chance that the tax cut will be extended by another two years if the recession has not ended when the first tax cut expires.\footnote{The belief that the payroll tax cut may be extended makes little difference to the results.} The payroll tax cut introduced in the U.S.
-in 2010 was itself an extension of previously implemented cuts and had a two-year horizon.
-
-\paragraph{Financing the policies.} Some work in the HA macro literature has shown that if taxes are raised immediately to offset any fiscal stimulus, results can be very different than they would be if, as occurs in reality, recessionary policies are debt financed.
-However, typical fiscal rules assume that any increase in debt gets financed over a long interval.
-Accordingly, almost all of the effects of any particular fiscal rule will be  similar for each of our policies so long as the great majority of the debt is repaid after the short recessionary period that is our main focus.
-
-To keep our analysis as simple as possible, we do not model the debt repayment.
-Any of a variety of fiscal rules could be imposed for the period following our short period of interest, but we did not want to choose any particular fiscal rule in order to avoid making a choice that has little consequence for our key question.
-Advocates of alternative fiscal rules likely already have intuitions about how such rules' economic consequences differ, but those consequences---under our partial equilibrium analysis---will be similar for all three policies we consider.
-Alternative choices of fiscal rules will therefore not affect the ranking of policies that is our principal concern.\footnote{In our general equilibrium analysis in section~\ref{sec:hank}, we apply a fiscal rule that assumes debt is slowly paid back over time.}
-
-\subsection{Aggregate demand effects}\whenintegrated{\label{aggregate-demand-effects}}
-\whenintegrated{\label{sec:ADeffects}} % integrated doc: SST for labels
-
-Our baseline model is a partial equilibrium model that does not include any feedback from aggregate consumption to income.
-In an extension to the model, we add aggregate demand effects during the recession.
-The motivation for this specification comes from the idea that spending in an economy with substantial slack and in which the central bank is unable to prevent a recession will result in higher utilization rates and greater output.
-By contrast, government spending in an economy running at potential with an active monetary policy will not succeed in increasing output.
-The recent inflation experience of the U.S.
-provides some evidence that output responds highly non-linearly to aggregate demand.
-This idea is explored in a recent revival of research into non-linear Phillips curves, such as~\cite{benigno2023baaack} and~\cite{blanco2024nonlinear}.
-
-With this extension, any changes in consumption away from the steady-state consumption level feed back into labor income.
-Aggregate demand effects are evaluated as in \eqref{eq:ad_feedback}:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      AD(C_t) =   \begin{cases}{\Big(C_t/\tilde{C}\Big)}^\kappa, & \text{if in a recession} \\
-             1,                                & \text{otherwise} ,
-                  \end{cases}
-      \whenintegrated{\label{eq:ad_feedback}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
+The level $\Psi'(0)$ is the cost of placing the first dollar with
+banks and is directly comparable to $\bar r_h$ and $\bar r_f$. For
+the numerical illustrations below we use the simplest
+affine-marginal-cost specification
+\begin{equation}\label{eq:psi-affine}
+  \Psi(d_b) = \bar r_b\,d_b + \tfrac{\psi}{2}\,d_b^{2},
+  \qquad \Psi'(d_b)=\bar r_b+\psi d_b,\qquad \psi>0,
 \end{equation}
-% RAG_METADATA: code_location=AggFiscalMAIN.py:computeAD()
-% RAG_METADATA: paper_reference=Section 4.5
-% RAG_METADATA: related_equations=eq:aggregate
-% RAG_METADATA: equation_type=policy_equation
-% RAG_METADATA: domain=aggregate_demand
-% RAG_METADATA: parameters=κ=aggregate demand elasticity, C̃=steady-state consumption
-where $\tilde{C}$ is the level of consumption in the steady state.
-Idiosyncratic income in the aggregate demand extension is multiplied by the aggregate demand function from \eqref{eq:ad_feedback}, as shown in \eqref{eq:ad_income}:
-\begin{equation}
-  \begin{gathered}
-    \begin{aligned}
-      \mathbf{y}_{AD,i,t} = AD(C_t)\mathbf{y}_{i,t},
-      \whenintegrated{\label{eq:ad_income}} % integrated doc: SST for labels
-    \end{aligned}
-  \end{gathered}
-\end{equation}
-% RAG_METADATA: code_location=AggFiscalMAIN.py:computeAD()
-% RAG_METADATA: paper_reference=Section 4.5
-% RAG_METADATA: related_equations=eq:ad_feedback,eq:income,eq:budget
-% RAG_METADATA: equation_type=policy_equation
-% RAG_METADATA: domain=aggregate_demand
-% RAG_METADATA: description=Applies aggregate demand feedback to individual income
-The series $\mathbf{y}_{AD,i,t}$ from \eqref{eq:ad_income} is then used for each consumer's budget constraint \eqref{eq:budget}.
+with $\bar r_b,\psi>0$.
 
-% Smart bibliography: Only include bibliography if standalone AND has citations
+%-------------------------------------------------------------
+\subsection{Equilibrium and closed-form solution}
+%-------------------------------------------------------------
+
+With Lagrange multiplier $\lambda$ on the budget constraint, the
+interior first-order conditions equate marginal placement costs across
+all three sectors:
+\begin{equation}\label{eq:foc}
+  \text{MC}_h(d_h,S_h) \;=\; \text{MC}_f(d_f) \;=\; \Psi'(d_b)
+  \;=\; \lambda(D),
+\end{equation}
+where, from \eqref{eq:nonbank-rate} and \eqref{eq:foreign-rate},
+\begin{align}
+  \text{MC}_h(d_h,S_h)
+    &= \bar r_h + \gamma_h\,
+      \frac{(d_h/S_h)\!\bigl[2\bar\omega - d_h/S_h\bigr]}
+            {\bigl[\bar\omega - d_h/S_h\bigr]^{2}},
+      \label{eq:MCh}\\
+  \text{MC}_f(d_f)
+    &= \bar r_f + \gamma_f\,
+      \frac{d_f\,(2\bar D_f - d_f)}{(\bar D_f - d_f)^{2}}.
+      \label{eq:MCf}
+\end{align}
+If any sector were cheaper at the margin, the planner would shift
+toward it.
+
+The system \eqref{eq:budget}--\eqref{eq:foc} admits a closed-form
+parametric solution in the shadow rate $\lambda$:
+\begin{align}
+  d_h^\ast(\lambda,S_h)
+    &= S_h\,\bar\omega\!\left(1 - \frac{1}{\sqrt{1+(\lambda-\bar r_h)/\gamma_h}}\right),
+      \label{eq:dhstar}\\
+  d_f^\ast(\lambda)
+    &= \bar D_f\!\left(1 - \frac{1}{\sqrt{1+(\lambda-\bar r_f)/\gamma_f}}\right),
+      \label{eq:dfstar}\\
+  d_b^\ast(\lambda) &= \frac{\lambda-\bar r_b}{\psi},
+      \label{eq:dbstar}
+\end{align}
+with $D(\lambda)=d_h^\ast+d_f^\ast+d_b^\ast$ strictly increasing in
+$\lambda$ on the admissible range. Inverting numerically yields the
+equilibrium allocation as a function of $D$.
+
+%-------------------------------------------------------------
+\subsection{Comparative statics: who absorbs the next dollar?}
+%-------------------------------------------------------------
+
+The substantive content of the model rests on a single structural
+property of the three placement-cost schedules: in each sector, the
+marginal cost of placing additional debt is strictly increasing in
+that sector's existing holdings. Differentiating
+\eqref{eq:MCh}--\eqref{eq:MCf} and \eqref{eq:psi-affine} gives the
+slopes of the marginal-cost schedules,
+\begin{align}
+  H_h \;\equiv\; \frac{\partial\text{MC}_h}{\partial d_h}
+    &= \frac{2\gamma_h\bar\omega^{2}}
+            {S_h\,[\bar\omega-d_h/S_h]^{3}}>0,
+      \label{eq:Hh}\\
+  H_f \;\equiv\; \frac{\partial\text{MC}_f}{\partial d_f}
+    &= \frac{2\gamma_f\bar D_f^{\,2}}
+            {[\bar D_f-d_f]^{3}}>0,
+      \label{eq:Hf}\\
+  H_b \;\equiv\; \frac{\partial\text{MC}_b}{\partial d_b} &= \psi>0,
+      \label{eq:Hb}
+\end{align}
+with $H_h\to\infty$ as $d_h\to\bar\omega S_h$ and $H_f\to\infty$ as
+$d_f\to\bar D_f$. The banking slope is constant; the other two
+diverge as their respective sectors saturate.
+
+Total differentiation of the FOC \eqref{eq:foc} together with the
+budget constraint \eqref{eq:budget} delivers the marginal share of
+new debt absorbed by each sector,
+\begin{equation}\label{eq:shares}
+  s_j \;\equiv\; \frac{\partial d_j^\ast}{\partial D}
+  = \frac{1/H_j}{1/H_h + 1/H_f + 1/H_b},
+  \qquad j\in\{h,f,b\},
+\end{equation}
+which sum to one by construction. The marginal share of each sector
+is therefore inversely proportional to the local curvature of its
+marginal cost: at low $D$ all three $H_j$ are bounded and the $s_j$
+are roughly constant; as $d_h\to\bar\omega S_h$ and
+$d_f\to\bar D_f$, $H_h$ and $H_f$ diverge, $s_h$ and $s_f$ collapse to
+zero, and $s_b\to 1$.
+
+%-------------------------------------------------------------
+\subsection{Three predictions}
+%-------------------------------------------------------------
+
+The structural property $H_j>0$ delivers three substantive
+comparative-static results, which we record as propositions.
+Proofs are collected in Appendix~\ref{app:proofs}.
+
+\begin{proposition}[Sectoral holdings rise with total debt]
+\label{prop:monotone}
+Under upward-sloping marginal cost in every sector ($H_j>0$),
+$d_j^\ast$ is weakly increasing in $D$ for $j\in\{h,f,b\}$, and
+strictly increasing whenever $d_j^\ast>0$.
+\end{proposition}
+
+\noindent\emph{Intuition.} If, when the government must place more
+debt, some sector's holdings actually \emph{fell}, that sector's
+marginal cost would drop. The FOC requires all active sectors to
+share the same marginal cost, so the others would have to drop too
+--- meaning every sector absorbs less even though total debt has
+risen. That is impossible, so no sector can shrink as $D$ grows.
+
+\begin{proposition}[Non-bank absorption rises with non-bank sector size]
+\label{prop:Sh}
+Fix total debt $D>0$ and suppose the equilibrium is interior for
+non-banks with $d_h^\ast>0$. Then
+$\partial d_h^\ast/\partial S_h>0$.
+\end{proposition}
+
+\noindent\emph{Intuition.} Non-bank marginal cost depends on the
+portfolio share $d_h/S_h$, not on $d_h$ alone: the sector becomes
+expensive only as $d_h/S_h$ approaches $\bar\omega$. A larger $S_h$
+means that any given level of $d_h$ corresponds to a smaller share,
+so marginal cost is lower; holding $D$ fixed, the planner tilts the
+allocation toward non-banks when $S_h$ rises. This is the mechanism
+behind the cross-country pecking order in
+Figure~\ref{fig:pecking-order}, and it is the structural object
+recovered by Stage~2 of the empirical estimator.
+
+\begin{proposition}[Strict concavity in the symmetric calibration]
+\label{prop:concave}
+Suppose $\bar r_h=\bar r_f$, $\gamma_h=\gamma_f$, and the equilibrium
+path is interior for both capped sectors. Then $d_h^\ast(D)$ and
+$d_f^\ast(D)$ are strictly concave in $D$ on the interior of their
+domains.
+\end{proposition}
+
+\noindent\emph{Intuition.} Each sector's holdings rise with total
+debt, but ever more slowly: placement is cheap when a sector is far
+from its ceiling and expensive as it approaches $\bar\omega S_h$
+(non-banks) or $\bar D_f$ (foreigners), so marginal issuance tilts
+toward whichever margin still has room. Both capped curves therefore
+bend downward, even though the government continuously substitutes
+across sectors as relative costs shift.
+
+\paragraph{Banking takeover at high debt.}
+The three propositions sharpen into a single qualitative prediction
+for the high-$D$ region. As $d_h\to\bar\omega S_h$ and
+$d_f\to\bar D_f$, $H_h$ and $H_f$ diverge while $H_b$ remains
+constant; \eqref{eq:shares} then forces $s_h,s_f\to 0$ and $s_b\to 1$.
+Because the non-bank ceiling $\bar\omega S_{h,i}$ varies across
+countries while $\bar D_f$ is common, each country has its \emph{own}
+takeover level
+$\bar D^{\text{bt}}_i\approx\bar\omega S_{h,i}+\bar D_f$ at which
+banking begins to absorb the bulk of new issuance. Once $D$ exceeds
+$\max_i\bar D^{\text{bt}}_i$, every country has exhausted its capped
+sectors and banking absorbs nearly every additional dollar of debt
+regardless of $S_h$. Cutting the horizontal axis at $D\approx 100\%$
+of GDP therefore gives a uniform picture across countries: this is
+the theoretical counterpart of the pooled empirical kink we estimate
+in Section~\ref{sec:empirical}.
+
+%-------------------------------------------------------------
+\subsection{Numerical illustration: three phases of absorption}
+%-------------------------------------------------------------
+
+We illustrate the equilibrium with the baseline calibration
+$\bar r_h=\bar r_f=\bar r_b=1$, $\gamma_h=\gamma_f=0.02$,
+$\bar\omega=0.30$, $\psi=0.04$, and $\bar D_f=55$.
+Figure~\ref{fig:phases} traces the equilibrium for a single country
+with $S_h=150$ and shades the three phases defined by banking's
+marginal share $s_b=\partial d_b^\ast/\partial D$. In Phase~1 both
+capped sectors are far from their caps, $H_h$ and $H_f$ are bounded,
+and \eqref{eq:shares} delivers a small $s_b$: non-banks and
+foreigners absorb most new debt while banking is essentially flat.
+As $D$ rises into Phase~2, $d_h$ and $d_f$ approach their caps, $H_h$
+and $H_f$ rise sharply, and the planner shifts the marginal dollar
+toward banking. In Phase~3 both capped sectors are close to their
+limits, $1/H_h$ and $1/H_f$ collapse to zero, and $s_b$ approaches
+one.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.85\linewidth]{\latexroot/Figures/absorption_phases.png}
+  \caption{Three phases of debt absorption.}
+  \label{fig:phases}
+\end{figure}
+
+%-------------------------------------------------------------
+\subsection{Numerical illustration: heterogeneous non-bank sector}
+%-------------------------------------------------------------
+
+Figure~\ref{fig:pecking-order} overlays equilibrium allocations for
+five countries that differ only in non-bank capacity,
+$S_h\in\{30,70,110,150,200\}$, holding $\bar D_f=55$ and all other
+parameters at the baseline. Because $1/H_h$ in \eqref{eq:shares} is
+increasing in $S_h$, the model implies a pecking order in $S_h$:
+at every level of $D$, countries with smaller non-bank sectors hold
+a higher share of debt with foreigners and with banks. The middle
+panel shows that small-$S_h$ economies climb the foreign schedule
+faster and hit the uniform ceiling $\bar D_f$ at lower $D$; the right
+panel shows that they also load more onto banking, and their banking
+curves lie uniformly above those of large-$S_h$ countries. Once $D$
+is large enough that every country has crossed its own
+$\bar D^{\text{bt}}_i$, the five banking curves become approximately
+parallel with $s_b\to 1$, while non-bank and foreign curves are flat
+at their respective caps --- the cross-country signature of the
+banking-takeover prediction.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\linewidth]{\latexroot/Figures/pecking_order.png}
+  \caption{Pecking order across countries with different non-bank sector sizes $S_h$.}
+  \label{fig:pecking-order}
+\end{figure}
+
+% Smart bibliography: only included when compiled standalone with citations
 \smartbib
-
-\pdfonly{
-  % execute this version if compiling with pdflatex
-  \captionsetup[figure]{list=no}
-  \captionsetup[table]{list=no}
-}
 
 \end{document}

@@ -1,0 +1,48 @@
+Validation summary: Python pipeline vs committed Stata logs
+==============================================================================
+
+Stata logs (canonical):
+  Code/empirical_debt_composition/results/threshold_estimation_default_trim.txt
+  Code/empirical_debt_composition/results/twoway_cluster_full.txt
+  Code/empirical_debt_composition/results/quadratic_nonbank_results2.txt
+Python logs:
+  Code/empirical_debt_composition/results/python/threshold_default_trim.py.txt
+  Code/empirical_debt_composition/results/python/twoway_cluster_full.py.txt
+  Code/empirical_debt_composition/results/python/quadratic_nonbank_fullsample.py.txt
+
+==============================================================================
+Section 6.3 -- Hansen 1-threshold (paper headline)
+==============================================================================
+  db_total:
+    [OK] tau          python=   102.7485149 stata=   102.7485100  rel diff = 4.79e-08
+    [OK] region1 d    python=     0.2736636 stata=     0.2735618  rel diff = 3.72e-04
+    [OK] region2 d    python=     0.9638325 stata=     0.9638326  rel diff = 6.38e-08
+  dcb:
+    [OK] tau          python=   109.0260000 stata=   109.0260000  rel diff = 0.00e+00
+    [OK] region1 d    python=     0.1616759 stata=     0.1617667  rel diff = 5.61e-04
+    [OK] region2 d    python=     0.7948658 stata=     0.7948680  rel diff = 2.72e-06
+  dpb:
+    [OK] tau          python=   109.0260000 stata=   109.0260000  rel diff = 0.00e+00
+    [!!] region1 d    python=     0.0942184 stata=     0.0940137  rel diff = 2.18e-03
+    [OK] region2 d    python=     0.1537855 stata=     0.1537806  rel diff = 3.16e-05
+  dh:
+    [OK] tau          python=   108.7550000 stata=   108.7550000  rel diff = 0.00e+00
+    [OK] region1 d    python=     0.1124374 stata=     0.1124473  rel diff = 8.79e-05
+    [OK] region2 d    python=    -0.2896332 stata=    -0.2896330  rel diff = 5.50e-07
+
+==============================================================================
+Sections 6.4 + 6.5 -- Stage 1 + Stage 2 (paper headline)
+==============================================================================
+Coefficient agreement: identical to Stata to >= 6 decimals.
+Cluster-robust SEs: agree to ~1-8% relative (Cameron-Gelbach-
+Miller small-sample correction differs slightly between
+ivreg2 and the implementation in _common.py).  All
+statistical conclusions (significance at 5% / 1%) match.
+
+==============================================================================
+Section 6.6 -- concavity + pecking order
+==============================================================================
+Coefficient agreement: identical to Stata to >= 6 decimals
+for every reported spec (Q, Qs, Q0, L, T, B_fe, C_fe, D_fe,
+plus the foreign-debt and all-sectors blocks).  Cluster-
+country SEs match to 4-5 decimals.

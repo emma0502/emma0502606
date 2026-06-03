@@ -1,17 +1,15 @@
 {
   "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
   "@type": "SoftwareSourceCode",
-  "name": "HAFiscal",
-  "description": "Heterogeneous agent model for fiscal stimulus policy analysis",
-  "version": "1.0.0",
+  "name": "Who Holds Government Debt?",
+  "description": "Replication package for the paper 'Who Holds Government Debt?' by Yiran Emma Ma. The paper develops and structurally estimates a model of endogenous government-debt composition across domestic banks, domestic non-banks, and foreign investors.",
+  "version": "0.1.0",
   "keywords": [
-    "heterogeneous agents",
-    "fiscal policy",
-    "HANK",
-    "MPC",
-    "marginal propensity to consume",
-    "computational economics",
-    "dynamic stochastic general equilibrium",
+    "sovereign debt",
+    "debt composition",
+    "banking takeover",
+    "borrowing limits",
+    "structural estimation",
     "REMARK",
     "Reproduction"
   ],
@@ -19,48 +17,22 @@
     {
       "@type": "ComputerLanguage",
       "name": "Python",
-      "version": "3.9+"
-    },
-    {
-      "@type": "ComputerLanguage",
-      "name": "Stata"
+      "version": "3.10+"
     }
   ],
-  "runtimePlatform": "Python 3.9+",
-  "codeRepository": "https://github.com/econ-ark/HAFiscal",
+  "runtimePlatform": "Python 3.10+",
+  "codeRepository": "https://github.com/emma0502/emma0502606",
   "license": "https://spdx.org/licenses/Apache-2.0",
   "author": [
     {
       "@type": "Person",
-      "givenName": "Christopher D.",
-      "familyName": "Carroll",
-      "orcid": "https://orcid.org/0000-0003-3732-9312"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Edmund",
-      "familyName": "Crawley"
-    },
-    {
-      "@type": "Person",
-      "givenName": "William",
-      "familyName": "Du"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Ivan",
-      "familyName": "Frankovic"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Hakon",
-      "familyName": "Tretvoll"
+      "givenName": "Yiran Emma",
+      "familyName": "Ma",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Johns Hopkins University"
+      }
     }
   ],
-  "citation": "https://github.com/econ-ark/HAFiscal/blob/main/CITATION.cff",
-  "relatedLink": [
-    "https://github.com/econ-ark/HAFiscal",
-    "https://github.com/llorracc/HAFiscal-Public"
-  ]
+  "citation": "https://github.com/emma0502/emma0502606/blob/main/CITATION.cff"
 }
-

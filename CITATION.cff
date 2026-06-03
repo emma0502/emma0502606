@@ -1,37 +1,44 @@
-# This CITATION.cff file was generated with cffinit.
-# Visit https://bit.ly/cffinit to generate yours today!
-
 cff-version: 1.2.0
-title: >-
-  Welfare and Spending Effects of Consumption Stimulus
-  Policies
+title: "Who Holds Government Debt? — Replication package"
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  If you use this software, please cite both the paper (preferred-citation
+  below) and this replication package using the metadata in this file.
 type: software
-version: 1.0.7
+version: "0.1.0"
+date-released: "2026-05-08"
 authors:
-  - given-names: Christopher D.
-    family-names: Carroll
-    orcid: 'https://orcid.org/0000-0003-3732-9312'
-  - given-names: Edmund
-    family-names: Crawley
-  - given-names: William
-    family-names: Du
-  - given-names: Ivan
-    family-names: Frankovic
-  - given-names: Hakon
-    family-names: Tretvoll
-repository-code: 'https://github.com/econ-ark/HAFiscal'
-doi: 10.5281/zenodo.17861977
+  - given-names: Yiran Emma
+    family-names: Ma
+    affiliation: Johns Hopkins University
+repository-code: "https://github.com/emma0502/emma0502606"
+abstract: >-
+  Replication package for the paper "Who Holds Government Debt?". The
+  paper develops a cost-minimising model of sovereign debt allocation
+  in which a given stock of public debt is split across three creditor
+  sectors -- domestic non-banks (with country-specific structural
+  capacity), foreigners (with a uniform no-default ceiling), and the
+  domestic banking system (with a convex welfare cost) -- and
+  empirically estimates a high-debt banking-takeover threshold using
+  the Arslanalp-Tsuda sovereign-debt-by-holder panel.
 keywords:
-  - stimulus checks
-  - unemployment insurance extensions
-  - payroll tax cuts
-  - HANK
-  - heterogeneous agent models
-  - marginal propensity to consume
-  - spending multipliers
-  - fiscal policy
+  - sovereign debt
+  - debt composition
+  - banking takeover
+  - borrowing limits
   - REMARK
   - Reproduction
+license: Apache-2.0
+preferred-citation:
+  type: article
+  title: "Who Holds Government Debt?"
+  authors:
+    - given-names: Yiran Emma
+      family-names: Ma
+      affiliation: Johns Hopkins University
+  year: 2026
+  status: "in-preparation"
+  abstract: >-
+    Develops a cost-minimising model of sovereign debt allocation across
+    domestic non-banks, foreigners, and the domestic banking system, and
+    estimates a banking-takeover threshold around D = 100% of GDP using
+    a cross-country panel of debt by holder.

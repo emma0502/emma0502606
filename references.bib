@@ -1,0 +1,202 @@
+@PREAMBLE{ "\providecommand{\noopsort}[1]{} "
+	 # "\providecommand{\singleletter}[1]{#1} " }
+
+% --- Who Holds Government Debt? paper --------------------------
+@Article{ArslanalpTsuda2014,
+  author  = {Arslanalp, Serkan and Tsuda, Takahiro},
+  title   = {Tracking Global Demand for Advanced Economy Sovereign Debt},
+  journal = {IMF Economic Review},
+  year    = {2014},
+  volume  = {62},
+  number  = {3},
+  pages   = {430--464},
+  doi     = {10.1057/imfer.2014.20}
+}
+% ---------------------------------------------------------------
+
+@Article{Broneretal2010,
+  author	= {Broner, Fernando and Martin, Alberto and Ventura, Jaume},
+  title		= {Sovereign Risk and Secondary Markets},
+  journal	= {American Economic Review},
+  year		= {2010},
+  volume	= {100},
+  number	= {4},
+  pages		= {1523--1555}
+}
+
+@TechReport{Jeanne2025,
+  author      = {Jeanne, Olivier},
+  title       = {From Fiscal Deadlock to Financial Repression: Anatomy of a Fall},
+  institution = {National Bureau of Economic Research},
+  type        = {Working Paper},
+  number      = {33395},
+  year        = {2025},
+  doi         = {10.3386/w33395}
+}
+
+@Article{AiyagariMcGrattan1998,
+  author  = {Aiyagari, S. Rao and McGrattan, Ellen R.},
+  title   = {The Optimum Quantity of Debt},
+  journal = {Journal of Monetary Economics},
+  volume  = {42},
+  number  = {3},
+  pages   = {447--469},
+  year    = {1998},
+  doi     = {10.1016/S0304-3932(98)00031-2}
+}
+
+@Article{FangHardyLewis2023,
+  author  = {Fang, Xiang and Hardy, Bryan and Lewis, Karen K.},
+  title   = {Who Holds Sovereign Debt and Why It Matters},
+  journal = {Review of Financial Studies},
+  year    = {2025},
+  note    = {Forthcoming}
+}
+
+@Article{CameronGelbachMiller2011,
+  author  = {Cameron, A. Colin and Gelbach, Jonah B. and Miller, Douglas L.},
+  title   = {Robust Inference With Multi-way Clustering},
+  journal = {Journal of Business \& Economic Statistics},
+  volume  = {29},
+  number  = {2},
+  pages   = {238--249},
+  year    = {2011},
+  doi     = {10.1198/jbes.2010.07136}
+}
+
+@Article{Arellano2008,
+  author  = {Arellano, Cristina},
+  title   = {Default Risk and Income Fluctuations in Emerging Economies},
+  journal = {American Economic Review},
+  volume  = {98},
+  number  = {3},
+  pages   = {690--712},
+  year    = {2008},
+  doi     = {10.1257/aer.98.3.690}
+}
+
+@Article{ReinhartRogoff2010,
+  author  = {Reinhart, Carmen M. and Rogoff, Kenneth S.},
+  title   = {Growth in a Time of Debt},
+  journal = {American Economic Review},
+  volume  = {100},
+  number  = {2},
+  pages   = {573--578},
+  year    = {2010},
+  doi     = {10.1257/aer.100.2.573}
+}
+
+@Article{BrunnermeierEtAl2016,
+  author  = {Brunnermeier, Markus K. and Garicano, Luis and Lane, Philip R. and Pagano, Marco and Reis, Ricardo and Santos, Tano and Thesmar, David and Van Nieuwerburgh, Stijn and Vayanos, Dimitri},
+  title   = {The Sovereign--Bank Diabolic Loop and {ESBies}},
+  journal = {American Economic Review Papers and Proceedings},
+  volume  = {106},
+  number  = {5},
+  pages   = {508--512},
+  year    = {2016},
+  doi     = {10.1257/aer.p20161107}
+}
+
+@Article{FarhiTirole2018,
+  author  = {Farhi, Emmanuel and Tirole, Jean},
+  title   = {Deadly Embrace: Sovereign and Financial Balance Sheets Doom Loops},
+  journal = {Review of Economic Studies},
+  volume  = {85},
+  number  = {3},
+  pages   = {1781--1823},
+  year    = {2018},
+  doi     = {10.1093/restud/rdx059}
+}
+
+@Article{GennaioliMartinRossi2014,
+  author  = {Gennaioli, Nicola and Martin, Alberto and Rossi, Stefano},
+  title   = {Sovereign Default, Domestic Banks, and Financial Institutions},
+  journal = {Journal of Finance},
+  volume  = {69},
+  number  = {2},
+  pages   = {819--866},
+  year    = {2014},
+  doi     = {10.1111/jofi.12124}
+}
+
+@Article{ReinhartSbrancia2015,
+  author  = {Reinhart, Carmen M. and Sbrancia, M. Belen},
+  title   = {The Liquidation of Government Debt},
+  journal = {Economic Policy},
+  volume  = {30},
+  number  = {82},
+  pages   = {291--333},
+  year    = {2015},
+  doi     = {10.1093/epolic/eiv003}
+}
+
+@Article{ChariDovisKehoe2020,
+  author  = {Chari, V. V. and Dovis, Alessandro and Kehoe, Patrick J.},
+  title   = {On the Optimality of Financial Repression},
+  journal = {Journal of Political Economy},
+  volume  = {128},
+  number  = {2},
+  pages   = {710--739},
+  year    = {2020},
+  doi     = {10.1086/704575}
+}
+
+% --- Data sources used by the empirical pipeline ----------------------
+% These are cited by Data/README.md (provenance table) and underpin the
+% panel `Data/gfdd_with_de_facto1.dta` consumed by
+% Code/empirical_debt_composition/.
+
+@Misc{WorldBankGFDD2022,
+  author       = {{World Bank}},
+  title        = {Global Financial Development Database ({GFDD})},
+  year         = {2022},
+  howpublished = {\url{https://www.worldbank.org/en/publication/gfdr/data/global-financial-development-database}},
+  note         = {2022 release. Indicators \texttt{di02}, \texttt{di11}, \texttt{di13} contribute the bank-deposit, insurance, and pension-fund size variables used in the first-stage regressions.}
+}
+
+@Article{LaneMilesiFerretti2018,
+  author  = {Lane, Philip R. and Milesi-Ferretti, Gian Maria},
+  title   = {The External Wealth of Nations Revisited: International Financial Integration in the Aftermath of the Global Financial Crisis},
+  journal = {IMF Economic Review},
+  volume  = {66},
+  number  = {1},
+  pages   = {189--222},
+  year    = {2018},
+  doi     = {10.1057/s41308-017-0048-y},
+  note    = {The 2024 year-end update of the EWN dataset (\emph{EWN-dataset-year-end-2024}) is the vintage used here for non-bank external debt holdings and for the de-facto financial-openness variable.}
+}
+
+@Article{ChinnIto2006,
+  author  = {Chinn, Menzie D. and Ito, Hiro},
+  title   = {What Matters for Financial Development? Capital Controls, Institutions, and Interactions},
+  journal = {Journal of Development Economics},
+  volume  = {81},
+  number  = {1},
+  pages   = {163--192},
+  year    = {2006},
+  doi     = {10.1016/j.jdeveco.2005.05.010},
+  note    = {The KAOPEN index of capital-account openness; 2023 release used.}
+}
+
+@Article{Quinn1997,
+  author  = {Quinn, Dennis P.},
+  title   = {The Correlates of Change in International Financial Regulation},
+  journal = {American Political Science Review},
+  volume  = {91},
+  number  = {3},
+  pages   = {531--551},
+  year    = {1997},
+  doi     = {10.2307/2952073},
+  note    = {Source of the \texttt{cap100} capital-account-openness measure; 2021 update used.}
+}
+
+@TechReport{ArslanalpTsuda2012,
+  author      = {Arslanalp, Serkan and Tsuda, Takahiro},
+  title       = {Tracking Global Demand for Advanced Economy Sovereign Debt},
+  institution = {International Monetary Fund},
+  type        = {IMF Working Paper},
+  number      = {WP/12/284},
+  year        = {2012},
+  doi         = {10.5089/9781616356545.001},
+  note        = {Predecessor of \citet{ArslanalpTsuda2014}; defines the Bond Investor Base (BOI) sovereign-debt-by-creditor-sector dataset whose 2024 refresh supplies \texttt{dh}, \texttt{dcb}, \texttt{dpb}, \texttt{df}.}
+}

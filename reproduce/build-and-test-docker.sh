@@ -237,9 +237,9 @@ VENV_VAR=$(docker exec "$DOCKER_CONTAINER" bash -c 'echo $VIRTUAL_ENV' 2>&1)
 echo "{\"location\":\"build-and-test-docker.sh:227\",\"message\":\"Python venv check\",\"data\":{\"hypothesis\":\"C\",\"python_path\":\"$PYTHON_PATH\",\"version\":\"$PYTHON_VERSION\",\"virtual_env\":\"$VENV_VAR\"},\"timestamp\":$(date +%s)000,\"sessionId\":\"debug-session\"}" >> "$DEBUG_LOG"
 
 # Hypothesis D: Check critical files exist
-TEX_EXISTS=$(docker exec "$DOCKER_CONTAINER" bash -c 'test -f /workspace/HAFiscal.tex && echo "EXISTS" || echo "MISSING"' 2>&1)
-BIB_EXISTS=$(docker exec "$DOCKER_CONTAINER" bash -c 'test -f /workspace/HAFiscal.bib && echo "EXISTS" || echo "MISSING"' 2>&1)
-echo "{\"location\":\"build-and-test-docker.sh:233\",\"message\":\"Critical files check\",\"data\":{\"hypothesis\":\"D\",\"hafiscal_tex\":\"$TEX_EXISTS\",\"hafiscal_bib\":\"$BIB_EXISTS\"},\"timestamp\":$(date +%s)000,\"sessionId\":\"debug-session\"}" >> "$DEBUG_LOG"
+TEX_EXISTS=$(docker exec "$DOCKER_CONTAINER" bash -c 'test -f /workspace/emma0502606.tex && echo "EXISTS" || echo "MISSING"' 2>&1)
+BIB_EXISTS=$(docker exec "$DOCKER_CONTAINER" bash -c 'test -f /workspace/references.bib && echo "EXISTS" || echo "MISSING"' 2>&1)
+echo "{\"location\":\"build-and-test-docker.sh:233\",\"message\":\"Critical files check\",\"data\":{\"hypothesis\":\"D\",\"paper_tex\":\"$TEX_EXISTS\",\"references_bib\":\"$BIB_EXISTS\"},\"timestamp\":$(date +%s)000,\"sessionId\":\"debug-session\"}" >> "$DEBUG_LOG"
 
 # Hypothesis E: Check write permissions
 WORKSPACE_PERMS=$(docker exec "$DOCKER_CONTAINER" bash -c 'ls -ld /workspace' 2>&1)

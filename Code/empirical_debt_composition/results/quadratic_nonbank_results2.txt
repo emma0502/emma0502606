@@ -1,0 +1,3626 @@
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\马怡然\Documents\MLE on finacial repression\quadratic_nonbank_results2.txt
+  log type:  text
+ opened on:  12 Apr 2026, 19:52:51
+
+. 
+. xtset country_id year
+
+Panel variable: country_id (unbalanced)
+ Time variable: year, 1989 to 2021
+         Delta: 1 unit
+
+. 
+. ****************************************************
+. * First stage — Non-bank: baseline (d < 100) -> delta_n_q
+. ****************************************************
+. capture drop below100
+
+. gen below100 = d < 100 if !missing(d)
+
+. 
+. capture drop delta_n_hat delta_n_q
+
+. xtreg nonbank_size d i.year if below100==1, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        463
+Group variable: country_id                      Number of groups  =         29
+
+R-squared:                                      Obs per group:
+     Within  = 0.4463                                         min =          1
+     Between = 0.0720                                         avg =       16.0
+     Overall = 0.0048                                         max =         26
+
+                                                F(23, 28)         =          .
+corr(u_i, Xb) = -0.2296                         Prob > F          =          .
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+nonbank_size | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.3355009   .2471247    -1.36   0.185     -.841713    .1707112
+             |
+        year |
+       1996  |   1.271692    .586427     2.17   0.039     .0704508    2.472933
+       1997  |  -12.73138   10.07967    -1.26   0.217    -33.37865    7.915896
+       1998  |  -6.863951   6.717929    -1.02   0.316      -20.625    6.897102
+       1999  |   .7798682   2.327573     0.34   0.740     -3.98795    5.547686
+       2000  |  -1.950739   4.156026    -0.47   0.642    -10.46397    6.562496
+       2001  |  -21.02637   10.93725    -1.92   0.065    -43.43032    1.377576
+       2002  |  -24.73256   8.964414    -2.76   0.010    -43.09533    -6.36979
+       2003  |  -17.66913   7.350587    -2.40   0.023    -32.72612   -2.612135
+       2004  |  -12.13687   6.589804    -1.84   0.076    -25.63547    1.361731
+       2005  |  -6.734389   6.604842    -1.02   0.317    -20.26379    6.795016
+       2006  |   6.943291   2.887277     2.40   0.023     1.028972    12.85761
+       2007  |   6.607235   3.527332     1.87   0.072    -.6181783    13.83265
+       2008  |   1.990663   2.707047     0.74   0.468    -3.554472    7.535798
+       2009  |   15.75015   4.067281     3.87   0.001     7.418698    24.08159
+       2010  |   21.34098   5.691072     3.75   0.001     9.683349    32.99861
+       2011  |   19.98935    6.41548     3.12   0.004      6.84783    33.13086
+       2012  |   25.43526   6.453955     3.94   0.000     12.21494    38.65559
+       2013  |   30.76881   6.481719     4.75   0.000     17.49161    44.04601
+       2014  |   33.06168    5.69759     5.80   0.000      21.3907    44.73267
+       2015  |   35.39592   6.066055     5.84   0.000     22.97017    47.82167
+       2016  |   37.01845   5.865345     6.31   0.000     25.00383    49.03306
+       2017  |   39.81566   5.822058     6.84   0.000     27.88971     51.7416
+       2018  |    37.6466   6.102862     6.17   0.000     25.14545    50.14774
+       2019  |   40.02206   5.469464     7.32   0.000     28.81837    51.22575
+       2020  |   43.00402   7.799507     5.51   0.000     27.02745    58.98058
+             |
+       _cons |   92.07551   11.67673     7.89   0.000     68.15681    115.9942
+-------------+----------------------------------------------------------------
+     sigma_u |  70.988811
+     sigma_e |  21.228789
+         rho |  .91791339   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. predict double delta_n_hat if e(sample), u
+(317 missing values generated)
+
+. bys country_id: egen double delta_n_q = mean(delta_n_hat)
+(79 missing values generated)
+
+. drop delta_n_hat
+
+. 
+. ****************************************************
+. * First stage — CB and PB: centered threshold, full sample
+. ****************************************************
+. capture drop highD d_high_c
+
+. gen highD = d >= 100 if !missing(d)
+
+. gen double d_high_c = highD * (d - 100)
+
+. 
+. capture drop delta_cb_hat_q delta_cb_q
+
+. xtreg cb_size c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        718
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.6034                                         min =          9
+     Between = 0.9103                                         avg =       22.4
+     Overall = 0.7312                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.3332                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+     cb_size | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0161305   .0444174     0.36   0.719    -.0744593    .1067203
+    d_high_c |   .5197561   .1674516     3.10   0.004     .1782363    .8612759
+             |
+        year |
+       1990  |  -1.317122   .9071474    -1.45   0.157    -3.167261    .5330173
+       1991  |  -2.622122   2.129189    -1.23   0.227    -6.964631    1.720387
+       1992  |   .3823118   .3193493     1.20   0.240    -.2690054    1.033629
+       1993  |  -.0152134   .5426719    -0.03   0.978       -1.122    1.091573
+       1994  |    .231441   1.171385     0.20   0.845    -2.157614    2.620497
+       1995  |  -1.054402   2.631064    -0.40   0.691    -6.420493    4.311688
+       1996  |  -1.388614   2.802775    -0.50   0.624    -7.104912    4.327685
+       1997  |  -1.084429   2.659858    -0.41   0.686    -6.509244    4.340386
+       1998  |  -.9582099   2.632651    -0.36   0.718    -6.327537    4.411117
+       1999  |   .2718755   2.550302     0.11   0.916    -4.929501    5.473252
+       2000  |   .4402842   2.602502     0.17   0.867    -4.867554    5.748123
+       2001  |  -1.004691   2.534168    -0.40   0.694    -6.173162    4.163779
+       2002  |  -.8866439   2.570346    -0.34   0.732    -6.128899    4.355612
+       2003  |  -.8476322   2.531194    -0.33   0.740    -6.010037    4.314773
+       2004  |  -.8719251   2.512557    -0.35   0.731    -5.996319    4.252469
+       2005  |  -.9800677   2.547376    -0.38   0.703    -6.175476    4.215341
+       2006  |  -1.123761   2.552667    -0.44   0.663     -6.32996    4.082439
+       2007  |  -.9833643   2.505462    -0.39   0.697    -6.093287    4.126558
+       2008  |  -1.186401   2.576048    -0.46   0.648    -6.440285    4.067483
+       2009  |  -2.335843   2.853188    -0.82   0.419    -8.154957    3.483272
+       2010  |  -2.489906   2.983084    -0.83   0.410    -8.573945    3.594134
+       2011  |  -2.986925   3.185358    -0.94   0.356    -9.483507    3.509656
+       2012  |  -3.368895   3.275043    -1.03   0.312    -10.04839    3.310598
+       2013  |  -2.638985   3.240139    -0.81   0.422    -9.247292    3.969322
+       2014  |  -2.170937   3.207428    -0.68   0.504    -8.712529    4.370656
+       2015  |   .3722752   2.956805     0.13   0.901    -5.658168    6.402719
+       2016  |   2.971836   2.822599     1.05   0.301    -2.784894    8.728565
+       2017  |   4.734201   2.751421     1.72   0.095    -.8773587    10.34576
+       2018  |    5.27419   2.760662     1.91   0.065    -.3562174     10.9046
+       2019  |   5.418136   2.725498     1.99   0.056    -.1405535    10.97683
+       2020  |   8.090769   2.916029     2.77   0.009     2.143489    14.03805
+       2021  |   11.28308   2.999377     3.76   0.001     5.165809    17.40035
+             |
+       _cons |   1.332191   3.312509     0.40   0.690    -5.423715    8.088096
+-------------+----------------------------------------------------------------
+     sigma_u |  2.3938803
+     sigma_e |  4.8549207
+         rho |  .19557963   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. predict double delta_cb_hat_q if e(sample), u
+(62 missing values generated)
+
+. bys country_id: egen double delta_cb_q = mean(delta_cb_hat_q)
+
+. drop delta_cb_hat_q
+
+. 
+. capture drop delta_pb_hat_q delta_pb_q
+
+. xtreg di02 c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        732
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.1990                                         min =          8
+     Between = 0.0173                                         avg =       22.9
+     Overall = 0.0859                                         max =         32
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.0812                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+        di02 | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.3212143   .2646503    -1.21   0.234    -.8609722    .2185436
+    d_high_c |   .8561502   .3715028     2.30   0.028     .0984653    1.613835
+             |
+        year |
+       1990  |  -1.411393   1.018893    -1.39   0.176    -3.489439    .6666529
+       1991  |   .0148382   2.931815     0.01   0.996    -5.964637    5.994314
+       1992  |   4.408282   7.629137     0.58   0.568    -11.15145    19.96801
+       1993  |   4.430663   8.063592     0.55   0.587    -12.01514    20.87647
+       1994  |  -12.73411   15.43371    -0.83   0.416    -44.21138    18.74315
+       1995  |   -4.02477   12.76103    -0.32   0.755    -30.05106    22.00152
+       1996  |  -3.140716   12.83607    -0.24   0.808    -29.32004    23.03861
+       1997  |  -1.769165   13.10518    -0.13   0.893    -28.49736    24.95903
+       1998  |  -8.239784   14.03614    -0.59   0.561    -36.86667    20.38711
+       1999  |  -6.723333   17.07625    -0.39   0.696    -41.55057     28.1039
+       2000  |   3.079498   15.03237     0.20   0.839    -27.57922    33.73821
+       2001  |   6.613811   10.91832     0.61   0.549    -15.65426    28.88188
+       2002  |   6.743764   10.94379     0.62   0.542    -15.57624    29.06377
+       2003  |    9.06166   11.05261     0.82   0.419     -13.4803    31.60362
+       2004  |    11.1122   10.96672     1.01   0.319    -11.25458    33.47897
+       2005  |   23.02502   11.82703     1.95   0.061    -1.096368     47.1464
+       2006  |   30.42414   12.54609     2.42   0.021     4.836229    56.01206
+       2007  |   33.96712   12.22473     2.78   0.009      9.03461    58.89962
+       2008  |   31.37134   12.12439     2.59   0.015     6.643482     56.0992
+       2009  |   36.87311   12.56615     2.93   0.006     11.24428    62.50194
+       2010  |    36.5844   12.71029     2.88   0.007     10.66159    62.50722
+       2011  |    33.1732   12.82689     2.59   0.015     7.012593    59.33381
+       2012  |   31.48657   13.23204     2.38   0.024     4.499646    58.47349
+       2013  |   29.47629   13.34039     2.21   0.035     2.268393    56.68419
+       2014  |   26.23413   13.36197     1.96   0.059    -1.017782    53.48605
+       2015  |   22.99724   13.21189     1.74   0.092     -3.94859    49.94307
+       2016  |   21.62263   13.05085     1.66   0.108    -4.994749    48.24002
+       2017  |   18.25452   12.89958     1.42   0.167    -8.054362    44.56339
+       2018  |   16.93254   12.76983     1.33   0.195    -9.111687    42.97677
+       2019  |    15.8992   12.81715     1.24   0.224    -10.24156    42.03996
+       2020  |   24.10062   14.10231     1.71   0.097    -4.661225    52.86247
+       2021  |   20.02824   13.94346     1.44   0.161    -8.409633    48.46612
+             |
+       _cons |      99.87   15.77412     6.33   0.000     67.69847    132.0415
+-------------+----------------------------------------------------------------
+     sigma_u |  33.563719
+     sigma_e |  26.609983
+         rho |  .61403814   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. predict double delta_pb_hat_q if e(sample), u
+(48 missing values generated)
+
+. bys country_id: egen double delta_pb_q = mean(delta_pb_hat_q)
+
+. drop delta_pb_hat_q
+
+. 
+. ****************************************************
+. * Report structural sizes (deltas) by country
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  STRUCTURAL SIZES (delta_hat) BY COUNTRY"
+  STRUCTURAL SIZES (delta_hat) BY COUNTRY
+
+. di "=========================================="
+==========================================
+
+. di "  Country | delta_h (nonbank) | delta_cb | delta_pb"
+  Country | delta_h (nonbank) | delta_cb | delta_pb
+
+. di "----------------------------------------------------------"
+----------------------------------------------------------
+
+. 
+. preserve
+
+. capture confirm variable country
+
+. if _rc == 0 {
+.     collapse (mean) delta_n_q delta_cb_q delta_pb_q, by(country_id country)
+.     sort country
+.     list country delta_n_q delta_cb_q delta_pb_q, noobs clean
+
+            country    delta_n_q   delta_cb_q   delta_pb_q  
+          Australia    25.303861     .7089167    12.486387  
+            Austria   -44.937147    1.6497409    12.494387  
+            Belgium    6.0047573   -2.1686638    1.6423259  
+             Canada    86.093828       1.7462    35.148308  
+             Cyprus            .    1.3713089   -13.142693  
+     Czech Republic   -81.111657   -1.5395855    -48.22582  
+            Denmark    115.29824   -.79461898    50.938288  
+            Estonia   -91.019931    -1.711456    -53.84383  
+            Finland    .31858311    1.0389343   -16.805864  
+             France    23.224653    2.3330814    14.648125  
+            Germany   -19.593359    1.0170651    13.357699  
+            Iceland    55.823323    -3.796013    45.025353  
+            Ireland    40.870212    3.0951207   -4.9716959  
+             Israel   -9.7248858   -1.5553249   -14.357965  
+              Italy            .   -2.6021057    4.2555535  
+              Japan            .   -4.3145701    27.414284  
+        Korea, Rep.   -35.609686    -.9255002   -5.9359252  
+             Latvia    -92.57591   -1.4491281   -52.997646  
+          Lithuania   -95.578476   -.64944507   -68.594483  
+         Luxembourg     121.6994   -2.4332815   -21.051436  
+              Malta    26.111405    2.8540277    10.427241  
+        Netherlands    109.76933    .68548886    19.446987  
+        New Zealand   -81.375392     1.297557    28.449484  
+             Norway    -47.84836    -2.724779    7.4261028  
+           Portugal   -24.775337   -3.9917549     34.17023  
+    Slovak Republic    -86.44427    2.1237128   -42.900428  
+           Slovenia   -75.150381     2.100813   -40.245905  
+              Spain   -46.793547    4.1160974    47.393226  
+             Sweden    49.997841    -.1061959     6.503446  
+        Switzerland    99.049868    .01838023    51.702479  
+     United Kingdom    84.410188   -2.7953675    42.933187  
+      United States    80.878328    4.8034685   -31.350223  
+. }
+
+. else {
+.     collapse (mean) delta_n_q delta_cb_q delta_pb_q, by(country_id)
+.     sort country_id
+.     list country_id delta_n_q delta_cb_q delta_pb_q, noobs clean
+. }
+
+. di _newline "Summary statistics:"
+
+Summary statistics:
+
+. summ delta_n_q delta_cb_q delta_pb_q
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+   delta_n_q |         29    3.183292    70.98881  -95.57848   121.6994
+  delta_cb_q |         32   -.0811836     2.39388   -4.31457   4.803469
+  delta_pb_q |         32    1.607474    33.56372  -68.59448   51.70248
+
+. restore
+
+. 
+. ****************************************************
+. * TIME TREND CHECK (professor's request)
+. *
+. * Does the non-bank sector show a secular increase in size
+. * over time (controlling for debt)?  If yes, and debt also
+. * trends up, the weak concavity (kappa) could be an artefact
+. * of a common trend rather than a true absorption mechanism.
+. *
+. * Two approaches per sector:
+. *   (A) Display every year-FE coefficient from the i.year
+. *       first stage so you can eyeball the path.
+. *   (B) Re-run the first stage replacing i.year with a
+. *       continuous year variable and report its coefficient.
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  YEAR FIXED EFFECTS & TIME TREND CHECK"
+  YEAR FIXED EFFECTS & TIME TREND CHECK
+
+. di "=========================================="
+==========================================
+
+. 
+. * ---------- Non-bank ----------
+. di _newline(2) "--- Non-bank first stage (d < 100) ---"
+
+
+--- Non-bank first stage (d < 100) ---
+
+. quietly xtreg nonbank_size d i.year if below100==1, fe vce(cluster country_id)
+
+. 
+. di _newline "  (A) Year FE coefficients from i.year specification:"
+
+  (A) Year FE coefficients from i.year specification:
+
+. di "       Year | Coefficient"
+       Year | Coefficient
+
+. di "       -----|------------"
+       -----|------------
+
+. levelsof year if e(sample), local(yrs)
+1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020
+
+. foreach y of local yrs {
+  2.     capture local coef = _b[`y'.year]
+  3.     if _rc == 0 {
+  4.         di "       `y' | " %9.3f `coef'
+  5.     }
+  6. }
+       1995 |     0.000
+       1996 |     1.272
+       1997 |   -12.731
+       1998 |    -6.864
+       1999 |     0.780
+       2000 |    -1.951
+       2001 |   -21.026
+       2002 |   -24.733
+       2003 |   -17.669
+       2004 |   -12.137
+       2005 |    -6.734
+       2006 |     6.943
+       2007 |     6.607
+       2008 |     1.991
+       2009 |    15.750
+       2010 |    21.341
+       2011 |    19.989
+       2012 |    25.435
+       2013 |    30.769
+       2014 |    33.062
+       2015 |    35.396
+       2016 |    37.018
+       2017 |    39.816
+       2018 |    37.647
+       2019 |    40.022
+       2020 |    43.004
+
+. 
+. di _newline "  (B) Linear trend test — replace i.year with continuous year:"
+
+  (B) Linear trend test — replace i.year with continuous year:
+
+. xtreg nonbank_size d year if below100==1, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        463
+Group variable: country_id                      Number of groups  =         29
+
+R-squared:                                      Obs per group:
+     Within  = 0.3922                                         min =          1
+     Between = 0.0586                                         avg =       16.0
+     Overall = 0.0077                                         max =         26
+
+                                                F(2, 28)          =      13.16
+corr(u_i, Xb) = -0.1857                         Prob > F          =     0.0001
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+nonbank_size | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.2081112   .1986715    -1.05   0.304    -.6150712    .1988489
+        year |   3.248075    .727665     4.46   0.000     1.757521    4.738629
+       _cons |  -6428.061   1456.228    -4.41   0.000    -9411.009   -3445.113
+-------------+----------------------------------------------------------------
+     sigma_u |  69.760087
+     sigma_e |   21.61461
+         rho |    .912407   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. local nb_trend_b = _b[year]
+
+. local nb_trend_se = _se[year]
+
+. local nb_trend_p = 2*ttail(e(df_r), abs(`nb_trend_b'/`nb_trend_se'))
+
+. di _newline "  ==> Non-bank linear trend: coeff = " %7.4f `nb_trend_b' ///
+>    "  (SE " %6.4f `nb_trend_se' ")" ///
+>    "  p = " %6.4f `nb_trend_p'
+
+  ==> Non-bank linear trend: coeff =  3.2481  (SE 0.7277)  p = 0.0001
+
+. 
+. * ---------- Central bank ----------
+. di _newline(2) "--- Central bank first stage (full sample) ---"
+
+
+--- Central bank first stage (full sample) ---
+
+. quietly xtreg cb_size c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+. 
+. di _newline "  (A) Year FE coefficients from i.year specification:"
+
+  (A) Year FE coefficients from i.year specification:
+
+. di "       Year | Coefficient"
+       Year | Coefficient
+
+. di "       -----|------------"
+       -----|------------
+
+. levelsof year if e(sample), local(yrs)
+1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020 2021
+
+. foreach y of local yrs {
+  2.     capture local coef = _b[`y'.year]
+  3.     if _rc == 0 {
+  4.         di "       `y' | " %9.3f `coef'
+  5.     }
+  6. }
+       1989 |     0.000
+       1990 |    -1.317
+       1991 |    -2.622
+       1992 |     0.382
+       1993 |    -0.015
+       1994 |     0.231
+       1995 |    -1.054
+       1996 |    -1.389
+       1997 |    -1.084
+       1998 |    -0.958
+       1999 |     0.272
+       2000 |     0.440
+       2001 |    -1.005
+       2002 |    -0.887
+       2003 |    -0.848
+       2004 |    -0.872
+       2005 |    -0.980
+       2006 |    -1.124
+       2007 |    -0.983
+       2008 |    -1.186
+       2009 |    -2.336
+       2010 |    -2.490
+       2011 |    -2.987
+       2012 |    -3.369
+       2013 |    -2.639
+       2014 |    -2.171
+       2015 |     0.372
+       2016 |     2.972
+       2017 |     4.734
+       2018 |     5.274
+       2019 |     5.418
+       2020 |     8.091
+       2021 |    11.283
+
+. 
+. di _newline "  (B) Linear trend test:"
+
+  (B) Linear trend test:
+
+. xtreg cb_size c.d c.d_high_c year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        718
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.4494                                         min =          9
+     Between = 0.9067                                         avg =       22.4
+     Overall = 0.6414                                         max =         33
+
+                                                F(3, 31)          =      11.39
+corr(u_i, Xb) = -0.4003                         Prob > F          =     0.0000
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+     cb_size | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |    .002913   .0452505     0.06   0.949     -.089376     .095202
+    d_high_c |   .5556971   .1688442     3.29   0.002      .211337    .9000572
+        year |   .3100974     .08216     3.77   0.001     .1425309    .4776639
+       _cons |  -620.4723   164.4723    -3.77   0.001    -955.9157   -285.0289
+-------------+----------------------------------------------------------------
+     sigma_u |  2.5471964
+     sigma_e |  5.5888712
+         rho |  .17199297   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. local cb_trend_b = _b[year]
+
+. local cb_trend_se = _se[year]
+
+. local cb_trend_p = 2*ttail(e(df_r), abs(`cb_trend_b'/`cb_trend_se'))
+
+. di _newline "  ==> CB linear trend: coeff = " %7.4f `cb_trend_b' ///
+>    "  (SE " %6.4f `cb_trend_se' ")" ///
+>    "  p = " %6.4f `cb_trend_p'
+
+  ==> CB linear trend: coeff =  0.3101  (SE 0.0822)  p = 0.0007
+
+. 
+. * ---------- Private bank ----------
+. di _newline(2) "--- Private bank first stage (full sample) ---"
+
+
+--- Private bank first stage (full sample) ---
+
+. quietly xtreg di02 c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+. 
+. di _newline "  (A) Year FE coefficients from i.year specification:"
+
+  (A) Year FE coefficients from i.year specification:
+
+. di "       Year | Coefficient"
+       Year | Coefficient
+
+. di "       -----|------------"
+       -----|------------
+
+. levelsof year if e(sample), local(yrs)
+1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015 2016 2017 2018 2019 2020 2021
+
+. foreach y of local yrs {
+  2.     capture local coef = _b[`y'.year]
+  3.     if _rc == 0 {
+  4.         di "       `y' | " %9.3f `coef'
+  5.     }
+  6. }
+       1989 |     0.000
+       1990 |    -1.411
+       1991 |     0.015
+       1992 |     4.408
+       1993 |     4.431
+       1994 |   -12.734
+       1995 |    -4.025
+       1996 |    -3.141
+       1997 |    -1.769
+       1998 |    -8.240
+       1999 |    -6.723
+       2000 |     3.079
+       2001 |     6.614
+       2002 |     6.744
+       2003 |     9.062
+       2004 |    11.112
+       2005 |    23.025
+       2006 |    30.424
+       2007 |    33.967
+       2008 |    31.371
+       2009 |    36.873
+       2010 |    36.584
+       2011 |    33.173
+       2012 |    31.487
+       2013 |    29.476
+       2014 |    26.234
+       2015 |    22.997
+       2016 |    21.623
+       2017 |    18.255
+       2018 |    16.933
+       2019 |    15.899
+       2020 |    24.101
+       2021 |    20.028
+
+. 
+. di _newline "  (B) Linear trend test:"
+
+  (B) Linear trend test:
+
+. xtreg di02 c.d c.d_high_c year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        732
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.0681                                         min =          8
+     Between = 0.0038                                         avg =       22.9
+     Overall = 0.0055                                         max =         32
+
+                                                F(3, 31)          =       3.16
+corr(u_i, Xb) = -0.2428                         Prob > F          =     0.0385
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+        di02 | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.3781624   .2729474    -1.39   0.176    -.9348423    .1785176
+    d_high_c |    .791126   .3894283     2.03   0.051    -.0031182     1.58537
+        year |   .9944318   .5842056     1.70   0.099    -.1970634    2.185927
+       _cons |  -1874.633   1166.093    -1.61   0.118    -4252.895    503.6301
+-------------+----------------------------------------------------------------
+     sigma_u |  35.257267
+     sigma_e |  28.055946
+         rho |  .61228852   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. local pb_trend_b = _b[year]
+
+. local pb_trend_se = _se[year]
+
+. local pb_trend_p = 2*ttail(e(df_r), abs(`pb_trend_b'/`pb_trend_se'))
+
+. di _newline "  ==> PB linear trend: coeff = " %7.4f `pb_trend_b' ///
+>    "  (SE " %6.4f `pb_trend_se' ")" ///
+>    "  p = " %6.4f `pb_trend_p'
+
+  ==> PB linear trend: coeff =  0.9944  (SE 0.5842)  p = 0.0987
+
+. 
+. * ---------- Summary ----------
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  SUMMARY: Linear time trends in sector size"
+  SUMMARY: Linear time trends in sector size
+
+. di "  (controlling for debt + country FE)"
+  (controlling for debt + country FE)
+
+. di "  Sector       | Trend coeff |   SE    | p-value"
+  Sector       | Trend coeff |   SE    | p-value
+
+. di "  -------------|-------------|---------|--------"
+  -------------|-------------|---------|--------
+
+. di "  Non-bank     | " %9.4f `nb_trend_b' "   | " %7.4f `nb_trend_se' " | " %6.4f `nb_trend_p'
+  Non-bank     |    3.2481   |  0.7277 | 0.0001
+
+. di "  Central bank | " %9.4f `cb_trend_b' "   | " %7.4f `cb_trend_se' " | " %6.4f `cb_trend_p'
+  Central bank |    0.3101   |  0.0822 | 0.0007
+
+. di "  Private bank | " %9.4f `pb_trend_b' "   | " %7.4f `pb_trend_se' " | " %6.4f `pb_trend_p'
+  Private bank |    0.9944   |  0.5842 | 0.0987
+
+. di "=========================================="
+==========================================
+
+. di _newline "Interpretation:"
+
+Interpretation:
+
+. di "  If non-bank trend > 0 and significant, the sector is growing"
+  If non-bank trend > 0 and significant, the sector is growing
+
+. di "  over time (in % of GDP) after controlling for debt."
+  over time (in % of GDP) after controlling for debt.
+
+. di "  Combined with trending debt, this could explain the weak"
+  Combined with trending debt, this could explain the weak
+
+. di "  concavity (kappa insignificant) in the second stage."
+  concavity (kappa insignificant) in the second stage.
+
+. di "  Professor's concern: if both debt and non-bank size trend up,"
+  Professor's concern: if both debt and non-bank size trend up,
+
+. di "  setting T_h ~ 0 may be too strong an assumption."
+  setting T_h ~ 0 may be too strong an assumption.
+
+. 
+. ****************************************************
+. * Interactions
+. ****************************************************
+. capture drop d_sq delta_n_d delta_n_d_sq delta_n_dhc
+
+. gen double d_sq         = d * d
+
+. gen double delta_n_d    = delta_n_q * d
+(79 missing values generated)
+
+. gen double delta_n_d_sq = delta_n_q * d_sq
+(79 missing values generated)
+
+. gen double delta_n_dhc  = delta_n_q * d_high_c
+(79 missing values generated)
+
+. 
+. capture drop delta_cb_d delta_cb_dhc
+
+. gen double delta_cb_d   = delta_cb_q * d
+
+. gen double delta_cb_dhc = delta_cb_q * d_high_c
+
+. 
+. capture drop delta_pb_d delta_pb_dhc
+
+. gen double delta_pb_d   = delta_pb_q * d
+
+. gen double delta_pb_dhc = delta_pb_q * d_high_c
+
+. 
+. ****************************************************
+. * Non-bank second stage — full sample, nocons
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  NON-BANK: Q, Q0, L, T (full sample, no constant)"
+  NON-BANK: Q, Q0, L, T (full sample, no constant)
+
+. di "=========================================="
+==========================================
+
+. 
+. * --- Q (main) ---
+. di _newline(2) "--- Spec Q ---"
+
+
+--- Spec Q ---
+
+. reg dh c.d c.delta_n_d c.d_sq c.delta_n_d_sq, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        701
+                                                F(4, 28)          =      25.26
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8054
+                                                Root MSE          =     10.105
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3663091    .060269     6.08   0.000     .2428538    .4897645
+   delta_n_d |   .0009985   .0009964     1.00   0.325    -.0010425    .0030396
+        d_sq |  -.0011537    .000595    -1.94   0.063    -.0023726    .0000651
+delta_n_d_sq |   .0000171   .0000134     1.27   0.213    -.0000104    .0000446
+------------------------------------------------------------------------------
+
+. estimates store specQ_n
+
+. capture drop dhhat_Q
+
+. predict double dhhat_Q if e(sample), xb
+(79 missing values generated)
+
+. 
+. * --- Qs (drop psi only: beta*d + theta*(delta*d) + kappa*d^2) ---
+. di _newline(2) "--- Spec Qs ---"
+
+
+--- Spec Qs ---
+
+. reg dh c.d c.delta_n_d c.d_sq, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        701
+                                                F(3, 28)          =      30.48
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8006
+                                                Root MSE          =     10.222
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3591532   .0657009     5.47   0.000     .2245709    .4937355
+   delta_n_d |   .0021776   .0004891     4.45   0.000     .0011757    .0031796
+        d_sq |  -.0010141   .0007232    -1.40   0.172    -.0024955    .0004672
+------------------------------------------------------------------------------
+
+. estimates store specQs_n
+
+. capture drop dhhat_Qs
+
+. predict double dhhat_Qs if e(sample), xb
+(79 missing values generated)
+
+. 
+. * --- Q0 ---
+. di _newline(2) "--- Spec Q0 ---"
+
+
+--- Spec Q0 ---
+
+. reg dh c.d c.d_sq, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =      57.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7350
+                                                Root MSE          =     13.468
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3433385   .0616976     5.56   0.000     .2175055    .4691716
+        d_sq |  -.0002602   .0003426    -0.76   0.453     -.000959    .0004386
+------------------------------------------------------------------------------
+
+. estimates store specQ0_n
+
+. capture drop dhhat_Q0
+
+. predict double dhhat_Q0 if e(sample), xb
+
+. 
+. * --- L ---
+. di _newline(2) "--- Spec L ---"
+
+
+--- Spec L ---
+
+. reg dh c.d c.delta_n_d, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        701
+                                                F(2, 28)          =      45.56
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7946
+                                                Root MSE          =     10.367
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |    .276114   .0319845     8.63   0.000     .2105967    .3416313
+   delta_n_d |   .0021605   .0004596     4.70   0.000     .0012191    .0031019
+------------------------------------------------------------------------------
+
+. estimates store specL_n
+
+. capture drop dhhat_L
+
+. predict double dhhat_L if e(sample), xb
+(79 missing values generated)
+
+. 
+. * --- T (centered threshold) ---
+. di _newline(2) "--- Spec T ---"
+
+
+--- Spec T ---
+
+. reg dh c.d c.delta_n_d c.d_high_c c.delta_n_dhc, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        701
+                                                F(4, 28)          =      27.33
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8005
+                                                Root MSE          =     10.231
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |    .285591   .0353818     8.07   0.000     .2131148    .3580673
+   delta_n_d |   .0019962   .0004631     4.31   0.000     .0010475    .0029448
+    d_high_c |  -.2538727   .1817446    -1.40   0.173    -.6261597    .1184143
+ delta_n_dhc |   .0080474   .0050862     1.58   0.125    -.0023711     .018466
+------------------------------------------------------------------------------
+
+. estimates store specT_n
+
+. capture drop dhhat_T
+
+. predict double dhhat_T if e(sample), xb
+(79 missing values generated)
+
+. 
+. ****************************************************
+. * NON-BANK second stage WITH COUNTRY + YEAR FE
+. * Specs B, C, D only (no psi term)
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  NON-BANK: Specs B, C, D WITH COUNTRY + YEAR FE"
+  NON-BANK: Specs B, C, D WITH COUNTRY + YEAR FE
+
+. di "=========================================="
+==========================================
+
+. 
+. * --- B_fe: beta*d + theta*(delta*d) + kappa*d^2 ---
+. di _newline(2) "--- Spec B_fe ---"
+
+
+--- Spec B_fe ---
+
+. xtreg dh c.d c.delta_n_d c.d_sq i.year, ///
+>     fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        701
+Group variable: country_id                      Number of groups  =         29
+
+R-squared:                                      Obs per group:
+     Within  = 0.3815                                         min =         14
+     Between = 0.5731                                         avg =       24.2
+     Overall = 0.5388                                         max =         33
+
+                                                F(28, 28)         =          .
+corr(u_i, Xb) = 0.3695                          Prob > F          =          .
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2994475   .1475402     2.03   0.052    -.0027749      .60167
+   delta_n_d |   .0010783   .0005435     1.98   0.057     -.000035    .0021917
+        d_sq |  -.0009369    .000856    -1.09   0.283    -.0026904    .0008166
+             |
+        year |
+       1990  |   1.055077   .1329845     7.93   0.000     .7826707    1.327484
+       1991  |   2.059384   .4429398     4.65   0.000     1.152063    2.966705
+       1992  |   2.557898   .6034894     4.24   0.000     1.321706     3.79409
+       1993  |   2.936664   .7307803     4.02   0.000     1.439728    4.433599
+       1994  |  -3.630244   4.308733    -0.84   0.407    -12.45628    5.195794
+       1995  |  -.0930527   1.700344    -0.05   0.957     -3.57605    3.389945
+       1996  |  -.4448524     1.7691    -0.25   0.803    -4.068689    3.178984
+       1997  |  -1.112493   1.737899    -0.64   0.527    -4.672417    2.447432
+       1998  |  -1.193965   1.664042    -0.72   0.479    -4.602602    2.214671
+       1999  |  -1.523621   1.472875    -1.03   0.310    -4.540668    1.493426
+       2000  |  -2.581123    1.37813    -1.87   0.072    -5.404093    .2418478
+       2001  |  -3.430757   1.384895    -2.48   0.020    -6.267585   -.5939285
+       2002  |  -2.958379   1.466613    -2.02   0.053    -5.962599    .0458415
+       2003  |  -2.688287   1.361638    -1.97   0.058    -5.477476    .1009023
+       2004  |  -2.894319   1.291676    -2.24   0.033    -5.540197   -.2484412
+       2005  |  -3.218684    1.30706    -2.46   0.020    -5.896074    -.541294
+       2006  |  -3.811503   1.384358    -2.75   0.010    -6.647231   -.9757741
+       2007  |  -4.403817   1.427028    -3.09   0.005    -7.326951   -1.480682
+       2008  |  -4.441654   1.580831    -2.81   0.009     -7.67984   -1.203467
+       2009  |  -4.461092   1.444676    -3.09   0.005    -7.420376   -1.501808
+       2010  |  -4.206597   1.525598    -2.76   0.010    -7.331643   -1.081551
+       2011  |   -3.62354    1.69598    -2.14   0.042    -7.097598   -.1494823
+       2012  |   -3.62787   1.648972    -2.20   0.036    -7.005636   -.2501038
+       2013  |   -3.58712   1.727645    -2.08   0.047     -7.12604   -.0482003
+       2014  |  -4.214988    1.71026    -2.46   0.020    -7.718296   -.7116797
+       2015  |   -4.77246   1.644533    -2.90   0.007    -8.141133   -1.403788
+       2016  |  -5.208734    1.61115    -3.23   0.003    -8.509026   -1.908443
+       2017  |  -5.211765   1.549554    -3.36   0.002    -8.385882   -2.037647
+       2018  |  -5.214303   1.527411    -3.41   0.002    -8.343063   -2.085544
+       2019  |  -5.420443   1.508988    -3.59   0.001    -8.511464   -2.329421
+       2020  |  -6.474387   1.818694    -3.56   0.001    -10.19981   -2.748962
+       2021  |  -6.587594   1.887524    -3.49   0.002    -10.45401   -2.721175
+             |
+       _cons |   7.519171   4.466342     1.68   0.103    -1.629716    16.66806
+-------------+----------------------------------------------------------------
+     sigma_u |  10.864679
+     sigma_e |   3.990571
+         rho |  .88112903   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store specB_fe
+
+. 
+. * --- C_fe: beta*d + kappa*d^2 ---
+. di _newline(2) "--- Spec C_fe ---"
+
+
+--- Spec C_fe ---
+
+. xtreg dh c.d c.d_sq i.year, ///
+>     fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.3806                                         min =         14
+     Between = 0.3477                                         avg =       24.4
+     Overall = 0.3575                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.2612                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .4024827   .0934579     4.31   0.000     .2118742    .5930913
+        d_sq |  -.0016327   .0004384    -3.72   0.001    -.0025268   -.0007386
+             |
+        year |
+       1990  |   2.155503   .7573464     2.85   0.008      .610885    3.700121
+       1991  |   2.937111   .4826267     6.09   0.000     1.952787    3.921434
+       1992  |  -4.148706   5.349253    -0.78   0.444    -15.05858    6.761166
+       1993  |  -6.101362   7.138041    -0.85   0.399    -20.65949    8.456769
+       1994  |  -14.24603   11.28248    -1.26   0.216     -37.2568    8.764749
+       1995  |  -14.04365   12.37769    -1.13   0.265    -39.28811    11.20082
+       1996  |  -13.67754   11.94003    -1.15   0.261     -38.0294    10.67431
+       1997  |  -14.47682   12.04781    -1.20   0.239     -39.0485    10.09486
+       1998  |  -15.80298   12.22076    -1.29   0.206    -40.72738    9.121415
+       1999  |  -16.53084   12.39504    -1.33   0.192    -41.81069    8.749014
+       2000  |  -17.71725   12.42881    -1.43   0.164    -43.06598    7.631472
+       2001  |   -18.6706   12.38878    -1.51   0.142    -43.93768     6.59647
+       2002  |  -18.27629   12.37559    -1.48   0.150    -43.51647    6.963882
+       2003  |  -18.47229   12.64499    -1.46   0.154    -44.26192    7.317341
+       2004  |  -18.37046   12.71753    -1.44   0.159    -44.30803    7.567106
+       2005  |  -18.77153   12.80169    -1.47   0.153    -44.88075    7.337681
+       2006  |  -19.73147   13.04811    -1.51   0.141    -46.34327    6.880335
+       2007  |  -20.35585   13.04261    -1.56   0.129    -46.95643    6.244725
+       2008  |  -20.21381   13.04627    -1.55   0.131    -46.82186    6.394229
+       2009  |  -20.31281   13.08205    -1.55   0.131    -46.99382    6.368202
+       2010  |  -20.17285   13.07165    -1.54   0.133    -46.83265    6.486961
+       2011  |   -19.5366   12.90969    -1.51   0.140    -45.86607    6.792879
+       2012  |  -19.49698   12.88651    -1.51   0.140    -45.77918    6.785225
+       2013  |  -19.65358   12.83991    -1.53   0.136    -45.84075    6.533586
+       2014  |  -20.34528   12.78261    -1.59   0.122    -46.41559    5.725029
+       2015  |  -21.39097   12.92819    -1.65   0.108    -47.75819    4.976238
+       2016  |  -22.13054   13.00811    -1.70   0.099    -48.66076     4.39968
+       2017  |  -22.20658   13.08471    -1.70   0.100    -48.89302    4.479871
+       2018  |  -22.25551   13.16516    -1.69   0.101    -49.10604    4.595023
+       2019  |  -22.44001   13.19748    -1.70   0.099    -49.35645     4.47644
+       2020  |   -23.1632   13.01815    -1.78   0.085    -49.71389    3.387502
+       2021  |  -23.39544   13.08351    -1.79   0.084    -50.07944     3.28856
+             |
+       _cons |   22.62375   13.28451     1.70   0.099    -4.470177    49.71768
+-------------+----------------------------------------------------------------
+     sigma_u |  14.599576
+     sigma_e |  4.8128753
+         rho |  .90197777   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store specC_fe
+
+. 
+. * --- D_fe: beta*d + theta*(delta*d) ---
+. di _newline(2) "--- Spec D_fe ---"
+
+
+--- Spec D_fe ---
+
+. xtreg dh c.d c.delta_n_d i.year, ///
+>     fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        701
+Group variable: country_id                      Number of groups  =         29
+
+R-squared:                                      Obs per group:
+     Within  = 0.3621                                         min =         14
+     Between = 0.5775                                         avg =       24.2
+     Overall = 0.5295                                         max =         33
+
+                                                F(28, 28)         =          .
+corr(u_i, Xb) = 0.4316                          Prob > F          =          .
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1626576   .0375855     4.33   0.000     .0856672    .2396479
+   delta_n_d |   .0009502   .0005095     1.86   0.073    -.0000935    .0019938
+             |
+        year |
+       1990  |   1.130669   .0926122    12.21   0.000      .940961    1.320376
+       1991  |   2.293973   .3187752     7.20   0.000     1.640991    2.946954
+       1992  |   2.863857   .4420527     6.48   0.000     1.958353    3.769361
+       1993  |   3.293022   .5429862     6.06   0.000     2.180765    4.405278
+       1994  |  -4.217224   5.228439    -0.81   0.427     -14.9272    6.492747
+       1995  |  -.1780474   1.656167    -0.11   0.915    -3.570553    3.214458
+       1996  |  -.4823287    1.75197    -0.28   0.785    -4.071076    3.106419
+       1997  |  -1.127863    1.70182    -0.66   0.513    -4.613883    2.358157
+       1998  |  -1.215664   1.605355    -0.76   0.455    -4.504084    2.072757
+       1999  |  -1.483018   1.377095    -1.08   0.291    -4.303868    1.337833
+       2000  |  -2.612804   1.288175    -2.03   0.052    -5.251511    .0259029
+       2001  |   -3.40234   1.240919    -2.74   0.011    -5.944248   -.8604319
+       2002  |   -2.93768   1.325255    -2.22   0.035    -5.652341   -.2230185
+       2003  |  -2.689953   1.226601    -2.19   0.037    -5.202531   -.1773751
+       2004  |   -2.93277   1.155786    -2.54   0.017     -5.30029   -.5652499
+       2005  |  -3.293557   1.172283    -2.81   0.009    -5.694871   -.8922439
+       2006  |   -3.95349   1.242934    -3.18   0.004    -6.499525   -1.407455
+       2007  |  -4.637344   1.262774    -3.67   0.001     -7.22402   -2.050668
+       2008  |   -4.53926   1.451675    -3.13   0.004     -7.51288   -1.565639
+       2009  |  -4.304045    1.34503    -3.20   0.003    -7.059215   -1.548875
+       2010  |  -3.970025   1.410258    -2.82   0.009    -6.858807   -1.081242
+       2011  |  -3.445804   1.602417    -2.15   0.040    -6.728207   -.1634014
+       2012  |   -3.44181   1.566326    -2.20   0.036    -6.650284   -.2333358
+       2013  |  -3.363929   1.634849    -2.06   0.049    -6.712766   -.0150922
+       2014  |  -3.944906   1.627284    -2.42   0.022    -7.278247    -.611565
+       2015  |  -4.451318   1.561594    -2.85   0.008    -7.650098   -1.252538
+       2016  |  -4.891857   1.532654    -3.19   0.003    -8.031357   -1.752357
+       2017  |  -4.898082    1.47663    -3.32   0.003    -7.922822   -1.873342
+       2018  |  -4.939817   1.474927    -3.35   0.002    -7.961068   -1.918566
+       2019  |  -5.141516   1.483286    -3.47   0.002     -8.17989   -2.103142
+       2020  |  -6.211624    1.78411    -3.48   0.002    -9.866207   -2.557041
+       2021  |  -6.269748   1.835764    -3.42   0.002    -10.03014   -2.509356
+             |
+       _cons |   11.33278   1.489331     7.61   0.000     8.282021    14.38353
+-------------+----------------------------------------------------------------
+     sigma_u |  11.284261
+     sigma_e |  4.0493013
+         rho |  .88592025   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store specD_fe
+
+. 
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  Comparison: Pooled vs FE (d and d^2 terms only)"
+  Comparison: Pooled vs FE (d and d^2 terms only)
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "  Pooled (no FE):"
+
+  Pooled (no FE):
+
+. estimates table specQs_n specQ0_n specL_n, ///
+>     keep(d delta_n_d d_sq) star(0.10 0.05 0.01) stats(N r2)
+
+--------------------------------------------------------------
+    Variable |   specQs_n        specQ0_n         specL_n     
+-------------+------------------------------------------------
+           d |   .3591532***    .34333852***      .276114***  
+   delta_n_d |  .00217763***                    .00216051***  
+        d_sq | -.00101413      -.00026017                     
+-------------+------------------------------------------------
+           N |        701             780             701     
+          r2 |   .8006208       .73496082       .79462145     
+--------------------------------------------------------------
+                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. di _newline "  With country + year FE:"
+
+  With country + year FE:
+
+. estimates table specB_fe specC_fe specD_fe, ///
+>     keep(d delta_n_d d_sq) star(0.10 0.05 0.01) stats(N r2_w r2_b r2_o)
+
+--------------------------------------------------------------
+    Variable |   specB_fe        specC_fe        specD_fe     
+-------------+------------------------------------------------
+           d |  .29944753*      .40248272***    .16265756***  
+   delta_n_d |  .00107835*                      .00095019*    
+        d_sq | -.00093687       -.0016327***                  
+-------------+------------------------------------------------
+           N |        701             780             701     
+        r2_w |  .38146592       .38061922       .36212589     
+        r2_b |  .57307135       .34772588       .57751178     
+        r2_o |  .53882762       .35748187       .52953248     
+--------------------------------------------------------------
+                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. ****************************************************
+. * FOREIGN DEBT with delta_h interactions
+. *
+. * Test: does delta_h affect foreign absorption?
+. * If countries with small non-bank sectors rely more
+. * on foreigners, theta should be negative (larger
+. * delta_h => less foreign debt at any given d).
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  FOREIGN DEBT: df on d with delta_h interactions"
+  FOREIGN DEBT: df on d with delta_h interactions
+
+. di "=========================================="
+==========================================
+
+. 
+. * --- Pooled specs ---
+. di _newline(2) "--- df pooled: beta*d + kappa*d^2 (no delta_h) ---"
+
+
+--- df pooled: beta*d + kappa*d^2 (no delta_h) ---
+
+. reg df c.d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        747
+                                                F(2, 31)          =      60.27
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7727
+                                                Root MSE          =     9.5281
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3872475   .0462329     8.38   0.000     .2929549    .4815401
+        d_sq |  -.0014212   .0003414    -4.16   0.000    -.0021175   -.0007249
+------------------------------------------------------------------------------
+
+. estimates store df_Q0
+
+. 
+. di _newline(2) "--- df pooled: beta*d + theta*(delta_h*d) + kappa*d^2 ---"
+
+
+--- df pooled: beta*d + theta*(delta_h*d) + kappa*d^2 ---
+
+. reg df c.d c.delta_n_d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        681
+                                                F(3, 28)          =      71.38
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8493
+                                                Root MSE          =     7.5007
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3217227   .0570601     5.64   0.000     .2048403    .4386051
+   delta_n_d |  -.0015012   .0003038    -4.94   0.000    -.0021234    -.000879
+        d_sq |  -.0002886   .0006508    -0.44   0.661    -.0016217    .0010445
+------------------------------------------------------------------------------
+
+. estimates store df_Qs
+
+. 
+. di _newline(2) "--- df pooled: beta*d + theta*(delta_h*d) ---"
+
+
+--- df pooled: beta*d + theta*(delta_h*d) ---
+
+. reg df c.d c.delta_n_d, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        681
+                                                F(2, 28)          =     108.99
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8486
+                                                Root MSE          =     7.5123
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2979594   .0202556    14.71   0.000     .2564677     .339451
+   delta_n_d |  -.0015091    .000308    -4.90   0.000      -.00214   -.0008783
+------------------------------------------------------------------------------
+
+. estimates store df_L
+
+. 
+. * --- FE specs ---
+. di _newline(2) "--- df FE: beta*d + kappa*d^2 + country FE + year FE ---"
+
+
+--- df FE: beta*d + kappa*d^2 + country FE + year FE ---
+
+. xtreg df c.d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        747
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.4540                                         min =         14
+     Between = 0.3473                                         avg =       23.3
+     Overall = 0.4036                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.1825                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3917332   .1097371     3.57   0.001     .1679229    .6155436
+        d_sq |  -.0009388   .0006232    -1.51   0.142    -.0022098    .0003323
+             |
+        year |
+       1990  |   .6065841   .1834587     3.31   0.002     .2324175    .9807507
+       1991  |   .7799309   .4821259     1.62   0.116    -.2033714    1.763233
+       1992  |   3.966555   .2076599    19.10   0.000      3.54303     4.39008
+       1993  |   8.453688   .0008721  9693.23   0.000      8.45191    8.455467
+       1994  |   25.68458     5.3917     4.76   0.000     14.68814    36.68103
+       1995  |   24.80383   2.105332    11.78   0.000     20.50998    29.09768
+       1996  |   25.29658    2.18655    11.57   0.000     20.83708    29.75608
+       1997  |   25.93607   2.045607    12.68   0.000     21.76403    30.10811
+       1998  |   28.13949    1.44266    19.51   0.000     25.19716    31.08181
+       1999  |    29.6823   1.050334    28.26   0.000     27.54013    31.82447
+       2000  |   30.89907   .9790499    31.56   0.000     28.90228    32.89585
+       2001  |   32.36117   .9752215    33.18   0.000     30.37219    34.35014
+       2002  |   32.74113   1.025899    31.91   0.000      30.6488    34.83347
+       2003  |   32.73355   1.026037    31.90   0.000     30.64094    34.82617
+       2004  |   32.96401   1.004763    32.81   0.000     30.91479    35.01324
+       2005  |   32.77522   1.081944    30.29   0.000     30.56859    34.98186
+       2006  |   33.04223   1.226072    26.95   0.000     30.54164    35.54282
+       2007  |   32.60366   1.226246    26.59   0.000     30.10271     35.1046
+       2008  |   32.09895   1.175067    27.32   0.000     29.70239    34.49552
+       2009  |   32.13189   1.390368    23.11   0.000     29.29621    34.96756
+       2010  |   31.13067   1.130238    27.54   0.000     28.82553     33.4358
+       2011  |   30.07367   .9839711    30.56   0.000     28.06685    32.08049
+       2012  |    30.0941   1.037811    29.00   0.000     27.97747    32.21073
+       2013  |   29.62171   1.323877    22.37   0.000     26.92165    32.32178
+       2014  |   31.19244   1.511937    20.63   0.000     28.10882    34.27605
+       2015  |   31.02843   1.296185    23.94   0.000     28.38485    33.67202
+       2016  |   29.69278   1.251525    23.73   0.000     27.14028    32.24529
+       2017  |    29.2079   1.185641    24.63   0.000     26.78977    31.62603
+       2018  |   28.84473   1.153887    25.00   0.000     26.49136    31.19809
+       2019  |   29.93812   1.243871    24.07   0.000     27.40123    32.47502
+       2020  |   29.99415   1.932463    15.52   0.000     26.05286    33.93543
+       2021  |   27.71859    1.56765    17.68   0.000     24.52134    30.91583
+             |
+       _cons |  -33.55996   4.212597    -7.97   0.000    -42.15161   -24.96831
+-------------+----------------------------------------------------------------
+     sigma_u |  8.4434797
+     sigma_e |   5.236486
+         rho |  .72221746   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store df_Q0_fe
+
+. 
+. di _newline(2) "--- df FE: beta*d + theta*(delta_h*d) + kappa*d^2 + FE ---"
+
+
+--- df FE: beta*d + theta*(delta_h*d) + kappa*d^2 + FE ---
+
+. xtreg df c.d c.delta_n_d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        681
+Group variable: country_id                      Number of groups  =         29
+
+R-squared:                                      Obs per group:
+     Within  = 0.4594                                         min =         14
+     Between = 0.6443                                         avg =       23.5
+     Overall = 0.6014                                         max =         28
+
+                                                F(28, 28)         =          .
+corr(u_i, Xb) = 0.0152                          Prob > F          =          .
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .5764269    .167198     3.45   0.002     .2339373    .9189165
+   delta_n_d |  -.0009475   .0007141    -1.33   0.195    -.0024103    .0005153
+        d_sq |  -.0021716   .0012655    -1.72   0.097    -.0047638    .0004207
+             |
+        year |
+       1995  |  -6.143047   3.805971    -1.61   0.118    -13.93922    1.653131
+       1996  |  -5.862639   3.907913    -1.50   0.145    -13.86764    2.142358
+       1997  |  -5.646679   3.989527    -1.42   0.168    -13.81886    2.525497
+       1998  |  -4.141993   3.814033    -1.09   0.287    -11.95468    3.670698
+       1999  |  -2.940563    3.59975    -0.82   0.421    -10.31432     4.43319
+       2000  |  -1.896353   3.587077    -0.53   0.601    -9.244147    5.451441
+       2001  |  -.4734535   3.607513    -0.13   0.897    -7.863109    6.916202
+       2002  |  -.1523032   3.599011    -0.04   0.967    -7.524542    7.219936
+       2003  |   .0109633   3.579532     0.00   0.998    -7.321375    7.343302
+       2004  |   .3895912   3.600646     0.11   0.915    -6.985998     7.76518
+       2005  |  -.0040919   3.650627    -0.00   0.999    -7.482062    7.473879
+       2006  |   .2011188   3.712542     0.05   0.957    -7.403678    7.805916
+       2007  |  -.2480537   3.696143    -0.07   0.947     -7.81926    7.323153
+       2008  |  -.3782209   3.641146    -0.10   0.918    -7.836771    7.080329
+       2009  |  -.9975247   3.628952    -0.27   0.785    -8.431097    6.436047
+       2010  |  -2.283514    3.56039    -0.64   0.527    -9.576643    5.009615
+       2011  |  -3.176873   3.638158    -0.87   0.390     -10.6293    4.275556
+       2012  |   -2.78425   3.715378    -0.75   0.460    -10.39486    4.826357
+       2013  |  -3.065478   3.711209    -0.83   0.416    -10.66755    4.536589
+       2014  |  -1.723765   3.819893    -0.45   0.655    -9.548461    6.100932
+       2015  |  -2.463308   3.814178    -0.65   0.524     -10.2763    5.349681
+       2016  |   -4.03002   3.905931    -1.03   0.311    -12.03096    3.970917
+       2017  |  -4.421037   3.848875    -1.15   0.260     -12.3051    3.463027
+       2018  |  -4.675405   3.872066    -1.21   0.237    -12.60697    3.256163
+       2019  |  -4.002397   3.934353    -1.02   0.318    -12.06155    4.056758
+       2020  |  -4.526885   4.082658    -1.11   0.277    -12.88983    3.836061
+       2021  |  -6.100335   4.160819    -1.47   0.154    -14.62339    2.422716
+             |
+       _cons |  -4.722014   6.071955    -0.78   0.443    -17.15985    7.715822
+-------------+----------------------------------------------------------------
+     sigma_u |   6.022673
+     sigma_e |  4.8824997
+         rho |  .60342288   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store df_Qs_fe
+
+. 
+. di _newline(2) "--- df FE: beta*d + theta*(delta_h*d) + FE ---"
+
+
+--- df FE: beta*d + theta*(delta_h*d) + FE ---
+
+. xtreg df c.d c.delta_n_d i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        681
+Group variable: country_id                      Number of groups  =         29
+
+R-squared:                                      Obs per group:
+     Within  = 0.4027                                         min =         14
+     Between = 0.7245                                         avg =       23.5
+     Overall = 0.6333                                         max =         28
+
+                                                F(28, 28)         =          .
+corr(u_i, Xb) = 0.2881                          Prob > F          =          .
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2538559   .0734429     3.46   0.002     .1034149    .4042968
+   delta_n_d |  -.0013249    .000786    -1.69   0.103    -.0029349    .0002851
+             |
+        year |
+       1995  |  -5.570115   2.866922    -1.94   0.062    -11.44274     .302508
+       1996  |  -5.157417   2.943397    -1.75   0.091    -11.18669    .8718573
+       1997  |   -4.84768    2.93124    -1.65   0.109    -10.85205    1.156693
+       1998  |  -3.039984   2.503501    -1.21   0.235    -8.168174    2.088206
+       1999  |   -1.61885   2.254369    -0.72   0.479    -6.236715    2.999015
+       2000  |  -.6858424   2.211186    -0.31   0.759    -5.215252    3.843567
+       2001  |   1.122414   2.359047     0.48   0.638    -3.709874    5.954702
+       2002  |   1.418572   2.405156     0.59   0.560    -3.508166     6.34531
+       2003  |   1.532958   2.398435     0.64   0.528    -3.380012    6.445929
+       2004  |   1.829367   2.375326     0.77   0.448    -3.036267    6.695001
+       2005  |    1.34573   2.464531     0.55   0.589    -3.702634    6.394093
+       2006  |   1.380807   2.483307     0.56   0.583    -3.706016    6.467629
+       2007  |   .7065409   2.425661     0.29   0.773    -4.262199    5.675281
+       2008  |   .9390881   2.467407     0.38   0.706    -4.115166    5.993342
+       2009  |   .9541912   2.769136     0.34   0.733    -4.718127    6.626509
+       2010  |  -.1235927   2.634456    -0.05   0.963    -5.520031    5.272846
+       2011  |  -1.133551   2.505476    -0.45   0.654    -6.265786    3.998684
+       2012  |  -.7087449   2.556296    -0.28   0.784    -5.945081    4.527591
+       2013  |  -.9020976   2.642038    -0.34   0.735    -6.314068    4.509873
+       2014  |   .5434266   2.831364     0.19   0.849    -5.256359    6.343213
+       2015  |  -.0948579   2.771187    -0.03   0.973    -5.771376     5.58166
+       2016  |  -1.680882   2.775047    -0.61   0.550    -7.365307    4.003543
+       2017  |  -2.092425   2.736136    -0.76   0.451    -7.697146    3.512296
+       2018  |   -2.44932    2.72718    -0.90   0.377    -8.035695    3.137056
+       2019  |  -1.770605   2.774306    -0.64   0.529    -7.453513    3.912303
+       2020  |  -2.269112   3.218269    -0.71   0.487    -8.861437    4.323212
+       2021  |  -3.731231   3.165991    -1.18   0.249    -10.21647    2.754007
+             |
+       _cons |   2.841354   3.353948     0.85   0.404    -4.028897    9.711606
+-------------+----------------------------------------------------------------
+     sigma_u |  5.5937373
+     sigma_e |  5.1281738
+         rho |  .54333997   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store df_L_fe
+
+. 
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  df comparison: Pooled vs FE"
+  df comparison: Pooled vs FE
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "  Pooled:"
+
+  Pooled:
+
+. estimates table df_Q0 df_Qs df_L, ///
+>     keep(d delta_n_d d_sq) star(0.10 0.05 0.01) stats(N r2)
+
+--------------------------------------------------------------
+    Variable |     df_Q0           df_Qs           df_L       
+-------------+------------------------------------------------
+           d |  .38724752***    .32172268***    .29795935***  
+   delta_n_d |                 -.00150121***   -.00150914***  
+        d_sq | -.00142121***   -.00028863                     
+-------------+------------------------------------------------
+           N |        747             681             681     
+          r2 |  .77274514       .84928064       .84858941     
+--------------------------------------------------------------
+                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. di _newline "  With country + year FE:"
+
+  With country + year FE:
+
+. estimates table df_Q0_fe df_Qs_fe df_L_fe, ///
+>     keep(d delta_n_d d_sq) star(0.10 0.05 0.01) stats(N r2_w r2_b r2_o)
+
+--------------------------------------------------------------
+    Variable |   df_Q0_fe        df_Qs_fe         df_L_fe     
+-------------+------------------------------------------------
+           d |  .39173322***    .57642689***    .25385589***  
+   delta_n_d |                 -.00094748      -.00132488     
+        d_sq | -.00093877      -.00217155*                    
+-------------+------------------------------------------------
+           N |        747             681             681     
+        r2_w |   .4539985       .45938845       .40265668     
+        r2_b |  .34731264       .64433921       .72450917     
+        r2_o |  .40355653       .60137808       .63328208     
+--------------------------------------------------------------
+                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. di _newline "Interpretation:"
+
+Interpretation:
+
+. di "  theta (delta_h * d) in df regression:"
+  theta (delta_h * d) in df regression:
+
+. di "    theta < 0 => countries with larger non-bank sectors hold LESS foreign debt"
+    theta < 0 => countries with larger non-bank sectors hold LESS foreign debt
+
+. di "    (they don't need foreigners because domestic capacity is enough)"
+    (they don't need foreigners because domestic capacity is enough)
+
+. di "    theta > 0 => countries with larger non-bank sectors hold MORE foreign debt"
+    theta > 0 => countries with larger non-bank sectors hold MORE foreign debt
+
+. di "  This tests the heterogeneous pecking order hypothesis."
+  This tests the heterogeneous pecking order hypothesis.
+
+. 
+. ****************************************************
+. * CB / PB second stage (for implied foreign debt using Spec Q dh)
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  CB and PB (centered threshold, full sample, nocons)"
+  CB and PB (centered threshold, full sample, nocons)
+
+. di "=========================================="
+==========================================
+
+. 
+. reg dcb c.d c.delta_cb_d c.d_high_c c.delta_cb_dhc, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(4, 31)          =     177.55
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7049
+                                                Root MSE          =     6.0423
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dcb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0533293   .0116843     4.56   0.000      .029499    .0771597
+  delta_cb_d |     .01308   .0044395     2.95   0.006     .0040256    .0221345
+    d_high_c |    .334413   .1525495     2.19   0.036     .0232862    .6455398
+delta_cb_dhc |   -.055372   .0358313    -1.55   0.132    -.1284504    .0177064
+------------------------------------------------------------------------------
+
+. capture drop dcbhat_Q
+
+. predict double dcbhat_Q if e(sample), xb
+
+. 
+. reg dpb c.d c.delta_pb_d c.d_high_c c.delta_pb_dhc, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(4, 31)          =      72.93
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8189
+                                                Root MSE          =     7.5362
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dpb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1921393   .0196609     9.77   0.000     .1520407    .2322378
+  delta_pb_d |  -.0001949   .0007369    -0.26   0.793    -.0016979    .0013081
+    d_high_c |   .4622577   .2203153     2.10   0.044     .0129217    .9115938
+delta_pb_dhc |  -.0089953   .0078995    -1.14   0.264    -.0251066    .0071159
+------------------------------------------------------------------------------
+
+. capture drop dpbhat_Q
+
+. predict double dpbhat_Q if e(sample), xb
+
+. 
+. ****************************************************
+. * Implied foreign debt — all five specs
+. * dfhat_X = d - dhhat_X - dcbhat - dpbhat
+. ****************************************************
+. 
+. foreach spec in Q Qs Q0 L T {
+  2.     capture drop dfhat_`spec'
+  3.     gen double dfhat_`spec' = d - dhhat_`spec' - dcbhat_Q - dpbhat_Q ///
+>         if !missing(d, dhhat_`spec', dcbhat_Q, dpbhat_Q)
+  4.     capture drop sample_`spec'
+  5.     gen sample_`spec' = !missing(df, dfhat_`spec')
+  6. }
+(79 missing values generated)
+(79 missing values generated)
+(79 missing values generated)
+(79 missing values generated)
+
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  FOREIGN DEBT PREDICTION COMPARISON"
+  FOREIGN DEBT PREDICTION COMPARISON
+
+. di "=========================================="
+==========================================
+
+. 
+. foreach spec in Q Qs Q0 L T {
+  2.     di _newline(2) "--- Spec `spec' ---"
+  3.     corr df dfhat_`spec' if sample_`spec'==1
+  4.     reg df dfhat_`spec' if sample_`spec'==1, vce(cluster country_id)
+  5.     capture drop df_error_`spec' abs_df_error_`spec'
+  6.     gen double df_error_`spec'     = df - dfhat_`spec'     if sample_`spec'==1
+  7.     gen double abs_df_error_`spec' = abs(df_error_`spec')  if sample_`spec'==1
+  8.     summ df_error_`spec' abs_df_error_`spec' if sample_`spec'==1
+  9. }
+
+
+--- Spec Q ---
+(obs=681)
+
+             |       df  dfhat_Q
+-------------+------------------
+          df |   1.0000
+     dfhat_Q |   0.7981   1.0000
+
+
+Linear regression                               Number of obs     =        681
+                                                F(1, 28)          =      70.06
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6370
+                                                Root MSE          =     7.2941
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     dfhat_Q |    .663384    .079253     8.37   0.000     .5010416    .8257264
+       _cons |  -.0808005   1.632928    -0.05   0.961    -3.425703    3.264102
+------------------------------------------------------------------------------
+(99 missing values generated)
+(99 missing values generated)
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  df_error_Q |        681   -7.741412    8.782409  -44.11666   12.69626
+abs_df_err~Q |        681    8.940949    7.555804   .0043049   44.11666
+
+
+--- Spec Qs ---
+(obs=681)
+
+             |       df dfhat_Qs
+-------------+------------------
+          df |   1.0000
+    dfhat_Qs |   0.8011   1.0000
+
+
+Linear regression                               Number of obs     =        681
+                                                F(1, 28)          =      86.32
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6418
+                                                Root MSE          =     7.2454
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    dfhat_Qs |   .6747448   .0726236     9.29   0.000      .525982    .8235075
+       _cons |  -.3824006   1.555554    -0.25   0.808    -3.568808    2.804007
+------------------------------------------------------------------------------
+(99 missing values generated)
+(99 missing values generated)
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+ df_error_Qs |        681    -7.80522    8.616681  -39.91682    13.1985
+abs_df_err~s |        681    9.125238    7.201792    .028666   39.91682
+
+
+--- Spec Q0 ---
+(obs=747)
+
+             |       df dfhat_Q0
+-------------+------------------
+          df |   1.0000
+    dfhat_Q0 |   0.6596   1.0000
+
+
+Linear regression                               Number of obs     =        747
+                                                F(1, 31)          =      62.91
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4351
+                                                Root MSE          =     9.2765
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+    dfhat_Q0 |    .672191   .0847474     7.93   0.000     .4993475    .8450345
+       _cons |   .0432338   1.645136     0.03   0.979    -3.312043    3.398511
+------------------------------------------------------------------------------
+(33 missing values generated)
+(33 missing values generated)
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+ df_error_Q0 |        747   -7.592175    10.08359  -39.66328   19.45695
+abs_df_err~0 |        747    9.840712    7.901128   .0130033   39.66328
+
+
+--- Spec L ---
+(obs=681)
+
+             |       df  dfhat_L
+-------------+------------------
+          df |   1.0000
+     dfhat_L |   0.8039   1.0000
+
+
+Linear regression                               Number of obs     =        681
+                                                F(1, 28)          =      89.19
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6462
+                                                Root MSE          =     7.2012
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     dfhat_L |   .7275013   .0770329     9.44   0.000     .5697064    .8852961
+       _cons |  -2.054363    1.65091    -1.24   0.224    -5.436099    1.327372
+------------------------------------------------------------------------------
+(99 missing values generated)
+(99 missing values generated)
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  df_error_L |        681   -8.448489    8.065364    -34.475    11.4933
+abs_df_err~L |        681    9.467645    6.838414   .0286853     34.475
+
+
+--- Spec T ---
+(obs=681)
+
+             |       df  dfhat_T
+-------------+------------------
+          df |   1.0000
+     dfhat_T |   0.7806   1.0000
+
+
+Linear regression                               Number of obs     =        681
+                                                F(1, 28)          =      59.85
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6094
+                                                Root MSE          =     7.5666
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+     dfhat_T |   .6894503   .0891228     7.74   0.000     .5068906      .87201
+       _cons |  -1.025454    1.83873    -0.56   0.581    -4.791922    2.741013
+------------------------------------------------------------------------------
+(99 missing values generated)
+(99 missing values generated)
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  df_error_T |        681   -8.251156    8.675511  -44.75473   11.40197
+abs_df_err~T |        681    9.409283    7.401446   .0128511   44.75473
+
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  SUMMARY: foreign debt prediction"
+  SUMMARY: foreign debt prediction
+
+. di "  Spec | N | Corr | Reg R2 | Mean error | MAE"
+  Spec | N | Corr | Reg R2 | Mean error | MAE
+
+. di "=========================================="
+==========================================
+
+. foreach spec in Q Qs Q0 L T {
+  2.     quietly corr df dfhat_`spec' if sample_`spec'==1
+  3.     local corr_`spec' = r(rho)
+  4.     quietly reg df dfhat_`spec' if sample_`spec'==1, vce(cluster country_id)
+  5.     local r2_`spec' = e(r2)
+  6.     local n_`spec' = e(N)
+  7.     quietly summ df_error_`spec' if sample_`spec'==1
+  8.     local me_`spec' = r(mean)
+  9.     quietly summ abs_df_error_`spec' if sample_`spec'==1
+ 10.     local mae_`spec' = r(mean)
+ 11.     di "  `spec'" _col(8) %5.0f `n_`spec'' _col(16) %6.3f `corr_`spec'' ///
+>        _col(25) %6.3f `r2_`spec'' _col(34) %7.2f `me_`spec'' _col(44) %6.2f `mae_`spec''
+ 12. }
+  Q      681    0.798    0.637     -7.74     8.94
+  Qs     681    0.801    0.642     -7.81     9.13
+  Q0     747    0.660    0.435     -7.59     9.84
+  L      681    0.804    0.646     -8.45     9.47
+  T      681    0.781    0.609     -8.25     9.41
+
+. 
+. ****************************************************
+. * Summary table
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  estimates table: Q | Qs | Q0 | L | T"
+  estimates table: Q | Qs | Q0 | L | T
+
+. di "=========================================="
+==========================================
+
+. estimates table specQ_n specQs_n specQ0_n specL_n specT_n, ///
+>     star(0.10 0.05 0.01) stats(N r2)
+
+----------------------------------------------------------------------------------------------
+    Variable |    specQ_n        specQs_n        specQ0_n         specL_n         specT_n     
+-------------+--------------------------------------------------------------------------------
+           d |  .36630912***     .3591532***    .34333852***      .276114***    .28559104***  
+   delta_n_d |  .00099854       .00217763***                    .00216051***    .00199617***  
+        d_sq | -.00115371*     -.00101413      -.00026017                                     
+delta_n_d_sq |  .00001708                                                                     
+    d_high_c |                                                                 -.25387269     
+ delta_n_dhc |                                                                  .00804744     
+-------------+--------------------------------------------------------------------------------
+           N |        701             701             780             701             701     
+          r2 |  .80541562        .8006208       .73496082       .79462145       .80052277     
+----------------------------------------------------------------------------------------------
+                                                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. ****************************************************
+. * Marginal effects — Spec Q only (full quadratic)
+. * slope = beta + theta*delta + 2*kappa*d + 2*psi*delta*d
+. ****************************************************
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  MARGINAL EFFECTS: Spec Q"
+  MARGINAL EFFECTS: Spec Q
+
+. di "=========================================="
+==========================================
+
+. estimates restore specQ_n
+(results specQ_n are active now)
+
+. local beta  = _b[d]
+
+. local theta = _b[delta_n_d]
+
+. local kappa = _b[d_sq]
+
+. local psi   = _b[delta_n_d_sq]
+
+. 
+. di _newline "Coefficients: beta theta kappa psi"
+
+Coefficients: beta theta kappa psi
+
+. di %9.4f `beta' "  " %9.6f `theta' "  " %9.6f `kappa' "  " %9.6f `psi'
+   0.3663   0.000999  -0.001154   0.000017
+
+. 
+. di _newline "Slope if delta=0:"
+
+Slope if delta=0:
+
+. foreach dval in 20 40 60 80 100 120 150 {
+  2.     local slope = `beta' + 2*`kappa'*`dval'
+  3.     di "  d=`dval': " %7.4f `slope'
+  4. }
+  d=20:  0.3202
+  d=40:  0.2740
+  d=60:  0.2279
+  d=80:  0.1817
+  d=100:  0.1356
+  d=120:  0.0894
+  d=150:  0.0202
+
+. di _newline "Slope if delta=+100:"
+
+Slope if delta=+100:
+
+. foreach dval in 20 40 60 80 100 120 150 {
+  2.     local slope = `beta' + `theta'*100 + 2*`kappa'*`dval' + 2*`psi'*100*`dval'
+  3.     di "  d=`dval': " %7.4f `slope'
+  4. }
+  d=20:  0.4883
+  d=40:  0.5105
+  d=60:  0.5327
+  d=80:  0.5549
+  d=100:  0.5770
+  d=120:  0.5992
+  d=150:  0.6325
+
+. di _newline "Slope if delta=-90:"
+
+Slope if delta=-90:
+
+. foreach dval in 20 40 60 80 100 120 150 {
+  2.     local slope = `beta' + `theta'*(-90) + 2*`kappa'*`dval' + 2*`psi'*(-90)*`dval'
+  3.     di "  d=`dval': " %7.4f `slope'
+  4. }
+  d=20:  0.1688
+  d=40:  0.0612
+  d=60: -0.0465
+  d=80: -0.1541
+  d=100: -0.2617
+  d=120: -0.3694
+  d=150: -0.5308
+
+. 
+. ****************************************************
+. * Graph: actual vs predicted foreign debt (Spec Q)
+. ****************************************************
+. twoway ///
+>     (scatter df dfhat_Q if sample_Q==1, msize(small) mcolor(navy)) ///
+>     (lfit df dfhat_Q if sample_Q==1, lcolor(red)), ///
+>     xtitle("Predicted foreign debt (Spec Q)") ///
+>     ytitle("Actual foreign debt (df)") ///
+>     title("Actual vs Predicted Foreign Debt")
+
+. 
+. ****************************************************
+. * SIZE-SCALED SPECIFICATIONS (non-bank only)
+. *
+. * Since non-bank size (S_h) trends upward over time,
+. * testing concavity in levels (dh on d^2) may miss a
+. * capacity constraint whose ceiling moves with S_h.
+. *
+. * Scale the LHS by contemporaneous non-bank size:
+. *   dh/Sh = portfolio share devoted to gov bonds
+. *
+. * Spec R1:  dh/Sh = beta*d + kappa*d^2
+. * Spec R2:  dh/Sh = beta*d + theta*(delta_hat*d) + kappa*d^2
+. *
+. * If kappa < 0 and significant here, the concavity was
+. * always present but masked by the trending S_h.
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  SIZE-SCALED SPECS: dh/Sh on d, d^2"
+  SIZE-SCALED SPECS: dh/Sh on d, d^2
+
+. di "=========================================="
+==========================================
+
+. 
+. capture drop dh_over_sh
+
+. gen double dh_over_sh = dh / nonbank_size ///
+>     if !missing(dh, nonbank_size) & nonbank_size > 5
+(244 missing values generated)
+
+. 
+. di _newline "  Observations with nonbank_size > 5:"
+
+  Observations with nonbank_size > 5:
+
+. count if !missing(dh_over_sh)
+  536
+
+. summ dh_over_sh nonbank_size if !missing(dh_over_sh)
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+  dh_over_sh |        536    .2880136    .2734642          0   2.042385
+nonbank_size |        536    91.67835    67.35596   5.064411   303.7881
+
+. 
+. * --- Spec R1: clean ratio, no delta ---
+. di _newline(2) "--- Spec R1: dh/Sh = beta*d + kappa*d^2 (no delta) ---"
+
+
+--- Spec R1: dh/Sh = beta*d + kappa*d^2 (no delta) ---
+
+. reg dh_over_sh c.d c.d_sq, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        536
+                                                F(2, 30)          =      26.17
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6072
+                                                Root MSE          =     .24926
+
+                            (Std. err. adjusted for 31 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+  dh_over_sh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0052876   .0009961     5.31   0.000     .0032532     .007322
+        d_sq |  -.0000106   6.04e-06    -1.75   0.090    -.0000229    1.74e-06
+------------------------------------------------------------------------------
+
+. estimates store specR1
+
+. 
+. * --- Spec R2: ratio with delta interaction ---
+. di _newline(2) "--- Spec R2: dh/Sh = beta*d + theta*(delta*d) + kappa*d^2 ---"
+
+
+--- Spec R2: dh/Sh = beta*d + theta*(delta*d) + kappa*d^2 ---
+
+. reg dh_over_sh c.d c.delta_n_d c.d_sq, ///
+>     nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        498
+                                                F(3, 28)          =      22.71
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6353
+                                                Root MSE          =     .19469
+
+                            (Std. err. adjusted for 29 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+  dh_over_sh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0059244   .0012615     4.70   0.000     .0033405    .0085084
+   delta_n_d |  -.0000176   7.17e-06    -2.46   0.020    -.0000323   -2.93e-06
+        d_sq |   -.000023   .0000126    -1.82   0.080    -.0000489    2.92e-06
+------------------------------------------------------------------------------
+
+. estimates store specR2
+
+. 
+. * --- Comparison table ---
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  Comparison: R1 vs R2  (size-scaled LHS)"
+  Comparison: R1 vs R2  (size-scaled LHS)
+
+. di "=========================================="
+==========================================
+
+. estimates table specR1 specR2, ///
+>     star(0.10 0.05 0.01) stats(N r2)
+
+----------------------------------------------
+    Variable |    specR1          specR2      
+-------------+--------------------------------
+           d |  .00528758***    .00592445***  
+        d_sq |  -.0000106*     -.00002298*    
+   delta_n_d |                 -.00001763**   
+-------------+--------------------------------
+           N |        536             498     
+          r2 |  .60722102       .63526886     
+----------------------------------------------
+           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. di _newline "Key question: is kappa (d^2) now significantly negative?"
+
+Key question: is kappa (d^2) now significantly negative?
+
+. di "  If yes => concavity was masked by trending S_h."
+  If yes => concavity was masked by trending S_h.
+
+. di "  If no  => no capacity constraint, even relative to size."
+  If no  => no capacity constraint, even relative to size.
+
+. 
+. di _newline "Secondary question: is theta (delta*d) significant in R2?"
+
+Secondary question: is theta (delta*d) significant in R2?
+
+. di "  If yes => delta captures something beyond raw size."
+  If yes => delta captures something beyond raw size.
+
+. di "  If no  => delta was just a proxy for S_h scaling."
+  If no  => delta was just a proxy for S_h scaling.
+
+. 
+. ****************************************************
+. * DEBT ALLOCATION ACROSS ALL SECTORS (pecking-order test)
+. *
+. * Professor's question: as total debt D rises, how does
+. * the marginal absorption rate change for each sector?
+. *
+. * Pecking-order prediction:
+. *   - dh slope starts high, then decreases (non-bank fills up)
+. *   - df slope increases as dh slope falls (switch to foreigners)
+. *   - db slope increases at high d (banking absorbs residual)
+. *
+. * Three specs per sector:
+. *   (1) Linear:    dj = beta*d
+. *   (2) Quadratic: dj = beta*d + kappa*d^2
+. *   (3) Threshold: dj = beta*d + mu*d_high_c
+. *
+. * All: no constant, cluster-robust SEs, full sample.
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  DEBT ALLOCATION: ALL SECTORS ON d, d^2"
+  DEBT ALLOCATION: ALL SECTORS ON d, d^2
+
+. di "=========================================="
+==========================================
+
+. 
+. * Create banking sector total: db = dcb + dpb
+. capture drop db
+
+. gen double db = dcb + dpb if !missing(dcb, dpb)
+
+. 
+. * =============================================
+. * (1) Linear: dj = beta*d
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  (1) LINEAR: dj = beta*d"
+  (1) LINEAR: dj = beta*d
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "--- dh (non-bank) ---"
+
+--- dh (non-bank) ---
+
+. reg dh c.d, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(1, 31)          =      88.33
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7339
+                                                Root MSE          =     13.487
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3162479    .033649     9.40   0.000     .2476203    .3848755
+------------------------------------------------------------------------------
+
+. estimates store alloc_h_lin
+
+. 
+. di _newline "--- df (foreign) ---"
+
+--- df (foreign) ---
+
+. reg df c.d, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        747
+                                                F(1, 31)          =      46.35
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7161
+                                                Root MSE          =     10.643
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |    .237316   .0348576     6.81   0.000     .1662235    .3084086
+------------------------------------------------------------------------------
+
+. estimates store alloc_f_lin
+
+. 
+. di _newline "--- dcb (central bank) ---"
+
+--- dcb (central bank) ---
+
+. reg dcb c.d, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(1, 31)          =      15.87
+                                                Prob > F          =     0.0004
+                                                R-squared         =     0.4601
+                                                Root MSE          =     8.1581
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dcb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1063362   .0266886     3.98   0.000     .0519044     .160768
+------------------------------------------------------------------------------
+
+. estimates store alloc_cb_lin
+
+. 
+. di _newline "--- dpb (private bank) ---"
+
+--- dpb (private bank) ---
+
+. reg dpb c.d, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(1, 31)          =      99.70
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7893
+                                                Root MSE          =     8.1138
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dpb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2217399   .0222076     9.98   0.000     .1764472    .2670326
+------------------------------------------------------------------------------
+
+. estimates store alloc_pb_lin
+
+. 
+. di _newline "--- db (banking total = dcb + dpb) ---"
+
+--- db (banking total = dcb + dpb) ---
+
+. reg db c.d, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(1, 31)          =      55.96
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8149
+                                                Root MSE          =     11.073
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          db | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3280761   .0438559     7.48   0.000     .2386315    .4175207
+------------------------------------------------------------------------------
+
+. estimates store alloc_b_lin
+
+. 
+. di _newline(2) "  Linear absorption shares (beta):"
+
+
+  Linear absorption shares (beta):
+
+. estimates table alloc_h_lin alloc_f_lin alloc_cb_lin alloc_pb_lin alloc_b_lin, ///
+>     star(0.10 0.05 0.01) stats(N r2)
+
+----------------------------------------------------------------------------------------------
+    Variable |  alloc_h_lin     alloc_f_lin    alloc_cb_lin    alloc_pb_lin     alloc_b_lin   
+-------------+--------------------------------------------------------------------------------
+           d |  .31624794***    .23731604***    .10633621***     .2217399***    .32807612***  
+-------------+--------------------------------------------------------------------------------
+           N |        780             747             780             780             780     
+          r2 |  .73386982       .71607022       .46005677       .78927488       .81490945     
+----------------------------------------------------------------------------------------------
+                                                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. * =============================================
+. * (2) Quadratic: dj = beta*d + kappa*d^2
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  (2) QUADRATIC: dj = beta*d + kappa*d^2"
+  (2) QUADRATIC: dj = beta*d + kappa*d^2
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "--- dh (non-bank) ---"
+
+--- dh (non-bank) ---
+
+. reg dh c.d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =      57.05
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7350
+                                                Root MSE          =     13.468
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3433385   .0616976     5.56   0.000     .2175055    .4691716
+        d_sq |  -.0002602   .0003426    -0.76   0.453     -.000959    .0004386
+------------------------------------------------------------------------------
+
+. estimates store alloc_h_quad
+
+. 
+. di _newline "--- df (foreign) ---"
+
+--- df (foreign) ---
+
+. reg df c.d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        747
+                                                F(2, 31)          =      60.27
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7727
+                                                Root MSE          =     9.5281
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3872475   .0462329     8.38   0.000     .2929549    .4815401
+        d_sq |  -.0014212   .0003414    -4.16   0.000    -.0021175   -.0007249
+------------------------------------------------------------------------------
+
+. estimates store alloc_f_quad
+
+. 
+. di _newline "--- dcb (central bank) ---"
+
+--- dcb (central bank) ---
+
+. reg dcb c.d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =      43.00
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6719
+                                                Root MSE          =     6.3639
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dcb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.0539605   .0315417    -1.71   0.097    -.1182903    .0103692
+        d_sq |   .0015395   .0003251     4.74   0.000     .0008764    .0022025
+------------------------------------------------------------------------------
+
+. estimates store alloc_cb_quad
+
+. 
+. di _newline "--- dpb (private bank) ---"
+
+--- dpb (private bank) ---
+
+. reg dpb c.d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =      83.78
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8022
+                                                Root MSE          =     7.8658
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dpb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1586602   .0274624     5.78   0.000     .1026503    .2146702
+        d_sq |   .0006058   .0002143     2.83   0.008     .0001688    .0010428
+------------------------------------------------------------------------------
+
+. estimates store alloc_pb_quad
+
+. 
+. di _newline "--- db (banking total) ---"
+
+--- db (banking total) ---
+
+. reg db c.d c.d_sq, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =     125.97
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8914
+                                                Root MSE          =     8.4852
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          db | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1046997   .0457795     2.29   0.029     .0113318    .1980676
+        d_sq |   .0021453   .0004864     4.41   0.000     .0011533    .0031372
+------------------------------------------------------------------------------
+
+. estimates store alloc_b_quad
+
+. 
+. di _newline(2) "  Quadratic coefficients:"
+
+
+  Quadratic coefficients:
+
+. estimates table alloc_h_quad alloc_f_quad alloc_cb_quad alloc_pb_quad alloc_b_quad, ///
+>     star(0.10 0.05 0.01) stats(N r2)
+
+----------------------------------------------------------------------------------------------
+    Variable | alloc_h_quad    alloc_f_quad    alloc_cb_quad   alloc_pb_quad   alloc_b_quad   
+-------------+--------------------------------------------------------------------------------
+           d |  .34333852***    .38724752***   -.05396052*      .15866025***    .10469973**   
+        d_sq | -.00026017      -.00142121***    .00153946***     .0006058***    .00214526***  
+-------------+--------------------------------------------------------------------------------
+           N |        780             747             780             780             780     
+          r2 |  .73496082       .77274514       .67185438        .8022151       .89144396     
+----------------------------------------------------------------------------------------------
+                                                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. * =============================================
+. * (3) Threshold: dj = beta*d + mu*d_high_c
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  (3) THRESHOLD: dj = beta*d + mu*1[d>=100]*(d-100)"
+  (3) THRESHOLD: dj = beta*d + mu*1[d>=100]*(d-100)
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "--- dh (non-bank) ---"
+
+--- dh (non-bank) ---
+
+. reg dh c.d c.d_high_c, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =     107.54
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7343
+                                                Root MSE          =     13.485
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3216714   .0440457     7.30   0.000     .2318395    .4115032
+    d_high_c |  -.0442458   .0975013    -0.45   0.653    -.2431009    .1546094
+------------------------------------------------------------------------------
+
+. estimates store alloc_h_thr
+
+. 
+. di _newline "--- df (foreign) ---"
+
+--- df (foreign) ---
+
+. reg df c.d c.d_high_c, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        747
+                                                F(2, 31)          =      83.28
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.7855
+                                                Root MSE          =     9.2576
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2915613   .0281078    10.37   0.000      .234235    .3488876
+    d_high_c |  -.4286475   .0807624    -5.31   0.000    -.5933635   -.2639315
+------------------------------------------------------------------------------
+
+. estimates store alloc_f_thr
+
+. 
+. di _newline "--- dcb (central bank) ---"
+
+--- dcb (central bank) ---
+
+. reg dcb c.d c.d_high_c, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =      68.18
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.6720
+                                                Root MSE          =     6.3621
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dcb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0546106   .0122997     4.44   0.000     .0295252    .0796961
+    d_high_c |   .4219894   .0672847     6.27   0.000     .2847613    .5592175
+------------------------------------------------------------------------------
+
+. estimates store alloc_cb_thr
+
+. 
+. di _newline "--- dpb (private bank) ---"
+
+--- dpb (private bank) ---
+
+. reg dpb c.d c.d_high_c, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =     150.76
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.8119
+                                                Root MSE          =      7.671
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dpb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1948442   .0191299    10.19   0.000     .1558286    .2338599
+    d_high_c |   .2194212   .0427548     5.13   0.000     .1322221    .3066202
+------------------------------------------------------------------------------
+
+. estimates store alloc_pb_thr
+
+. 
+. di _newline "--- db (banking total) ---"
+
+--- db (banking total) ---
+
+. reg db c.d c.d_high_c, nocons vce(cluster country_id)
+
+Linear regression                               Number of obs     =        780
+                                                F(2, 31)          =     166.69
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.9060
+                                                Root MSE          =      7.894
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          db | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2494549   .0198808    12.55   0.000     .2089077     .290002
+    d_high_c |   .6414105    .081633     7.86   0.000     .4749188    .8079022
+------------------------------------------------------------------------------
+
+. estimates store alloc_b_thr
+
+. 
+. di _newline(2) "  Threshold coefficients:"
+
+
+  Threshold coefficients:
+
+. estimates table alloc_h_thr alloc_f_thr alloc_cb_thr alloc_pb_thr alloc_b_thr, ///
+>     star(0.10 0.05 0.01) stats(N r2)
+
+----------------------------------------------------------------------------------------------
+    Variable |  alloc_h_thr     alloc_f_thr    alloc_cb_thr    alloc_pb_thr     alloc_b_thr   
+-------------+--------------------------------------------------------------------------------
+           d |  .32167139***    .29156133***    .05461063***    .19484424***    .24945487***  
+    d_high_c | -.04424577       -.4286475***    .42198936***    .21942115***    .64141051***  
+-------------+--------------------------------------------------------------------------------
+           N |        780             747             780             780             780     
+          r2 |  .73429013        .7854645         .672043       .81188761         .906045     
+----------------------------------------------------------------------------------------------
+                                                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. * =============================================
+. * Marginal absorption rates from quadratic spec
+. *   slope_j(d) = beta_j + 2*kappa_j * d
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  MARGINAL ABSORPTION RATES (from quadratic)"
+  MARGINAL ABSORPTION RATES (from quadratic)
+
+. di "  slope_j(d) = beta_j + 2*kappa_j * d"
+  slope_j(d) = beta_j + 2*kappa_j * d
+
+. di "=========================================="
+==========================================
+
+. 
+. foreach sector in h f cb pb b {
+  2.     estimates restore alloc_`sector'_quad
+  3.     local beta_`sector' = _b[d]
+  4.     local kappa_`sector' = _b[d_sq]
+  5. }
+(results alloc_h_quad are active now)
+(results alloc_f_quad are active now)
+(results alloc_cb_quad are active now)
+(results alloc_pb_quad are active now)
+(results alloc_b_quad are active now)
+
+. 
+. di _newline "  d   |  dh slope  |  df slope  | dcb slope  | dpb slope  |  db slope  |  Sum"
+
+  d   |  dh slope  |  df slope  | dcb slope  | dpb slope  |  db slope  |  Sum
+
+. di "  ----|-----------|------------|------------|------------|------------|-------"
+  ----|-----------|------------|------------|------------|------------|-------
+
+. foreach dval in 20 40 60 80 100 120 150 180 {
+  2.     local sl_h  = `beta_h'  + 2*`kappa_h' *`dval'
+  3.     local sl_f  = `beta_f'  + 2*`kappa_f' *`dval'
+  4.     local sl_cb = `beta_cb' + 2*`kappa_cb'*`dval'
+  5.     local sl_pb = `beta_pb' + 2*`kappa_pb'*`dval'
+  6.     local sl_b  = `beta_b'  + 2*`kappa_b' *`dval'
+  7.     local sl_sum = `sl_h' + `sl_f' + `sl_b'
+  8.     di "  " %3.0f `dval' " | " %9.4f `sl_h' " | " %10.4f `sl_f' ///
+>        " | " %10.4f `sl_cb' " | " %10.4f `sl_pb' " | " %10.4f `sl_b' ///
+>        " | " %6.3f `sl_sum'
+  9. }
+   20 |    0.3329 |     0.3304 |     0.0076 |     0.1829 |     0.1905 |  0.854
+   40 |    0.3225 |     0.2736 |     0.0692 |     0.2071 |     0.2763 |  0.872
+   60 |    0.3121 |     0.2167 |     0.1308 |     0.2314 |     0.3621 |  0.891
+   80 |    0.3017 |     0.1599 |     0.1924 |     0.2556 |     0.4479 |  0.910
+  100 |    0.2913 |     0.1030 |     0.2539 |     0.2798 |     0.5338 |  0.928
+  120 |    0.2809 |     0.0462 |     0.3155 |     0.3041 |     0.6196 |  0.947
+  150 |    0.2653 |    -0.0391 |     0.4079 |     0.3404 |     0.7483 |  0.974
+  180 |    0.2497 |    -0.1244 |     0.5002 |     0.3767 |     0.8770 |  1.002
+
+. 
+. di _newline "Interpretation:"
+
+Interpretation:
+
+. di "  If dh slope decreases with d => non-bank absorption slows (capacity fills)"
+  If dh slope decreases with d => non-bank absorption slows (capacity fills)
+
+. di "  If df slope decreases with d => foreign absorption slows (default ceiling)"
+  If df slope decreases with d => foreign absorption slows (default ceiling)
+
+. di "  If db slope increases with d => banking steps in as residual absorber"
+  If db slope increases with d => banking steps in as residual absorber
+
+. di "  Strict pecking order => dh slope starts near 1, then drops; df rises then drops"
+  Strict pecking order => dh slope starts near 1, then drops; df rises then drops
+
+. di "  Simultaneous allocation => slopes are stable, all sectors absorb in parallel"
+  Simultaneous allocation => slopes are stable, all sectors absorb in parallel
+
+. 
+. ****************************************************
+. * DEBT ALLOCATION WITH COUNTRY + YEAR FIXED EFFECTS
+. *
+. * Same regressions as above but with xtreg fe + i.year,
+. * so we isolate within-country variation over time.
+. ****************************************************
+. 
+. di _newline(3) "=========================================="
+
+
+
+==========================================
+
+. di "  DEBT ALLOCATION WITH COUNTRY + YEAR FE"
+  DEBT ALLOCATION WITH COUNTRY + YEAR FE
+
+. di "=========================================="
+==========================================
+
+. 
+. * =============================================
+. * (4) Quadratic + FE: dj = beta*d + kappa*d^2 + country FE + year FE
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  (4) QUADRATIC + COUNTRY FE + YEAR FE"
+  (4) QUADRATIC + COUNTRY FE + YEAR FE
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "--- dh (non-bank) ---"
+
+--- dh (non-bank) ---
+
+. xtreg dh c.d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.3806                                         min =         14
+     Between = 0.3477                                         avg =       24.4
+     Overall = 0.3575                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.2612                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .4024827   .0934579     4.31   0.000     .2118742    .5930913
+        d_sq |  -.0016327   .0004384    -3.72   0.001    -.0025268   -.0007386
+             |
+        year |
+       1990  |   2.155503   .7573464     2.85   0.008      .610885    3.700121
+       1991  |   2.937111   .4826267     6.09   0.000     1.952787    3.921434
+       1992  |  -4.148706   5.349253    -0.78   0.444    -15.05858    6.761166
+       1993  |  -6.101362   7.138041    -0.85   0.399    -20.65949    8.456769
+       1994  |  -14.24603   11.28248    -1.26   0.216     -37.2568    8.764749
+       1995  |  -14.04365   12.37769    -1.13   0.265    -39.28811    11.20082
+       1996  |  -13.67754   11.94003    -1.15   0.261     -38.0294    10.67431
+       1997  |  -14.47682   12.04781    -1.20   0.239     -39.0485    10.09486
+       1998  |  -15.80298   12.22076    -1.29   0.206    -40.72738    9.121415
+       1999  |  -16.53084   12.39504    -1.33   0.192    -41.81069    8.749014
+       2000  |  -17.71725   12.42881    -1.43   0.164    -43.06598    7.631472
+       2001  |   -18.6706   12.38878    -1.51   0.142    -43.93768     6.59647
+       2002  |  -18.27629   12.37559    -1.48   0.150    -43.51647    6.963882
+       2003  |  -18.47229   12.64499    -1.46   0.154    -44.26192    7.317341
+       2004  |  -18.37046   12.71753    -1.44   0.159    -44.30803    7.567106
+       2005  |  -18.77153   12.80169    -1.47   0.153    -44.88075    7.337681
+       2006  |  -19.73147   13.04811    -1.51   0.141    -46.34327    6.880335
+       2007  |  -20.35585   13.04261    -1.56   0.129    -46.95643    6.244725
+       2008  |  -20.21381   13.04627    -1.55   0.131    -46.82186    6.394229
+       2009  |  -20.31281   13.08205    -1.55   0.131    -46.99382    6.368202
+       2010  |  -20.17285   13.07165    -1.54   0.133    -46.83265    6.486961
+       2011  |   -19.5366   12.90969    -1.51   0.140    -45.86607    6.792879
+       2012  |  -19.49698   12.88651    -1.51   0.140    -45.77918    6.785225
+       2013  |  -19.65358   12.83991    -1.53   0.136    -45.84075    6.533586
+       2014  |  -20.34528   12.78261    -1.59   0.122    -46.41559    5.725029
+       2015  |  -21.39097   12.92819    -1.65   0.108    -47.75819    4.976238
+       2016  |  -22.13054   13.00811    -1.70   0.099    -48.66076     4.39968
+       2017  |  -22.20658   13.08471    -1.70   0.100    -48.89302    4.479871
+       2018  |  -22.25551   13.16516    -1.69   0.101    -49.10604    4.595023
+       2019  |  -22.44001   13.19748    -1.70   0.099    -49.35645     4.47644
+       2020  |   -23.1632   13.01815    -1.78   0.085    -49.71389    3.387502
+       2021  |  -23.39544   13.08351    -1.79   0.084    -50.07944     3.28856
+             |
+       _cons |   22.62375   13.28451     1.70   0.099    -4.470177    49.71768
+-------------+----------------------------------------------------------------
+     sigma_u |  14.599576
+     sigma_e |  4.8128753
+         rho |  .90197777   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_h_quad_fe
+
+. 
+. di _newline "--- df (foreign) ---"
+
+--- df (foreign) ---
+
+. xtreg df c.d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        747
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.4540                                         min =         14
+     Between = 0.3473                                         avg =       23.3
+     Overall = 0.4036                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.1825                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3917332   .1097371     3.57   0.001     .1679229    .6155436
+        d_sq |  -.0009388   .0006232    -1.51   0.142    -.0022098    .0003323
+             |
+        year |
+       1990  |   .6065841   .1834587     3.31   0.002     .2324175    .9807507
+       1991  |   .7799309   .4821259     1.62   0.116    -.2033714    1.763233
+       1992  |   3.966555   .2076599    19.10   0.000      3.54303     4.39008
+       1993  |   8.453688   .0008721  9693.23   0.000      8.45191    8.455467
+       1994  |   25.68458     5.3917     4.76   0.000     14.68814    36.68103
+       1995  |   24.80383   2.105332    11.78   0.000     20.50998    29.09768
+       1996  |   25.29658    2.18655    11.57   0.000     20.83708    29.75608
+       1997  |   25.93607   2.045607    12.68   0.000     21.76403    30.10811
+       1998  |   28.13949    1.44266    19.51   0.000     25.19716    31.08181
+       1999  |    29.6823   1.050334    28.26   0.000     27.54013    31.82447
+       2000  |   30.89907   .9790499    31.56   0.000     28.90228    32.89585
+       2001  |   32.36117   .9752215    33.18   0.000     30.37219    34.35014
+       2002  |   32.74113   1.025899    31.91   0.000      30.6488    34.83347
+       2003  |   32.73355   1.026037    31.90   0.000     30.64094    34.82617
+       2004  |   32.96401   1.004763    32.81   0.000     30.91479    35.01324
+       2005  |   32.77522   1.081944    30.29   0.000     30.56859    34.98186
+       2006  |   33.04223   1.226072    26.95   0.000     30.54164    35.54282
+       2007  |   32.60366   1.226246    26.59   0.000     30.10271     35.1046
+       2008  |   32.09895   1.175067    27.32   0.000     29.70239    34.49552
+       2009  |   32.13189   1.390368    23.11   0.000     29.29621    34.96756
+       2010  |   31.13067   1.130238    27.54   0.000     28.82553     33.4358
+       2011  |   30.07367   .9839711    30.56   0.000     28.06685    32.08049
+       2012  |    30.0941   1.037811    29.00   0.000     27.97747    32.21073
+       2013  |   29.62171   1.323877    22.37   0.000     26.92165    32.32178
+       2014  |   31.19244   1.511937    20.63   0.000     28.10882    34.27605
+       2015  |   31.02843   1.296185    23.94   0.000     28.38485    33.67202
+       2016  |   29.69278   1.251525    23.73   0.000     27.14028    32.24529
+       2017  |    29.2079   1.185641    24.63   0.000     26.78977    31.62603
+       2018  |   28.84473   1.153887    25.00   0.000     26.49136    31.19809
+       2019  |   29.93812   1.243871    24.07   0.000     27.40123    32.47502
+       2020  |   29.99415   1.932463    15.52   0.000     26.05286    33.93543
+       2021  |   27.71859    1.56765    17.68   0.000     24.52134    30.91583
+             |
+       _cons |  -33.55996   4.212597    -7.97   0.000    -42.15161   -24.96831
+-------------+----------------------------------------------------------------
+     sigma_u |  8.4434797
+     sigma_e |   5.236486
+         rho |  .72221746   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_f_quad_fe
+
+. 
+. di _newline "--- dcb (central bank) ---"
+
+--- dcb (central bank) ---
+
+. xtreg dcb c.d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.6369                                         min =         14
+     Between = 0.8584                                         avg =       24.4
+     Overall = 0.7178                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.3487                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dcb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.2362173   .1078437    -2.19   0.036     -.456166   -.0162686
+        d_sq |   .0025563   .0007145     3.58   0.001     .0010992    .0040135
+             |
+        year |
+       1990  |  -.9570561   .6900748    -1.39   0.175    -2.364473    .4503607
+       1991  |  -2.020321   1.535042    -1.32   0.198     -5.15106    1.110418
+       1992  |   .2025067   .2295071     0.88   0.384     -.265576    .6705895
+       1993  |  -.0805062   .2984609    -0.27   0.789    -.6892213    .5282088
+       1994  |   -.835203   1.329964    -0.63   0.535    -3.547683    1.877277
+       1995  |  -2.299757   2.215089    -1.04   0.307    -6.817461    2.217946
+       1996  |  -2.636873   2.285844    -1.15   0.257    -7.298882    2.025135
+       1997  |   -2.21447    2.20817    -1.00   0.324    -6.718062    2.289122
+       1998  |  -2.694096   2.237786    -1.20   0.238    -7.258089    1.869898
+       1999  |  -2.603327   2.192159    -1.19   0.244    -7.074264     1.86761
+       2000  |  -2.223301    2.16002    -1.03   0.311     -6.62869    2.182088
+       2001  |  -2.188273   2.126261    -1.03   0.311    -6.524812    2.148266
+       2002  |  -2.237976    2.17357    -1.03   0.311    -6.671001    2.195049
+       2003  |  -2.127239   2.098758    -1.01   0.319    -6.407683    2.153205
+       2004  |  -2.330303   2.083906    -1.12   0.272    -6.580457    1.919851
+       2005  |  -2.529243   2.086548    -1.21   0.235    -6.784786      1.7263
+       2006  |   -2.57071   2.081801    -1.23   0.226    -6.816572    1.675151
+       2007  |    -2.5482    2.05494    -1.24   0.224    -6.739277    1.642877
+       2008  |  -2.567907   2.093915    -1.23   0.229    -6.838474    1.702661
+       2009  |  -2.995397   2.273309    -1.32   0.197    -7.631841    1.641046
+       2010  |  -3.339601   2.386207    -1.40   0.172    -8.206301      1.5271
+       2011  |  -3.719024   2.579086    -1.44   0.159    -8.979105    1.541058
+       2012  |  -3.954319   2.659412    -1.49   0.147    -9.378227    1.469588
+       2013  |  -3.408675   2.615969    -1.30   0.202     -8.74398     1.92663
+       2014  |  -3.105173   2.586637    -1.20   0.239    -8.380654    2.170308
+       2015  |   -1.14522   2.372073    -0.48   0.633    -5.983094    3.692655
+       2016  |   1.262825   2.250684     0.56   0.579    -3.327475    5.853124
+       2017  |   2.846423   2.173041     1.31   0.200    -1.585524    7.278369
+       2018  |   3.230325   2.129858     1.52   0.139    -1.113549    7.574199
+       2019  |   3.154817   2.125471     1.48   0.148     -1.18011    7.489745
+       2020  |   5.807627   2.443988     2.38   0.024     .8230805    10.79217
+       2021  |   9.106738   2.586273     3.52   0.001     3.831999    14.38148
+             |
+       _cons |   7.348647   3.832332     1.92   0.064    -.4674463    15.16474
+-------------+----------------------------------------------------------------
+     sigma_u |  3.1954144
+     sigma_e |  4.5469416
+         rho |  .33059922   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_cb_quad_fe
+
+. 
+. di _newline "--- dpb (private bank) ---"
+
+--- dpb (private bank) ---
+
+. xtreg dpb c.d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.3095                                         min =         14
+     Between = 0.6650                                         avg =       24.4
+     Overall = 0.5633                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.3095                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dpb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1913332    .088404     2.16   0.038      .011032    .3716343
+        d_sq |  -.0000394   .0005746    -0.07   0.946    -.0012114    .0011325
+             |
+        year |
+       1990  |  -.6237364   .4921085    -1.27   0.214    -1.627398    .3799256
+       1991  |   1.090482   .4561345     2.39   0.023     .1601897    2.020775
+       1992  |   3.700837   2.032908     1.82   0.078    -.4453058    7.846981
+       1993  |   4.125873    2.55772     1.61   0.117    -1.090632    9.342378
+       1994  |   3.745168   3.596043     1.04   0.306     -3.58901    11.07935
+       1995  |   7.662262   4.419072     1.73   0.093    -1.350495    16.67502
+       1996  |   7.152698   4.371545     1.64   0.112    -1.763127    16.06852
+       1997  |   6.099417   4.231076     1.44   0.159    -2.529919    14.72875
+       1998  |   6.414114   4.073298     1.57   0.125    -1.893431    14.72166
+       1999  |   5.251424   4.003771     1.31   0.199    -2.914322    13.41717
+       2000  |   4.571829   3.827624     1.19   0.241    -3.234663    12.37832
+       2001  |   3.972788   3.891435     1.02   0.315    -3.963847    11.90942
+       2002  |   3.540446   3.890812     0.91   0.370    -4.394918    11.47581
+       2003  |   3.209386   4.056448     0.79   0.435    -5.063794    11.48257
+       2004  |   2.718997   4.073631     0.67   0.509    -5.589228    11.02722
+       2005  |   2.826943   4.085295     0.69   0.494    -5.505071    11.15896
+       2006  |   2.714031   4.281235     0.63   0.531    -6.017606    11.44567
+       2007  |   2.521704   4.266613     0.59   0.559     -6.18011    11.22352
+       2008  |   2.681749   4.324691     0.62   0.540    -6.138516    11.50201
+       2009  |    4.16258   4.571329     0.91   0.370    -5.160707    13.48587
+       2010  |    4.93065   4.728993     1.04   0.305    -4.714195    14.57549
+       2011  |   4.742663   4.774114     0.99   0.328    -4.994208    14.47953
+       2012  |   4.770092   4.958048     0.96   0.343    -5.341913     14.8821
+       2013  |    3.86655   5.011939     0.77   0.446    -6.355368    14.08847
+       2014  |    2.91557   5.001842     0.58   0.564    -7.285753    13.11689
+       2015  |   2.010385   4.931534     0.41   0.686    -8.047545    12.06832
+       2016  |   1.560927   4.852097     0.32   0.750    -8.334989    11.45684
+       2017  |   .5861906   4.770391     0.12   0.903    -9.143086    10.31547
+       2018  |   .5498984   4.790885     0.11   0.909    -9.221176    10.32097
+       2019  |   .0466195   4.738346     0.01   0.992    -9.617302    9.710541
+       2020  |   .2805141   4.958704     0.06   0.955     -9.83283    10.39386
+       2021  |  -.9922139   4.907616    -0.20   0.841    -11.00136    9.016935
+             |
+       _cons |  -1.301342   4.514743    -0.29   0.775    -10.50922    7.906537
+-------------+----------------------------------------------------------------
+     sigma_u |  6.9489329
+     sigma_e |  5.0048535
+         rho |  .65844222   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_pb_quad_fe
+
+. 
+. di _newline "--- db (banking total) ---"
+
+--- db (banking total) ---
+
+. xtreg db c.d c.d_sq i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.6898                                         min =         14
+     Between = 0.8715                                         avg =       24.4
+     Overall = 0.8204                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.2930                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          db | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |  -.0448841   .0750198    -0.60   0.554    -.1978881    .1081199
+        d_sq |   .0025169   .0003889     6.47   0.000     .0017237      .00331
+             |
+        year |
+       1990  |  -1.580792   1.163381    -1.36   0.184    -3.953524    .7919391
+       1991  |  -.9298389    1.26122    -0.74   0.467    -3.502115    1.642437
+       1992  |   3.903344   2.155934     1.81   0.080    -.4937118      8.3004
+       1993  |   4.045367    2.37853     1.70   0.099    -.8056773    8.896411
+       1994  |   2.909965   3.281833     0.89   0.382    -3.783377    9.603306
+       1995  |   5.362505   2.784056     1.93   0.063    -.3156158    11.04063
+       1996  |   4.515824   2.626443     1.72   0.096    -.8408425    9.872491
+       1997  |   3.884946   2.434443     1.60   0.121    -1.080133    8.850026
+       1998  |   3.720018   2.330707     1.60   0.121    -1.033489    8.473525
+       1999  |   2.648097   2.163866     1.22   0.230    -1.765137    7.061332
+       2000  |   2.348527   2.016344     1.16   0.253    -1.763832    6.460887
+       2001  |   1.784514   2.066948     0.86   0.395    -2.431055    6.000084
+       2002  |    1.30247   2.050433     0.64   0.530    -2.879415    5.484355
+       2003  |   1.082147   2.204755     0.49   0.627     -3.41448    5.578774
+       2004  |   .3886944   2.182494     0.18   0.860    -4.062532    4.839921
+       2005  |   .2976998   2.176966     0.14   0.892    -4.142251    4.737651
+       2006  |   .1433202   2.359869     0.06   0.952    -4.669664    4.956304
+       2007  |  -.0264967   2.372257    -0.01   0.991    -4.864747    4.811753
+       2008  |   .1138429   2.444723     0.05   0.963    -4.872203    5.099889
+       2009  |   1.167183   2.582699     0.45   0.654    -4.100267    6.434632
+       2010  |   1.591049   2.722196     0.58   0.563    -3.960907    7.143005
+       2011  |   1.023639   2.722889     0.38   0.710    -4.529729    6.577007
+       2012  |   .8157725   2.919322     0.28   0.782    -5.138223    6.769768
+       2013  |   .4578744   2.859618     0.16   0.874    -5.374356    6.290105
+       2014  |  -.1896029    2.78583    -0.07   0.946    -5.871341    5.492135
+       2015  |   .8651652   2.802141     0.31   0.760    -4.849838    6.580169
+       2016  |   2.823752   2.845571     0.99   0.329     -2.97983    8.627333
+       2017  |   3.432613   2.868669     1.20   0.241    -2.418075    9.283302
+       2018  |   3.780223   2.941692     1.29   0.208    -2.219397    9.779844
+       2019  |   3.201437    2.89201     1.11   0.277    -2.696856     9.09973
+       2020  |   6.088141   3.066512     1.99   0.056    -.1660527    12.34233
+       2021  |   8.114524   3.119787     2.60   0.014     1.751678    14.47737
+             |
+       _cons |   6.047304   3.328568     1.82   0.079    -.7413552    12.83596
+-------------+----------------------------------------------------------------
+     sigma_u |  6.8272538
+     sigma_e |  5.1338342
+         rho |  .63879535   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_b_quad_fe
+
+. 
+. di _newline(2) "  Quadratic + FE coefficients (d and d^2 only):"
+
+
+  Quadratic + FE coefficients (d and d^2 only):
+
+. estimates table alloc_h_quad_fe alloc_f_quad_fe alloc_cb_quad_fe alloc_pb_quad_fe alloc_b_quad_fe, ///
+>     keep(d d_sq) star(0.10 0.05 0.01) stats(N r2_w r2_b r2_o)
+
+----------------------------------------------------------------------------------------------
+    Variable | alloc_h_qua~e   alloc_f_qua~e   alloc_cb_qu~e   alloc_pb_qu~e   alloc_b_qua~e  
+-------------+--------------------------------------------------------------------------------
+           d |  .40248272***    .39173322***   -.23621729**     .19133317**    -.04488412     
+        d_sq |  -.0016327***   -.00093877       .00255632***   -.00003945       .00251687***  
+-------------+--------------------------------------------------------------------------------
+           N |        780             747             780             780             780     
+        r2_w |  .38061922        .4539985       .63690534       .30949849        .6898282     
+        r2_b |  .34772588       .34731264       .85839124       .66498521       .87151166     
+        r2_o |  .35748187       .40355653       .71778804       .56331417       .82035243     
+----------------------------------------------------------------------------------------------
+                                                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. * =============================================
+. * (5) Threshold + FE: dj = beta*d + mu*d_high_c + country FE + year FE
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  (5) THRESHOLD + COUNTRY FE + YEAR FE"
+  (5) THRESHOLD + COUNTRY FE + YEAR FE
+
+. di "=========================================="
+==========================================
+
+. 
+. di _newline "--- dh (non-bank) ---"
+
+--- dh (non-bank) ---
+
+. xtreg dh c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.3522                                         min =         14
+     Between = 0.3466                                         avg =       24.4
+     Overall = 0.3456                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.2908                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          dh | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2095072   .0530777     3.95   0.000     .1012545      .31776
+    d_high_c |  -.3054686    .111889    -2.73   0.010    -.5336678   -.0772695
+             |
+        year |
+       1990  |    2.31422   .8646644     2.68   0.012     .5507254    4.077715
+       1991  |   3.309905   .7424717     4.46   0.000     1.795624    4.824185
+       1992  |  -4.343122   5.492626    -0.79   0.435    -15.54541    6.859162
+       1993  |  -6.127095   7.127008    -0.86   0.397    -20.66272    8.408534
+       1994  |  -15.00059   11.46087    -1.31   0.200    -38.37519    8.374012
+       1995  |  -14.33305   12.06092    -1.19   0.244    -38.93146    10.26536
+       1996  |  -13.90157   11.57651    -1.20   0.239    -37.51202    9.708888
+       1997  |  -14.69125   11.69325    -1.26   0.218    -38.53979    9.157282
+       1998  |  -15.98151   11.85928    -1.35   0.188    -40.16867    8.205647
+       1999  |  -16.65764   12.02729    -1.38   0.176    -41.18745    7.872172
+       2000  |  -17.94366   12.07628    -1.49   0.147    -42.57339    6.686063
+       2001  |  -18.93031   12.02599    -1.57   0.126    -43.45748    5.596857
+       2002  |  -18.58266   12.02184    -1.55   0.132    -43.10136    5.936035
+       2003  |   -18.7817   12.27946    -1.53   0.136    -43.82581     6.26242
+       2004  |  -18.72817   12.35577    -1.52   0.140    -43.92794    6.471592
+       2005  |  -19.14352   12.43339    -1.54   0.134    -44.50159    6.214558
+       2006  |  -20.12921   12.67835    -1.59   0.123    -45.98687     5.72846
+       2007  |  -20.82707   12.68295    -1.64   0.111    -46.69413    5.039976
+       2008  |  -20.59556   12.67725    -1.62   0.114    -46.45098    5.259853
+       2009  |  -20.40133   12.67078    -1.61   0.118    -46.24357    5.440901
+       2010  |  -20.27185   12.64944    -1.60   0.119    -46.07055     5.52685
+       2011  |  -19.57585   12.48116    -1.57   0.127    -45.03135    5.879654
+       2012  |  -19.46761   12.43948    -1.56   0.128     -44.8381    5.902875
+       2013  |  -19.72582   12.38588    -1.59   0.121    -44.98699    5.535348
+       2014  |  -20.46535   12.32834    -1.66   0.107    -45.60917    4.678459
+       2015  |  -21.56194   12.46859    -1.73   0.094     -46.9918    3.867928
+       2016  |  -22.29104   12.53965    -1.78   0.085    -47.86582    3.283749
+       2017  |  -22.36128   12.61465    -1.77   0.086    -48.08903    3.366474
+       2018  |  -22.48974   12.69385    -1.77   0.086    -48.37902    3.399546
+       2019  |  -22.67293   12.72318    -1.78   0.085    -48.62203    3.276177
+       2020  |  -23.04248   12.60683    -1.83   0.077    -48.75429    2.669326
+       2021  |  -23.41397   12.65415    -1.85   0.074    -49.22228    2.394345
+             |
+       _cons |   27.49583   12.87256     2.14   0.041     1.242071    53.74958
+-------------+----------------------------------------------------------------
+     sigma_u |  14.820855
+     sigma_e |  4.9220138
+         rho |  .90066497   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_h_thr_fe
+
+. 
+. di _newline "--- df (foreign) ---"
+
+--- df (foreign) ---
+
+. xtreg df c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        747
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.4652                                         min =         14
+     Between = 0.3783                                         avg =       23.3
+     Overall = 0.4283                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.1349                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          df | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .3007004   .0547413     5.49   0.000     .1890548    .4123461
+    d_high_c |  -.2468856   .1314497    -1.88   0.070     -.514979    .0212078
+             |
+        year |
+       1990  |   .9069077   .3082077     2.94   0.006     .2783139    1.535502
+       1991  |   1.528438   .7922512     1.93   0.063    -.0873694    3.144244
+       1992  |   3.601455   .3595963    10.02   0.000     2.868053    4.334857
+       1993  |   8.452212   .0014859  5688.14   0.000     8.449182    8.455243
+       1994  |    25.9728   5.467188     4.75   0.000      14.8224    37.12321
+       1995  |   25.41883   2.057156    12.36   0.000     21.22323    29.61443
+       1996  |   25.96656    2.10217    12.35   0.000     21.67916    30.25397
+       1997  |   26.58492   1.957008    13.58   0.000     22.59357    30.57626
+       1998  |   28.80197   1.332583    21.61   0.000     26.08415    31.51979
+       1999  |    30.3473   1.032154    29.40   0.000     28.24221    32.45239
+       2000  |   31.50057   1.010666    31.17   0.000      29.4393    33.56184
+       2001  |   32.89986   1.036919    31.73   0.000     30.78505    35.01467
+       2002  |   33.24608   1.104857    30.09   0.000     30.99271    35.49945
+       2003  |   33.14431   1.105011    29.99   0.000     30.89063    35.39799
+       2004  |   33.37276   1.089732    30.62   0.000     31.15024    35.59528
+       2005  |   33.19427   1.174929    28.25   0.000     30.79798    35.59055
+       2006  |   33.47115   1.298712    25.77   0.000     30.82241    36.11989
+       2007  |   33.01952   1.298075    25.44   0.000     30.37208    35.66696
+       2008  |   32.57099   1.267795    25.69   0.000     29.98531    35.15668
+       2009  |   32.70808   1.494629    21.88   0.000     29.65976    35.75639
+       2010  |   31.64483   1.188103    26.63   0.000     29.22167    34.06798
+       2011  |   30.65645   1.070572    28.64   0.000     28.47301     32.8399
+       2012  |   30.71633   1.133124    27.11   0.000      28.4053    33.02735
+       2013  |   30.15826   1.435938    21.00   0.000     27.22965    33.08688
+       2014  |   31.68588   1.617895    19.58   0.000     28.38616     34.9856
+       2015  |   31.46665   1.399424    22.49   0.000     28.61251    34.32079
+       2016  |   30.15374   1.335039    22.59   0.000     27.43091    32.87657
+       2017  |   29.69249   1.288248    23.05   0.000     27.06509    32.31989
+       2018  |   29.30119   1.228779    23.85   0.000     26.79508     31.8073
+       2019  |    30.4097   1.312609    23.17   0.000     27.73261    33.08678
+       2020  |   30.77166   2.150915    14.31   0.000     26.38484    35.15848
+       2021  |   28.33862   1.661704    17.05   0.000     24.94955    31.72769
+             |
+       _cons |  -32.32725   3.058357   -10.57   0.000    -38.56481   -26.08969
+-------------+----------------------------------------------------------------
+     sigma_u |  8.1247174
+     sigma_e |  5.1826133
+         rho |   .7107857   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_f_thr_fe
+
+. 
+. di _newline "--- dcb (central bank) ---"
+
+--- dcb (central bank) ---
+
+. xtreg dcb c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.5845                                         min =         14
+     Between = 0.8764                                         avg =       24.4
+     Overall = 0.7003                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = -0.4067                         Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dcb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .0693359   .0506838     1.37   0.181    -.0340344    .1727063
+    d_high_c |   .4651077   .2121818     2.19   0.036     .0323601    .8978553
+             |
+        year |
+       1990  |    -1.1965   .8467166    -1.41   0.168     -2.92339    .5303898
+       1991  |  -2.583398   1.930443    -1.34   0.191    -6.520564    1.353767
+       1992  |   .4780607   .5028974     0.95   0.349    -.5476052    1.503727
+       1993  |  -.0583112   .3339251    -0.17   0.863    -.7393559    .6227335
+       1994  |   .3577709   .9419935     0.38   0.707    -1.563438    2.278979
+       1995  |  -1.828418   2.677885    -0.68   0.500    -7.290001    3.633165
+       1996  |  -2.266066   2.833196    -0.80   0.430    -8.044408    3.512277
+       1997  |  -1.859572    2.73233    -0.68   0.501    -7.432195    3.713051
+       1998  |  -2.393328   2.756426    -0.87   0.392    -8.015097    3.228441
+       1999  |  -2.386711   2.727357    -0.88   0.388    -7.949193    3.175771
+       2000  |  -1.849049    2.65652    -0.70   0.492    -7.267056    3.568959
+       2001  |  -1.769822   2.655111    -0.67   0.510    -7.184957    3.645313
+       2002  |  -1.748363   2.683637    -0.65   0.520    -7.221675     3.72495
+       2003  |  -1.650321   2.655598    -0.62   0.539     -7.06645    3.765807
+       2004  |  -1.773511   2.638194    -0.67   0.506    -7.154143     3.60712
+       2005  |  -1.946833   2.650608    -0.73   0.468    -7.352783    3.459118
+       2006  |   -1.94317   2.645733    -0.73   0.468    -7.339177    3.452837
+       2007  |  -1.800153   2.596484    -0.69   0.493    -7.095718    3.495412
+       2008  |  -1.965721    2.65737    -0.74   0.465    -7.385462    3.454021
+       2009  |  -2.861898    2.92239    -0.98   0.335    -8.822153    3.098356
+       2010  |  -3.198875   3.053642    -1.05   0.303    -9.426819    3.029069
+       2011  |  -3.664616   3.234081    -1.13   0.266    -10.26057    2.931336
+       2012  |  -4.006297   3.342646    -1.20   0.240    -10.82367    2.811074
+       2013  |  -3.306059   3.308989    -1.00   0.325    -10.05479     3.44267
+       2014  |  -2.930433   3.273964    -0.90   0.378    -9.607726     3.74686
+       2015  |  -.8961106   3.065399    -0.29   0.772    -7.148034    5.355813
+       2016  |   1.498334    2.92933     0.51   0.613    -4.476073    7.472741
+       2017  |   3.075972   2.841405     1.08   0.287    -2.719112    8.871056
+       2018  |   3.587206   2.801842     1.28   0.210    -2.127188      9.3016
+       2019  |    3.51203   2.804803     1.25   0.220    -2.208404    9.232464
+       2020  |   5.633407    2.98895     1.88   0.069     -.462597    11.72941
+       2021  |   9.135523   3.097378     2.95   0.006     2.818379    15.45267
+             |
+       _cons |  -.4337229   3.354493    -0.13   0.898    -7.275257    6.407811
+-------------+----------------------------------------------------------------
+     sigma_u |  3.0778027
+     sigma_e |  4.8640704
+         rho |  .28591256   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_cb_thr_fe
+
+. 
+. di _newline "--- dpb (private bank) ---"
+
+--- dpb (private bank) ---
+
+. xtreg dpb c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.3287                                         min =         14
+     Between = 0.7362                                         avg =       24.4
+     Overall = 0.6189                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.3635                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+         dpb | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .1455766   .0399528     3.64   0.001     .0640923    .2270609
+    d_high_c |   .1511375   .1849837     0.82   0.420    -.2261392    .5284142
+             |
+        year |
+       1990  |    -.72899   .6715394    -1.09   0.286    -2.098604    .6406237
+       1991  |   .8513632   .5974001     1.43   0.164    -.3670423    2.069769
+       1992  |   4.043467   2.103691     1.92   0.064    -.2470383    8.333972
+       1993  |   4.343157    2.43197     1.79   0.084    -.6168783    9.303193
+       1994  |   3.587742   3.428506     1.05   0.303    -3.404742    10.58023
+       1995  |   7.435768   4.006349     1.86   0.073    -.7352354    15.60677
+       1996  |   6.905749    3.92597     1.76   0.088     -1.10132    14.91282
+       1997  |   5.863394   3.790755     1.55   0.132    -1.867901    13.59469
+       1998  |   6.153964   3.621096     1.70   0.099    -1.231309    13.53924
+       1999  |   5.030579    3.55754     1.41   0.167    -2.225072    12.28623
+       2000  |   4.328356   3.408349     1.27   0.214    -2.623017    11.27973
+       2001  |    3.82404   3.472362     1.10   0.279    -3.257889    10.90597
+       2002  |   3.413408   3.477669     0.98   0.334    -3.679345    10.50616
+       2003  |   3.292457   3.656861     0.90   0.375    -4.165759    10.75067
+       2004  |   2.749811   3.663218     0.75   0.459    -4.721371    10.22099
+       2005  |   2.817977   3.668217     0.77   0.448    -4.663401    10.29936
+       2006  |   2.646548   3.865796     0.68   0.499    -5.237795    10.53089
+       2007  |   2.386806   3.857327     0.62   0.541    -5.480264    10.25388
+       2008  |   2.618511   3.908713     0.67   0.508    -5.353363    10.59038
+       2009  |   4.221894   4.125837     1.02   0.314    -4.192806    12.63659
+       2010  |   5.100276   4.284121     1.19   0.243    -3.637247     13.8378
+       2011  |   4.826568   4.332942     1.11   0.274    -4.010526    13.66366
+       2012  |   4.843109   4.503833     1.08   0.291    -4.342519    14.02874
+       2013  |   3.991163   4.541253     0.88   0.386    -5.270784    13.25311
+       2014  |   3.072305   4.513715     0.68   0.501    -6.133477    12.27809
+       2015  |   2.229856    4.43503     0.50   0.619    -6.815448    11.27516
+       2016  |   1.747064   4.349233     0.40   0.691    -7.123256    10.61738
+       2017  |   .7350218   4.261579     0.17   0.864    -7.956525    9.426569
+       2018  |   .6628871   4.285036     0.15   0.878    -8.076502    9.402277
+       2019  |   .1309853   4.233074     0.03   0.976    -8.502426    8.764396
+       2020  |   .1054196   4.515195     0.02   0.982    -9.103381     9.31422
+       2021  |  -.9899414   4.434017    -0.22   0.825    -10.03318    8.053296
+             |
+       _cons |   .6731065   3.621543     0.19   0.854    -6.713078    8.059291
+-------------+----------------------------------------------------------------
+     sigma_u |   6.301029
+     sigma_e |  4.9347568
+         rho |  .61982821   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_pb_thr_fe
+
+. 
+. di _newline "--- db (banking total) ---"
+
+--- db (banking total) ---
+
+. xtreg db c.d c.d_high_c i.year, fe vce(cluster country_id)
+
+Fixed-effects (within) regression               Number of obs     =        780
+Group variable: country_id                      Number of groups  =         32
+
+R-squared:                                      Obs per group:
+     Within  = 0.7170                                         min =         14
+     Between = 0.8751                                         avg =       24.4
+     Overall = 0.8297                                         max =         33
+
+                                                F(30, 31)         =          .
+corr(u_i, Xb) = 0.1485                          Prob > F          =          .
+
+                            (Std. err. adjusted for 32 clusters in country_id)
+------------------------------------------------------------------------------
+             |               Robust
+          db | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           d |   .2149126   .0566498     3.79   0.001     .0993746    .3304506
+    d_high_c |   .6162452   .1201476     5.13   0.000     .3712024    .8612879
+             |
+        year |
+       1990  |   -1.92549   1.455505    -1.32   0.196    -4.894013    1.043033
+       1991  |  -1.732035    2.00934    -0.86   0.395    -5.830112    2.366041
+       1992  |   4.521528   2.406832     1.88   0.070    -.3872383    9.430294
+       1993  |   4.284846   2.242994     1.91   0.065    -.2897704    8.859463
+       1994  |   3.945513   2.551692     1.55   0.132    -1.258696    9.149722
+       1995  |    5.60735   1.994648     2.81   0.008     1.539238    9.675462
+       1996  |   4.639684   1.861189     2.49   0.018     .8437642    8.435603
+       1997  |   4.003822   1.648613     2.43   0.021     .6414524    7.366191
+       1998  |   3.760637   1.551671     2.42   0.021     .5959822    6.925291
+       1999  |   2.643868   1.358863     1.95   0.061    -.1275519    5.415289
+       2000  |   2.479307   1.211986     2.05   0.049     .0074443     4.95117
+       2001  |   2.054218   1.242175     1.65   0.108    -.4792147     4.58765
+       2002  |   1.665045   1.236188     1.35   0.188    -.8561771    4.186267
+       2003  |   1.642136   1.361801     1.21   0.237    -1.135275    4.419548
+       2004  |      .9763   1.297701     0.75   0.458    -1.670378    3.622978
+       2005  |   .8711447   1.267552     0.69   0.497    -1.714044    3.456333
+       2006  |   .7033776   1.430697     0.49   0.626    -2.214548    3.621303
+       2007  |   .5866534   1.454629     0.40   0.689    -2.380081    3.553388
+       2008  |   .6527899   1.541388     0.42   0.675    -2.490891    3.796471
+       2009  |   1.359996   1.609254     0.85   0.405    -1.922099     4.64209
+       2010  |   1.901401   1.803751     1.05   0.300    -1.777373    5.580175
+       2011  |   1.161953   1.784607     0.65   0.520    -2.477778    4.801684
+       2012  |   .8368129   1.955169     0.43   0.672     -3.15078    4.824406
+       2013  |   .6851042   1.909777     0.36   0.722    -3.209912    4.580121
+       2014  |   .1418716   1.829991     0.08   0.939     -3.59042    3.874163
+       2015  |   1.333745   1.833315     0.73   0.472    -2.405326    5.072816
+       2016  |   3.245398   1.814275     1.79   0.083    -.4548399    6.945635
+       2017  |   3.810994   1.805453     2.11   0.043      .128748     7.49324
+       2018  |   4.250093   1.849787     2.30   0.028     .4774269     8.02276
+       2019  |   3.643015   1.816642     2.01   0.054    -.0620496     7.34808
+       2020  |   5.738827   2.327403     2.47   0.019     .9920578     10.4856
+       2021  |   8.145581    2.29289     3.55   0.001     3.469201    12.82196
+             |
+       _cons |   .2393836   2.702993     0.09   0.930    -5.273407    5.752174
+-------------+----------------------------------------------------------------
+     sigma_u |  6.3799753
+     sigma_e |  4.9035987
+         rho |  .62864068   (fraction of variance due to u_i)
+------------------------------------------------------------------------------
+
+. estimates store alloc_b_thr_fe
+
+. 
+. di _newline(2) "  Threshold + FE coefficients (d and d_high_c only):"
+
+
+  Threshold + FE coefficients (d and d_high_c only):
+
+. estimates table alloc_h_thr_fe alloc_f_thr_fe alloc_cb_thr_fe alloc_pb_thr_fe alloc_b_thr_fe, ///
+>     keep(d d_high_c) star(0.10 0.05 0.01) stats(N r2_w r2_b r2_o)
+
+----------------------------------------------------------------------------------------------
+    Variable | alloc_h_thr~e   alloc_f_thr~e   alloc_cb_th~e   alloc_pb_th~e   alloc_b_thr~e  
+-------------+--------------------------------------------------------------------------------
+           d |  .20950725***    .30070043***    .06933595       .14557664***    .21491259***  
+    d_high_c | -.30546864**    -.24688558*      .46510768**      .1511375       .61624517***  
+-------------+--------------------------------------------------------------------------------
+           N |        780             747             780             780             780     
+        r2_w |  .35221014       .46517518       .58449065       .32870501       .71702473     
+        r2_b |  .34656579       .37826209       .87635361       .73623025       .87513571     
+        r2_o |   .3456057       .42830888       .70029804       .61886763       .82968025     
+----------------------------------------------------------------------------------------------
+                                                           Legend: * p<.1; ** p<.05; *** p<.01
+
+. 
+. * =============================================
+. * Marginal absorption rates from quadratic + FE
+. * =============================================
+. di _newline(2) "=========================================="
+
+
+==========================================
+
+. di "  MARGINAL ABSORPTION RATES (quadratic + FE)"
+  MARGINAL ABSORPTION RATES (quadratic + FE)
+
+. di "  slope_j(d) = beta_j + 2*kappa_j * d"
+  slope_j(d) = beta_j + 2*kappa_j * d
+
+. di "=========================================="
+==========================================
+
+. 
+. foreach sector in h f cb pb b {
+  2.     estimates restore alloc_`sector'_quad_fe
+  3.     local beta_`sector'_fe = _b[d]
+  4.     local kappa_`sector'_fe = _b[d_sq]
+  5. }
+(results alloc_h_quad_fe are active now)
+(results alloc_f_quad_fe are active now)
+(results alloc_cb_quad_fe are active now)
+(results alloc_pb_quad_fe are active now)
+(results alloc_b_quad_fe are active now)
+
+. 
+. di _newline "  d   |  dh slope  |  df slope  | dcb slope  | dpb slope  |  db slope  |  Sum"
+
+  d   |  dh slope  |  df slope  | dcb slope  | dpb slope  |  db slope  |  Sum
+
+. di "  ----|-----------|------------|------------|------------|------------|-------"
+  ----|-----------|------------|------------|------------|------------|-------
+
+. foreach dval in 20 40 60 80 100 120 150 180 {
+  2.     local sl_h  = `beta_h_fe'  + 2*`kappa_h_fe' *`dval'
+  3.     local sl_f  = `beta_f_fe'  + 2*`kappa_f_fe' *`dval'
+  4.     local sl_cb = `beta_cb_fe' + 2*`kappa_cb_fe'*`dval'
+  5.     local sl_pb = `beta_pb_fe' + 2*`kappa_pb_fe'*`dval'
+  6.     local sl_b  = `beta_b_fe'  + 2*`kappa_b_fe' *`dval'
+  7.     local sl_sum = `sl_h' + `sl_f' + `sl_b'
+  8.     di "  " %3.0f `dval' " | " %9.4f `sl_h' " | " %10.4f `sl_f' ///
+>        " | " %10.4f `sl_cb' " | " %10.4f `sl_pb' " | " %10.4f `sl_b' ///
+>        " | " %6.3f `sl_sum'
+  9. }
+   20 |    0.3372 |     0.3542 |    -0.1340 |     0.1898 |     0.0558 |  0.747
+   40 |    0.2719 |     0.3166 |    -0.0317 |     0.1882 |     0.1565 |  0.745
+   60 |    0.2066 |     0.2791 |     0.0705 |     0.1866 |     0.2571 |  0.743
+   80 |    0.1413 |     0.2415 |     0.1728 |     0.1850 |     0.3578 |  0.741
+  100 |    0.0759 |     0.2040 |     0.2750 |     0.1834 |     0.4585 |  0.738
+  120 |    0.0106 |     0.1664 |     0.3773 |     0.1819 |     0.5592 |  0.736
+  150 |   -0.0873 |     0.1101 |     0.5307 |     0.1795 |     0.7102 |  0.733
+  180 |   -0.1853 |     0.0538 |     0.6841 |     0.1771 |     0.8612 |  0.730
+
+. 
+. di _newline "  Comparison: pooled vs FE"
+
+  Comparison: pooled vs FE
+
+. di "  Pooled captures cross-country + within-country variation"
+  Pooled captures cross-country + within-country variation
+
+. di "  FE isolates within-country: as a given country's debt rises,"
+  FE isolates within-country: as a given country's debt rises,
+
+. di "  how does each sector's absorption change?"
+  how does each sector's absorption change?
+
+. 
+. log close
+      name:  <unnamed>
+       log:  C:\Users\马怡然\Documents\MLE on finacial repression\quadratic_nonbank_results2.txt
+  log type:  text
+ closed on:  12 Apr 2026, 19:52:54
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
